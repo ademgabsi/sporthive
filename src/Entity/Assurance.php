@@ -14,8 +14,35 @@ class Assurance
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(name: 'ID_contrat', type: 'integer')]
     private ?int $ID_contrat = null;
+
+    #[ORM\Column(type: 'integer', nullable: false)]
+    private ?int $Duree = null;
+
+    #[ORM\Column(name: 'type_de_couverture', type: 'string', nullable: false)]
+    private ?string $typeDeCouverture = null;
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    private ?string $dateDebut = null;
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    private ?string $Statut = null;
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    private ?string $Conditions = null;
+
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'assurances')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    private ?Utilisateur $utilisateur = null;
+
+    #[ORM\OneToMany(targetEntity: Reclamation::class, mappedBy: 'assurance', cascade: ['persist', 'remove'])]
+    private Collection $reclamations;
+
+    public function __construct()
+    {
+        $this->reclamations = new ArrayCollection();
+    }
 
     public function getID_contrat(): ?int
     {
@@ -28,9 +55,6 @@ class Assurance
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $Duree = null;
-
     public function getDuree(): ?int
     {
         return $this->Duree;
@@ -41,9 +65,6 @@ class Assurance
         $this->Duree = $Duree;
         return $this;
     }
-
-    #[ORM\Column(name: 'type_de_couverture', type: 'string', nullable: false)]
-    private ?string $typeDeCouverture = null;
 
     public function getTypeDeCouverture(): ?string
     {
@@ -56,9 +77,6 @@ class Assurance
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $dateDebut = null;
-
     public function getDateDebut(): ?string
     {
         return $this->dateDebut;
@@ -69,9 +87,6 @@ class Assurance
         $this->dateDebut = $dateDebut;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $Statut = null;
 
     public function getStatut(): ?string
     {
@@ -84,9 +99,6 @@ class Assurance
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $Conditions = null;
-
     public function getConditions(): ?string
     {
         return $this->Conditions;
@@ -97,10 +109,6 @@ class Assurance
         $this->Conditions = $Conditions;
         return $this;
     }
-
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'assurances')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    private ?Utilisateur $utilisateur = null;
 
     public function getUtilisateur(): ?Utilisateur
     {
@@ -113,32 +121,31 @@ class Assurance
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Reclamation::class, mappedBy: 'assurance')]
-    private Collection $reclamations;
-
     /**
      * @return Collection<int, Reclamation>
      */
     public function getReclamations(): Collection
     {
-        if (!$this->reclamations instanceof Collection) {
-            $this->reclamations = new ArrayCollection();
-        }
         return $this->reclamations;
     }
 
     public function addReclamation(Reclamation $reclamation): self
     {
-        if (!$this->getReclamations()->contains($reclamation)) {
-            $this->getReclamations()->add($reclamation);
+        if (!$this->reclamations->contains($reclamation)) {
+            $this->reclamations->add($reclamation);
+            $reclamation->setAssurance($this);
         }
         return $this;
     }
 
     public function removeReclamation(Reclamation $reclamation): self
     {
-        $this->getReclamations()->removeElement($reclamation);
+        if ($this->reclamations->removeElement($reclamation)) {
+            // Set the owning side to null (unless already changed)
+            if ($reclamation->getAssurance() === $this) {
+                $reclamation->setAssurance(null);
+            }
+        }
         return $this;
     }
-
 }

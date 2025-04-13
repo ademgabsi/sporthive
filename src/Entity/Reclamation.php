@@ -3,10 +3,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
+use Doctrine\DBAL\Types\Types;
 use App\Repository\ReclamationRepository;
+use App\Entity\Assurance;
 
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
 #[ORM\Table(name: 'reclamation')]
@@ -17,19 +16,33 @@ class Reclamation
     #[ORM\Column(type: 'integer')]
     private ?int $ID_reclamation = null;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $Date = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $Description = null;
+
+    #[ORM\Column(type: Types::STRING, length: 50, nullable: true)]
+    private ?string $Etat = null;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $Montant_reclame = null;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $Montant_rembourse = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $Documents = null;
+
+    #[ORM\ManyToOne(targetEntity: Assurance::class, inversedBy: 'reclamations')]
+    #[ORM\JoinColumn(name: 'contrat', referencedColumnName: 'ID_contrat', nullable: false, onDelete: 'CASCADE')]
+    private ?Assurance $assurance = null;
+
+    // Getters and Setters
     public function getID_reclamation(): ?int
     {
         return $this->ID_reclamation;
     }
-
-    public function setID_reclamation(int $ID_reclamation): self
-    {
-        $this->ID_reclamation = $ID_reclamation;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'date', nullable: true)]
-    private ?\DateTimeInterface $Date = null;
 
     public function getDate(): ?\DateTimeInterface
     {
@@ -42,9 +55,6 @@ class Reclamation
         return $this;
     }
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $Description = null;
-
     public function getDescription(): ?string
     {
         return $this->Description;
@@ -55,9 +65,6 @@ class Reclamation
         $this->Description = $Description;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $Etat = null;
 
     public function getEtat(): ?string
     {
@@ -70,36 +77,27 @@ class Reclamation
         return $this;
     }
 
-    #[ORM\Column(type: 'decimal', nullable: true)]
-    private ?float $Montant_reclame = null;
-
-    public function getMontant_reclame(): ?float
+    public function getMontant_reclame(): ?int
     {
         return $this->Montant_reclame;
     }
 
-    public function setMontant_reclame(?float $Montant_reclame): self
+    public function setMontant_reclame(?int $Montant_reclame): self
     {
         $this->Montant_reclame = $Montant_reclame;
         return $this;
     }
 
-    #[ORM\Column(type: 'decimal', nullable: true)]
-    private ?float $Montant_rembourse = null;
-
-    public function getMontant_rembourse(): ?float
+    public function getMontant_rembourse(): ?int
     {
         return $this->Montant_rembourse;
     }
 
-    public function setMontant_rembourse(?float $Montant_rembourse): self
+    public function setMontant_rembourse(?int $Montant_rembourse): self
     {
         $this->Montant_rembourse = $Montant_rembourse;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $Documents = null;
 
     public function getDocuments(): ?string
     {
@@ -112,10 +110,6 @@ class Reclamation
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Assurance::class, inversedBy: 'reclamations')]
-    #[ORM\JoinColumn(name: 'ID_contrat', referencedColumnName: 'ID_contrat')]
-    private ?Assurance $assurance = null;
-
     public function getAssurance(): ?Assurance
     {
         return $this->assurance;
@@ -126,5 +120,4 @@ class Reclamation
         $this->assurance = $assurance;
         return $this;
     }
-
 }

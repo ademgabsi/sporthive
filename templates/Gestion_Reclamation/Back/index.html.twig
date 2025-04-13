@@ -1,0 +1,47 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Gestion des Réclamations
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1>Liste des Réclamations</h1>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Date</th>
+					<th>Description</th>
+					<th>Montant réclamé</th>
+					<th>Montant remboursé</th>
+					<th>Statut</th>
+					<th>Documents</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+
+				{% for reclamation in reclamations %}
+					<tr>
+						<td>{{ reclamation.ID_reclamation }}</td>
+						<td>{{ reclamation.Date ? reclamation.Date|date('Y-m-d') : '' }}</td>
+						<td>{{ reclamation.Description }}</td>
+						<td>{{ reclamation.Montant_reclame }}</td>
+						<td>{{ reclamation.Montant_rembourse }}</td>
+						<td>{{ reclamation.Etat }}</td>
+						<td>{{ reclamation.Documents }}</td>
+						<td>
+							<a href="{{ path('app_admin_reclamation_show', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn btn-info btn-sm">Voir</a>
+							<a href="{{ path('app_admin_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn btn-warning btn-sm">Modifier</a>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="8" class="text-center">Aucune réclamation trouvée</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}
