@@ -1,0 +1,23 @@
+<div class="topbar">
+    <button class="toggle-sidebar" id="toggleSidebar">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="breadcrumb">
+        {% block breadcrumb %}
+            <div class="breadcrumb-item">Admin</div>
+            <div class="breadcrumb-item active">{{ breadcrumb_active|default('Tableau de bord') }}</div>
+        {% endblock %}
+    </div>
+    <div class="topbar-actions">
+        <button class="notification-btn">
+            <i class="fas fa-bell"></i>
+            <span class="notification-count">3</span>
+        </button>
+        <div class="user-profile">
+            <div class="profile-img">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-name">Admin</div>
+        </div>
+    </div>
+</div>

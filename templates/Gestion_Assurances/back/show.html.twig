@@ -1,0 +1,290 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Détails de l'assurance - Administration{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .dashboard-title {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 1.5rem 2rem;
+            position: relative;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title:before {
+            content: '\f07b';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            margin-right: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .detail-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .badge:before {
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            margin-right: 0.5rem;
+        }
+
+        .badge-success {
+            background: #dff6dd;
+            color: #1e7e34;
+        }
+
+        .badge-success:before {
+            content: '\f00c';
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-warning:before {
+            content: '\f071';
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-danger:before {
+            content: '\f057';
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .card-footer {
+            background: #f8f9fa;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-back {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .btn-back:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
+        }
+
+        .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .actions-group {
+            display: flex;
+            gap: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Détails de l'assurance</h1>
+            <p class="dashboard-subtitle">Informations complètes sur le contrat d'assurance</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Contrat #{{ assurance.ID_contrat }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Type de couverture</div>
+                        <div class="detail-value">{{ assurance.typeDeCouverture }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Durée</div>
+                        <div class="detail-value">{{ assurance.duree }} mois</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Date de début</div>
+                        <div class="detail-value">{{ assurance.dateDebut }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Statut</div>
+                        <div class="detail-value">
+                            <span class="badge {% if assurance.statut == 'active' %}badge-success{% elseif assurance.statut == 'expired' %}badge-danger{% else %}badge-warning{% endif %}">
+                                {{ assurance.statut }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-item full-width">
+                        <div class="detail-label">Conditions</div>
+                        <div class="detail-value">{{ assurance.conditions|nl2br }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ path('app_admin_assurance_index') }}" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de suppression -->
+    <div class="modal-backdrop" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmer la suppression</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer cette assurance ?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" onclick="closeDeleteModal()">Annuler</button>
+                <form id="deleteForm" method="post" action="">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete') }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="id" id="assurance_id" value="">
+                    <button class="modal-btn confirm">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function openDeleteModal(id) {
+            const modal = document.getElementById('deleteModal');
+            const form = document.getElementById('deleteForm');
+            document.getElementById('assurance_id').value = id;
+            form.action = "/admin/assurance/" + id + "/delete";
+            modal.classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            document.getElementById('assurance_id').value = '';
+            modal.classList.remove('show');
+        }
+    </script>
+{% endblock %}
