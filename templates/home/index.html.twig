@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Basic -->
+		<meta charset="utf-8"/>
+		<meta
+		http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<!-- Mobile Metas -->
+		<meta
+		name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+		<!-- Site Metas -->
+		<meta name="keywords" content=""/>
+		<meta name="description" content=""/>
+		<meta name="author" content=""/>
+
+		<title>
+			{% block title %}SPORTHIVE
+			{% endblock %}
+		</title>
+
+		<!-- slider stylesheet -->
+		<link
+		rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"/>
+
+		<!-- bootstrap core css -->
+		<link
+		rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}"/>
+
+		<!-- fonts style -->
+		<link
+		href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
+		<!-- Custom styles for this template -->
+		<link
+		href="{{ asset('css/style.css') }}" rel="stylesheet"/>
+		<!-- responsive style -->
+		<link href="{{ asset('css/responsive.css') }}" rel="stylesheet"/> {% block css %}{% endblock %}
+		</head>
+
+		<body>
+			<div
+				class="hero_area">
+				<!-- header section strats -->
+				{% block header %}
+					<header class="header_section">
+						<div class="container-fluid">
+							<nav class="navbar navbar-expand-lg custom_nav-container ">
+								<a class="navbar-brand" href="{{ path('app_home') }}">
+									<span>
+										SPORTHIVE
+									</span>
+								</a>
+								<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+									<span class="navbar-toggler-icon"></span>
+								</button>
+
+								<div class="collapse navbar-collapse" id="navbarSupportedContent">
+									<div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+										<ul class="navbar-nav">
+											<li class="nav-item active">
+												<a class="nav-link" href="{{ path('app_home') }}">Home
+													<span class="sr-only">(current)</span>
+												</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="{{ path('app_assurance_index') }}">
+													Assurance
+												</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="#">
+													Equipe</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="#">
+													Competition</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="#">
+													Match</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="#">
+													Terrain</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="#">
+													Contact Us</a>
+											</li>
+										</ul>
+										<div class="user_option">
+											<form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
+												<button class="btn my-2 my-sm-0 nav_search-btn" type="submit"></button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</nav>
+						</div>
+					</header>
+					<section class=" slider_section position-relative">
+						<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+							<div class="carousel-inner">
+								<div class="carousel-item active">
+									<div class="container">
+										<div class="col-lg-10 col-md-11 mx-auto">
+											<div class="detail-box">
+												<div>
+													<h3>
+														Fitness
+													</h3>
+													<h2>
+														Training
+													</h2>
+													<h1>
+														Sporthive
+													</h1>
+													<p>
+														Votre chemin vers le sport parfait , Tout en un seul clic !
+													</p>
+													<div class="">
+														<a href="#">
+															Contact Us
+														</a>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+							<ol class="carousel-indicators">
+								<li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+								<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+								<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+								<li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+								<li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
+							</ol>
+						</div>
+					</section>
+				{% endblock %}
+				<!-- end header section -->
+			</div>
+
+			{% block body %}
+				<section class="us_section layout_padding">
+					<div class="container">
+						<div class="heading_container">
+							<h2>
+								Pourquoi Choisir Sporthive ?
+							</h2>
+						</div>
+
+						<div class="us_container">
+							<div class="row">
+								<div class="col-lg-3 col-md-6">
+									<div class="box">
+										<div class="img-box">
+											<img src="images/u-1.png" alt="">
+										</div>
+										<div class="detail-box">
+											<h5>
+												RÉSERVATION DE TERRAIN
+											</h5>
+											<p>
+												Réservez un terrain en quelques clics selon votre sport préféré et votre créneau idéal.
+											</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-3 col-md-6">
+									<div class="box">
+										<div class="img-box">
+											<img src="images/u-4.png" alt="">
+										</div>
+										<div class="detail-box">
+											<h5>
+												REJOINDRE UNE ÉQUIPE
+											</h5>
+											<p>
+												Rejoignez une équipe existante ou créez la vôtre pour jouer en groupe et progresser ensemble.
+											</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-3 col-md-6">
+									<div class="box">
+										<div class="img-box">
+											<img src="images/u-2.png" alt="">
+										</div>
+										<div class="detail-box">
+											<h5>
+												ASSURANCE & RÉCLAMATIONS
+											</h5>
+											<p>
+												Souscrivez une assurance sportive et gérez vos réclamations en toute simplicité depuis l’appli.
+											</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-3 col-md-6">
+									<div class="box">
+										<div class="img-box">
+											<img src="images/u-3.png" alt="">
+										</div>
+										<div class="detail-box">
+											<h5>
+												COMPÉTITIONS SPORTIVES
+											</h5>
+											<p>
+												Participez à des compétitions organisées par la salle et affrontez d’autres équipes !
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="heathy_section layout_padding">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-12 mx-auto">
+								<div class="detail-box">
+									<h2>
+										UNE EXPÉRIENCE SPORTIVE COMPLÈTE
+									</h2>
+									<p>
+										Notre plateforme vous offre bien plus qu’un simple espace sportif. Réservez vos terrains en toute simplicité, rejoignez des équipes dynamiques, participez à des compétitions passionnantes, et assurez votre pratique grâce à une gestion facile des assurances et des réclamations. Que vous soyez amateur ou compétiteur, nous avons tout prévu pour vous accompagner dans votre parcours sportif, en toute sécurité et avec flexibilité.
+									</p>
+									<div class="btn-box">
+										<a href="">
+											EN SAVOIR PLUS
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			{% endblock %}
+
+			<!-- info section and footer -->
+			{% block footer %}
+				<!-- info section -->
+				<section class="info_section layout_padding2">
+					<div class="container">
+						<div class="info_items">
+							<a href="">
+								<div class="item">
+									<div class="img-box box-1">
+										<img src="{{ asset('img/location-white.png') }}" alt="">
+									</div>
+									<div class="detail-box">
+										<p>
+											Tunisia, Tunis
+										</p>
+									</div>
+								</div>
+							</a>
+							<a href="">
+								<div class="item">
+									<div class="img-box box-2">
+										<img src="{{ asset('img/telephone-white.png') }}" alt="">
+									</div>
+									<div class="detail-box">
+										<p>
+											+216 123456789
+										</p>
+									</div>
+								</div>
+							</a>
+							<a href="">
+								<div class="item">
+									<div class="img-box box-3">
+										<img src="{{ asset('img/envelope-white.png') }}" alt="">
+									</div>
+									<div class="detail-box">
+										<p>
+											sporthive@gmail.com
+										</p>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+				</section>
+				<!-- end info_section -->
+
+				<!-- footer section -->
+				<footer class="container-fluid footer_section">
+					<p>
+						&copy; 2025 All Rights Reserved.
+					</p>
+				</footer>
+				<!-- footer section -->
+			{% endblock %}
+
+			<script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
+			<script src="{{ asset('js/bootstrap.js') }}"></script>
+
+			{% block js %}{% endblock %}
+		</body>
+	</html>

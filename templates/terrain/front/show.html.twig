@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Terrain - SPORTHIVE{% endblock %}
+
+{% block body %}
+<section class="terrain-detail-section layout_padding">
+    <div class="container">
+        <div class="heading_container mb-5">
+            <h2>Détails du Terrain</h2>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="detail-card">
+                    <div class="card-header">
+                        <h3>{{ terrain.Nom }}</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="detail-row">
+                            <div class="detail-label">Localisation</div>
+                            <div class="detail-value">{{ terrain.Localisation }}</div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-label">Prix</div>
+                            <div class="detail-value">{{ terrain.Prix }} TND</div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-label">Type de Surface</div>
+                            <div class="detail-value">{{ terrain.TypeSurface }}</div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-label">Image</div>
+                            <div class="detail-value">
+                                {% if terrain.imageTer %}
+                                    <img src="{{ asset('uploads/terrains/' ~ terrain.imageTer) }}" alt="Terrain" class="img-fluid rounded">
+                                {% else %}
+                                    <p>Aucune image disponible</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <a href="{{ path('app_terrain_index') }}" class="btn-back">Retour à la liste</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block css %}
+<style>
+    .terrain-detail-section {
+        padding-top: 120px;
+        padding-bottom: 80px;
+        background-color: #f8f9fa;
+    }
+
+    .heading_container {
+        text-align: center;
+    }
+
+    .heading_container h2 {
+        font-weight: bold;
+        color: #252525;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .heading_container h2:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: #ff4f5a;
+    }
+
+    .detail-card {
+        background-color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .card-header {
+        background-color: #ff4f5a;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .detail-row {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 5px;
+    }
+
+    .detail-value {
+        color: #212529;
+        font-size: 16px;
+    }
+
+    .card-footer {
+        background-color: #f8f9fa;
+        padding: 20px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn-back {
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 500;
+        background-color: #6c757d;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background-color: #5a6268;
+        color: white;
+    }
+
+    .img-fluid {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+</style>
+{% endblock %}

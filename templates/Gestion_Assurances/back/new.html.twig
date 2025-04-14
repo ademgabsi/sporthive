@@ -1,0 +1,374 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Nouvelle assurance - Administration
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/material_blue.min.css">
+	<style>
+		.dashboard-container {
+			padding: 1.5rem;
+			max-width: 1000px;
+			margin: 0 auto;
+		}
+
+		.dashboard-header {
+			margin-bottom: 1.5rem;
+			border-bottom: 2px solid #eee;
+			padding-bottom: 0.8rem;
+		}
+
+		.dashboard-title {
+			color: #333;
+			font-size: 1.5rem;
+			margin-bottom: 0.3rem;
+		}
+
+		.dashboard-subtitle {
+			color: #666;
+			font-size: 0.9rem;
+		}
+
+		.card {
+			background: white;
+			border-radius: 6px;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		}
+
+		.card-body {
+			padding: 1.5rem;
+		}
+
+		.form-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
+		}
+
+		.form-group {
+			margin-bottom: 1rem;
+		}
+
+		.form-label {
+			display: block;
+			margin-bottom: 0.4rem;
+			color: #555;
+			font-size: 0.85rem;
+			font-weight: 500;
+		}
+
+		.form-input,
+		.form-select,
+		.form-textarea {
+			width: 100%;
+			padding: 0.6rem;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 0.9rem;
+		}
+
+		.form-input:focus,
+		.form-select:focus,
+		.form-textarea:focus {
+			outline: none;
+			border-color: #4361ee;
+		}
+
+		.form-textarea {
+			min-height: 100px;
+			resize: vertical;
+		}
+
+		.form-actions {
+			margin-top: 1.5rem;
+			display: flex;
+			justify-content: flex-end;
+			gap: 0.8rem;
+			padding-top: 1rem;
+			border-top: 1px solid #eee;
+		}
+
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			padding: 0.6rem 1rem;
+			border-radius: 4px;
+			font-weight: 500;
+			font-size: 0.9rem;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+		.btn i {
+			margin-right: 0.4rem;
+			font-size: 0.9rem;
+		}
+
+		.btn-cancel {
+			background: #f8f9fa;
+			color: #555;
+			border: 1px solid #ddd;
+		}
+
+		.btn-cancel:hover {
+			background: #eee;
+		}
+
+		.btn-save {
+			background: #4361ee;
+			color: white;
+			border: none;
+		}
+
+		.btn-save:hover {
+			background: #3a56d4;
+		}
+
+		.form-error {
+			color: #e63946;
+			font-size: 0.8rem;
+			margin-top: 0.3rem;
+		}
+
+		.full-width {
+			grid-column: 1 / -1;
+		}
+
+		/* Style pour datepicker */
+		.date-input-wrapper {
+			position: relative;
+		}
+
+		.date-input-wrapper .calendar-icon {
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: #4361ee;
+			pointer-events: none;
+		}
+
+		/* Rendre le datepicker plus compact */
+		.flatpickr-calendar {
+			font-size: 0.85rem;
+			width: 240px !important;
+			box-shadow: 0 3px 15px rgba(0, 0, 0, 0.15);
+			border-radius: 8px;
+			padding: 6px;
+		}
+
+		.flatpickr-day {
+			height: 32px;
+			line-height: 32px;
+			margin: 1px;
+			width: 32px;
+			border-radius: 50%;
+		}
+
+		.flatpickr-weekday {
+			font-size: 0.8rem;
+		}
+
+		.flatpickr-months .flatpickr-month {
+			height: 40px;
+		}
+
+		.flatpickr-current-month {
+			padding-top: 6px !important;
+			font-size: 0.95rem !important;
+		}
+
+		.flatpickr-monthDropdown-months {
+			height: 24px !important;
+		}
+
+		.numInputWrapper span {
+			padding: 0 6px;
+		}
+
+		/* Animation pour le calendrier */
+		@keyframes calendarFadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(-10px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.flatpickr-calendar.open {
+			animation: calendarFadeIn 0.2s ease-out;
+			animation-fill-mode: forwards;
+		}
+
+		.flatpickr-day.selected {
+			background: #4361ee;
+			border-color: #4361ee;
+		}
+
+		/* Style spécial pour le champ de date */
+		.date-input {
+			background-color: #f8f9fc;
+			border: 1px solid #ddd;
+			transition: all 0.3s ease;
+			padding-right: 30px !important;
+		}
+
+		.date-input:hover {
+			border-color: #bbc1e4;
+		}
+
+		.date-input.active {
+			border-color: #4361ee;
+			box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+		}
+	</style>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/fr.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () { // Configuration du datepicker
+const dateInput = document.getElementById("{{ form.dateDebut.vars.id }}");
+
+// Création de l'icône de calendrier
+const dateWrapper = document.createElement('div');
+dateWrapper.className = 'date-input-wrapper';
+dateInput.parentNode.insertBefore(dateWrapper, dateInput);
+dateWrapper.appendChild(dateInput);
+
+const calendarIcon = document.createElement('i');
+calendarIcon.className = 'fas fa-calendar-alt calendar-icon';
+dateWrapper.appendChild(calendarIcon);
+
+// Appliquer la classe spéciale au champ de date
+dateInput.classList.add('date-input');
+
+// Initialisation de flatpickr
+const datePicker = flatpickr(dateInput, {
+locale: "fr",
+dateFormat: "Y-m-d",
+altInput: true,
+altFormat: "d MMM Y",
+minDate: "today",
+theme: "material_blue",
+animate: true,
+static: true,
+// Fonction pour mettre en évidence les jours de la semaine, par exemple
+onDayCreate: function (dObj, dStr, fp, dayElem) { // Mettre en évidence les weekends
+if (dayElem.dateObj.getDay() === 0 || dayElem.dateObj.getDay() === 6) {
+dayElem.style.backgroundColor = "#f8f9fc";
+}
+},
+// Ajouter un effet visuel quand le calendrier est ouvert
+onOpen: function () {
+dateInput.classList.add('active');
+},
+onClose: function () {
+dateInput.classList.remove('active');
+}
+});
+
+// Ajout d'aujourd'hui et demain comme options rapides
+const todayBtn = document.createElement('button');
+todayBtn.type = 'button';
+todayBtn.textContent = "Aujourd'hui";
+todayBtn.className = 'btn btn-cancel';
+todayBtn.style = 'padding: 0.3rem 0.6rem; font-size: 0.8rem; margin-top: 0.5rem;';
+todayBtn.addEventListener('click', function () {
+const today = new Date();
+datePicker.setDate(today);
+});
+
+const tomorrowBtn = document.createElement('button');
+tomorrowBtn.type = 'button';
+tomorrowBtn.textContent = "Demain";
+tomorrowBtn.className = 'btn btn-cancel';
+tomorrowBtn.style = 'padding: 0.3rem 0.6rem; font-size: 0.8rem; margin-left: 0.5rem; margin-top: 0.5rem;';
+tomorrowBtn.addEventListener('click', function () {
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+datePicker.setDate(tomorrow);
+});
+
+const quickBtns = document.createElement('div');
+quickBtns.style = 'display: flex; gap: 0.5rem;';
+quickBtns.appendChild(todayBtn);
+quickBtns.appendChild(tomorrowBtn);
+
+dateWrapper.appendChild(quickBtns);
+});
+	</script>
+{% endblock %}
+
+{% block body %}
+	<div class="dashboard-container">
+		<div class="dashboard-header">
+			<h1 class="dashboard-title">Nouvelle assurance</h1>
+			<p class="dashboard-subtitle">Création d'un nouveau contrat d'assurance</p>
+		</div>
+
+		<div class="card">
+			<div class="card-body">
+				{{ form_start(form, {'attr': {'class': 'form-grid'}}) }}
+				<div class="form-group">
+					{{ form_label(form.typeDeCouverture, 'Type de couverture', {'label_attr': {'class': 'form-label'}}) }}
+					{{ form_widget(form.typeDeCouverture, {'attr': {'class': 'form-input'}}) }}
+					{{ form_errors(form.typeDeCouverture, {'attr': {'class': 'form-error'}}) }}
+				</div>
+
+				<div class="form-group">
+					{{ form_label(form.Duree, 'Durée (en mois)', {'label_attr': {'class': 'form-label'}}) }}
+					{{ form_widget(form.Duree, {'attr': {'class': 'form-input'}}) }}
+					{{ form_errors(form.Duree, {'attr': {'class': 'form-error'}}) }}
+				</div>
+
+				<div class="form-group">
+					{{ form_label(form.dateDebut, 'Date de début', {'label_attr': {'class': 'form-label'}}) }}
+					{{ form_widget(form.dateDebut, {'attr': {'class': 'form-input'}}) }}
+					{{ form_errors(form.dateDebut, {'attr': {'class': 'form-error'}}) }}
+				</div>
+
+				<div class="form-group">
+					{{ form_label(form.Statut, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+					<select id="{{ form.Statut.vars.id }}" name="{{ form.Statut.vars.full_name }}" class="form-select">
+						<option value="active">Active</option>
+						<option value="expiree">Expirée</option>
+						<option value="en_attente">En attente</option>
+					</select>
+					{{ form_errors(form.Statut, {'attr': {'class': 'form-error'}}) }}
+				</div>
+
+				<div class="form-group">
+					{{ form_label(form.utilisateur, 'Utilisateur', {'label_attr': {'class': 'form-label'}}) }}
+					{{ form_widget(form.utilisateur, {'attr': {'class': 'form-select'}}) }}
+					{{ form_errors(form.utilisateur, {'attr': {'class': 'form-error'}}) }}
+				</div>
+
+				<div class="form-group full-width">
+					{{ form_label(form.Conditions, 'Conditions', {'label_attr': {'class': 'form-label'}}) }}
+					{{ form_widget(form.Conditions, {'attr': {'class': 'form-textarea'}}) }}
+					{{ form_errors(form.Conditions, {'attr': {'class': 'form-error'}}) }}
+				</div>
+
+				<div class="form-actions full-width">
+					<a href="{{ path('app_admin_assurance_index') }}" class="btn btn-cancel">
+						<i class="fas fa-times"></i>
+						Annuler
+					</a>
+					<button type="submit" class="btn btn-save">
+						<i class="fas fa-save"></i>
+						Créer
+					</button>
+				</div>
+				{{ form_end(form) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}

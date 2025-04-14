@@ -1,0 +1,71 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Liste des Terrains{% endblock %}
+
+{% block body %}
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Liste des Terrains</h1>
+            <p class="dashboard-subtitle">Tous les terrains disponibles</p>
+        </div>
+
+        <div class="table-top">
+            <div class="search-filter">
+            </div>
+            <a href="{{ path('app_terrain_new') }}" class="add-btn">
+                <i class="fas fa-plus"></i>
+                Nouveau Terrain
+            </a>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID Terrain</th>
+                    <th>Nom</th>
+                    <th>Type de Surface</th>
+                    <th>Localisation</th>
+                    <th>Prix</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for terrain in terrains %}
+                    <tr>
+                        <td>{{ terrain.idTerrain }}</td>
+                        <td>{{ terrain.Nom }}</td>
+                        <td>{{ terrain.TypeSurface }}</td>
+                        <td>{{ terrain.Localisation }}</td>
+                        <td>{{ terrain.Prix }} TND</td>
+                        <td>
+                            {% if terrain.imageTer %}
+                                <img src="{{ asset('uploads/terrains/' ~ terrain.imageTer) }}" alt="Image du terrain" width="100" height="auto">
+                            {% else %}
+                                <span>Aucune image</span>
+                            {% endif %}
+                        </td>
+                        <td class="action-cell">
+                            <a href="{{ path('app_terrainback_show', {'idTerrain': terrain.idTerrain}) }}" class="action-btn view" title="Voir">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ path('app_terrain_edit', {'idTerrain': terrain.idTerrain}) }}" class="action-btn edit" title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">Aucun terrain trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+       
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+  
+{% endblock %}

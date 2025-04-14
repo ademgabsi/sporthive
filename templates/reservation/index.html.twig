@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Réservations - SPORTHIVE{% endblock %}
+
+{% block body %}
+<section class="reservation_section layout_padding">
+    <div class="container">
+        <div class="heading_container">
+            <h2>Vos Réservations</h2>
+        </div>
+
+        <div class="row">
+            {% for reservation in reservations %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="reservation-card">
+                        <div class="card-header">
+                            <h5>Réservation #{{ reservation.ID_Reservation }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="reservation-details">
+                                <li><span class="detail-label">Date et Heure:</span> <span class="detail-value">{{ reservation.DateHeure ? reservation.DateHeure|date('Y-m-d H:i') : 'N/A' }}</span></li>
+                                <li><span class="detail-label">Durée:</span> <span class="detail-value">{{ reservation.Duree }} heures</span></li>
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ path('app_reservation_show', {'ID_Reservation': reservation.ID_Reservation}) }}" class="btn-view">Voir</a>
+                            <a href="{{ path('app_reservation_edit', {'ID_Reservation': reservation.ID_Reservation}) }}" class="btn btn-outline-warning btn-sm ms-2">Modifier</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <div class="no-records">
+                        <img src="{{ asset('img/empty.png') }}" alt="Aucune réservation" class="mb-3">
+                        <p>Aucune réservation trouvée</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block css %}
+<style>
+    .reservation_section {
+        padding-top: 100px;
+        padding-bottom: 80px;
+        background-color: #f4f6f9;
+    }
+
+    .heading_container {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .reservation-card {
+        background-color: #fff;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease;
+    }
+
+    .reservation-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-header {
+        background-color: #28a745;
+        color: white;
+        padding: 15px;
+        font-weight: bold;
+    }
+
+    .card-body {
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    .reservation-details {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .reservation-details li {
+        margin-bottom: 10px;
+        display: flex;
+    }
+
+    .detail-label {
+        font-weight: bold;
+        min-width: 120px;
+        color: #343a40;
+    }
+
+    .detail-value {
+        color: #495057;
+    }
+
+    .card-footer {
+        padding: 15px 20px;
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .btn-view {
+        background-color: #17a2b8;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-view:hover {
+        background-color: #138496;
+    }
+
+    .no-records img {
+        max-width: 150px;
+        opacity: 0.6;
+    }
+
+    .no-records p {
+        font-size: 18px;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block js %}
+{% endblock %}

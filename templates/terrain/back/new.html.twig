@@ -1,0 +1,194 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Create New Terrain{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/material_blue.min.css">
+    <style>
+        .dashboard-container {
+            padding: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.8rem;
+        }
+
+        .dashboard-title {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .dashboard-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #555;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn i {
+            margin-right: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-cancel {
+            background: #f8f9fa;
+            color: #555;
+            border: 1px solid #ddd;
+        }
+
+        .btn-cancel:hover {
+            background: #eee;
+        }
+
+        .btn-save {
+            background: #4361ee;
+            color: white;
+            border: none;
+        }
+
+        .btn-save:hover {
+            background: #3a56d4;
+        }
+
+        .form-error {
+            color: #e63946;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Create New Terrain</h1>
+            <p class="dashboard-subtitle">Enter the details for a new terrain</p>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'form-grid', 'enctype': 'multipart/form-data'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.nom, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.typeSurface, 'Type de surface', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.typeSurface, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.typeSurface, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.localisation, 'Localisation', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.localisation, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.localisation, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.prix, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.prix, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.imageTer, 'Image', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.imageTer, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.imageTer, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-actions full-width">
+                    <a href="{{ path('app_terrain_index') }}" class="btn btn-cancel">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-save">
+                        <i class="fas fa-save"></i>
+                        Save
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

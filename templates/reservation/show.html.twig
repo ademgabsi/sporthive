@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Réservation - SPORTHIVE{% endblock %}
+
+{% block body %}
+<section class="reservation-detail-section layout_padding">
+    <div class="container">
+        <div class="heading_container mb-5">
+            <h2>Détails de la Réservation</h2>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="detail-card">
+                    <div class="card-header">
+                        <h3>Réservation #{{ reservation.ID_Reservation }}</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="detail-row">
+                            <div class="detail-label">Date & Heure</div>
+                            <div class="detail-value">{{ reservation.DateHeure ? reservation.DateHeure|date('Y-m-d H:i:s') : 'Non définie' }}</div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-label">Durée</div>
+                            <div class="detail-value">{{ reservation.Duree }} minutes</div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <a href="{{ path('app_reservation_index') }}" class="btn-back">Retour à la liste</a>
+                        <a href="{{ path('app_reservation_edit', {'ID_Reservation': reservation.ID_Reservation}) }}" class="btn-edit">Modifier</a>
+                        {{ include('reservation/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block css %}
+<style>
+    .reservation-detail-section {
+        padding-top: 120px;
+        padding-bottom: 80px;
+        background-color: #f8f9fa;
+    }
+
+    .heading_container {
+        text-align: center;
+    }
+
+    .heading_container h2 {
+        font-weight: bold;
+        color: #252525;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .heading_container h2:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: #ff4f5a;
+    }
+
+    .detail-card {
+        background-color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .card-header {
+        background-color: #ff4f5a;
+        color: white;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .detail-row {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 5px;
+    }
+
+    .detail-value {
+        color: #212529;
+        font-size: 16px;
+    }
+
+    .card-footer {
+        background-color: #f8f9fa;
+        padding: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .btn-back, .btn-edit {
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back {
+        background-color: #6c757d;
+    }
+
+    .btn-back:hover {
+        background-color: #5a6268;
+    }
+
+    .btn-edit {
+        background-color: #17a2b8;
+    }
+
+    .btn-edit:hover {
+        background-color: #138496;
+    }
+
+    form {
+        display: inline;
+    }
+
+    form button {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+        background-color: #c82333;
+    }
+</style>
+{% endblock %}
