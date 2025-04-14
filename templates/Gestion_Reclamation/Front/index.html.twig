@@ -21,7 +21,7 @@
         <tbody>
         {% for reclamation in reclamations %}
             <tr>
-                <td>{{ reclamation.IDReclamation }}</td>
+                <td>{{ reclamation.ID_reclamation }}</td>
                 <td>{{ reclamation.Date ? reclamation.Date|date('Y-m-d') : '' }}</td>
                 <td>{{ reclamation.Description }}</td>
                 <td>{{ reclamation.Etat }}</td>
@@ -41,5 +41,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_reclamation_new') }}">Create new</a>
 {% endblock %}

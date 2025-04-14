@@ -5,9 +5,9 @@
 {% block body %}
     <h1>Edit Reclamation</h1>
 
-    {{ include('reclamation/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('Gestion_Reclamation/Front/_form.html.twig', {'button_label': 'Update'}) }}
 
     <a href="{{ path('app_reclamation_index') }}">back to list</a>
 
-    {{ include('reclamation/_delete_form.html.twig') }}
+    {{ include('Gestion_Reclamation/Front/_delete_form.html.twig') }}
 {% endblock %}
