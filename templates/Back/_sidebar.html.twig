@@ -1,0 +1,67 @@
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">SPORT<span>HIVE</span></div>
+    </div>
+    <div class="sidebar-nav">
+        <div class="nav-section">
+            <div class="nav-section-title">PRINCIPAL</div>
+            <a href="{{ path('app_admin_dashboard') }}" class="nav-link {{ app.request.get('_route') == 'app_admin_dashboard' ? 'active' : '' }}">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Tableau de bord</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Réservations</span>
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">GESTION</div>
+            <a href="{{path('app_equipe_index')}}" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Équipes</span>
+            </a>
+            <a href="{{path('app_joueur_index')}}" class="nav-link">
+<i class="fas fa-futbol"></i>
+                <span>Joueurs</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-trophy"></i>
+                <span>Compétitions</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-futbol"></i>
+                <span>Matchs</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Terrains</span>
+            </a>
+            <a href="{{ path('app_admin_assurance_index') }}" class="nav-link">
+                <i class="fas fa-shield-alt"></i>
+                <span>Assurances</span>
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">UTILISATEURS</div>
+            <a href="#" class="nav-link">
+                <i class="fas fa-user"></i>
+                <span>Clients</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-user-shield"></i>
+                <span>Administrateurs</span>
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">SYSTÈME</div>
+            <a href="#" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span>Paramètres</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+    </div>
+</div>

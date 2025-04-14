@@ -1,0 +1,100 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Détails du Joueur - {{ joueur.nom }}{% endblock %}
+
+{% block body %}
+<br> <br> <br>
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="m-0 font-weight-bold text-primary">Détails du Joueur</h4>
+            <div>
+                <a href="{{ path('app_joueur_index') }}" class="btn btn-secondary btn-sm mr-2">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+                <a href="{{ path('app_joueur_edit', {'id': joueur.id}) }}" class="btn btn-warning btn-sm mr-2">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                {{ include('joueur/_delete_form.html.twig') }}
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    {% if joueur.photo %}
+                        <img src="{{ asset('uploads/photos/' ~ joueur.photo) }}" 
+                             alt="Photo de {{ joueur.nom }}" 
+                             class="img-fluid rounded-circle shadow mb-4"
+                             style="width: 250px; height: 250px; object-fit: cover; border: 5px solid #f8f9fa;">
+                    {% else %}
+                        <div class="no-photo bg-light rounded-circle d-flex align-items-center justify-content-center mb-4"
+                             style="width: 250px; height: 250px; margin: 0 auto; border: 5px solid #f8f9fa;">
+                            <i class="fas fa-user text-muted" style="font-size: 5rem;"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <tbody>
+                                <tr>
+                                    <th class="w-25 bg-light">ID</th>
+                                    <td>{{ joueur.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Nom</th>
+                                    <td>{{ joueur.nom }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Date de naissance</th>
+                                    <td>
+                                        {{ joueur.dateNaissance ? joueur.dateNaissance|date('d/m/Y') : 'Non renseignée' }}
+                                        {% if joueur.dateNaissance %}
+                                            <small class="text-muted">({{ 'now'|date('Y') - joueur.dateNaissance|date('Y') }} ans)</small>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Nom du fichier photo</th>
+                                    <td>{{ joueur.photo ?? 'Aucune photo' }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Équipe</th>
+                                    <td>
+                                        {% if joueur.equipe %}
+                                            <a href="{{ path('app_equipe_show', {'id': joueur.equipe.id}) }}">
+                                                {{ joueur.equipe.nom }}
+                                            </a>
+                                        {% else %}
+                                            Aucune équipe
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .no-photo {
+        border: 1px dashed #ccc;
+    }
+    .card {
+        border-radius: 0.5rem;
+    }
+    .table th {
+        white-space: nowrap;
+    }
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+    .delete-form {
+        display: inline-block;
+    }
+</style>
+{% endblock %}

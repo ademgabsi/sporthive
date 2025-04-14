@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Équipes{% endblock %}
+
+{% block body %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color:white;">Toutes nos équipes</h2>
+        <div class="row g-4">
+            {% for team in equipes %}
+            <div class="col-lg-3 col-md-6">
+                <div class="card team-card shadow-lg border-0 rounded-3">
+                    <div class="card-body text-center">
+                        <div class="team-logo mb-3">
+                            <img src="{{ asset('uploads/logos/' ~ (team.logo ?? 'default-logo.png')) }}" 
+                                 alt="{{ team.nom ?? 'Nom inconnu' }}" 
+                                 class="img-fluid rounded-circle" width="100">
+                        </div>
+                        <h3 class="h5 text-dark">{{ team.nom ?? 'Nom inconnu' }}</h3>
+                        <div class="team-meta text-muted small mb-3">
+                            <span class="me-3 text-primary"><i class="fas fa-map-marker-alt"></i> {{ team.ville ?? 'Ville non renseignée' }}</span>
+                            <span class="text-secondary"><i class="fas fa-calendar-alt"></i> {{ team.anneeFondation ? team.anneeFondation|date('D F Y') : 'Année inconnue' }}</span>
+                        </div>
+                        <div class="team-stadium mb-3">
+                            <p><strong>Stade :</strong> {{ team.stade ?? 'Stade non renseigné' }}</p>
+                        </div>
+                        <div class="team-user mb-3">
+                            <p><strong>Utilisateur responsable :</strong> {{ team.utilisateur.nom ?? 'Utilisateur non renseigné' }}</p>
+                        </div>
+                        <div class="team-players">
+                            <p><strong>Nombre de joueurs :</strong> {{ team.joueurs|length > 0 ? team.joueurs|length : 'Aucun joueur' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+    .team-card {
+        transition: transform 0.3s, box-shadow 0.3s ease-in-out;
+        border-radius: 1.2rem;
+    }
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    .team-logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        margin-bottom: 20px;
+    }
+    .team-logo-container img {
+        max-width: 100%;
+        object-fit: contain;
+    }
+    .team-meta span {
+        display: inline-block;
+        margin-right: 10px;
+    }
+    .team-stadium, .team-user {
+        font-size: 0.9rem;
+    }
+    .team-card .team-logo img {
+        border: 5px solid #ddd;
+    }
+    .team-card:hover .team-logo img {
+        border: 5px solid #007bff;
+    }
+    .team-stadium p, .team-user p {
+        color: #6c757d;
+    }
+</style>
+{% endblock %}

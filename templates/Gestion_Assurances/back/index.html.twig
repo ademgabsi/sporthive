@@ -1,0 +1,149 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Gestion des Assurances - Administration{% endblock %}
+
+{% block body %}
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Gestion des Assurances</h1>
+            <p class="dashboard-subtitle">Liste de toutes les assurances disponibles</p>
+        </div>
+
+        <div class="table-top">
+            <div class="search-filter">
+                <input type="text" class="search-input" placeholder="Rechercher une assurance...">
+                <select class="filter-dropdown">
+                    <option value="">Tous les statuts</option>
+                    <option value="active">Active</option>
+                    <option value="expired">Expirée</option>
+                    <option value="pending">En attente</option>
+                </select>
+            </div>
+            <a href="{{ path('app_admin_assurance_new') }}" class="add-btn">
+                <i class="fas fa-plus"></i>
+                Nouvelle Assurance
+            </a>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID Contrat</th>
+                    <th>Type de couverture</th>
+                    <th>Durée</th>
+                    <th>Date de début</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assurance in assurances %}
+                    <tr>
+                        <td>{{ assurance.ID_contrat }}</td>
+                        <td>{{ assurance.typeDeCouverture }}</td>
+                        <td>{{ assurance.duree }} mois</td>
+                        <td>{{ assurance.dateDebut }}</td>
+                        <td>
+                            <span class="badge {% if assurance.statut == 'active' %}badge-success{% elseif assurance.statut == 'expired' %}badge-danger{% else %}badge-warning{% endif %}">
+                                {{ assurance.statut }}
+                            </span>
+                        </td>
+                        <td class="action-cell">
+                            <a href="{{ path('app_admin_assurance_show', {'ID_contrat': assurance.ID_contrat}) }}" class="action-btn view" title="Voir">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ path('app_admin_assurance_edit', {'ID_contrat': assurance.ID_contrat}) }}" class="action-btn edit" title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button class="action-btn delete" title="Supprimer" onclick="openDeleteModal('{{ assurance.ID_contrat }}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">Aucune assurance trouvée</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <!-- Modal de suppression -->
+    <div class="modal-backdrop" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmer la suppression</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer cette assurance ?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" onclick="closeDeleteModal()">Annuler</button>
+                <form id="deleteForm" method="post" action="">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete') }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="id" id="assurance_id" value="">
+                    <button class="modal-btn confirm">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function openDeleteModal(id) {
+            const modal = document.getElementById('deleteModal');
+            const form = document.getElementById('deleteForm');
+            document.getElementById('assurance_id').value = id;
+            form.action = "/admin/assurance/" + id + "/delete";
+            modal.classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            document.getElementById('assurance_id').value = '';
+            modal.classList.remove('show');
+        }
+
+        // Recherche et filtrage
+        document.querySelector('.search-input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        document.querySelector('.filter-dropdown').addEventListener('change', function(e) {
+            const filterValue = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                if (!filterValue) {
+                    row.style.display = '';
+                    return;
+                }
+                
+                const statusCell = row.querySelector('td:nth-child(5)');
+                if (statusCell) {
+                    const status = statusCell.textContent.toLowerCase().trim();
+                    row.style.display = status === filterValue ? '' : 'none';
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Joueurs{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Liste des Joueurs</h1>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for joueur in joueurs %}
+                <div class="col">
+                    <div class="card shadow-sm border-0 rounded-2">
+                        <img src="{{ asset('uploads/photos/' ~ joueur.photo) }}" 
+                             alt="Photo de {{ joueur.nom }}" 
+                             class="card-img-top rounded-circle mx-auto mt-3" 
+                             style="width: 80px; height: 80px; object-fit: cover;">
+                        <div class="card-body text-center p-2">
+                            <h5 class="card-title text-truncate" style="font-size: 1rem;">{{ joueur.nom }}</h5>
+                            <p class="card-text text-muted" style="font-size: 0.875rem;">
+                                {% if joueur.dateNaissance %}
+                                    Âge : {{ 'now'|date('Y') - joueur.dateNaissance|date('Y') }} ans
+                                {% else %}
+                                    Âge non renseigné
+                                {% endif %}
+                            </p>
+                            <a href="{{ path('app_joueur_show_front', {'id': joueur.id}) }}" 
+                               class="btn btn-outline-info btn-sm w-100 mt-2">
+                                Voir Profil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>Aucun joueur trouvé.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <style>
+    .card {
+        max-width: 18rem;}
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .card-text {
+            font-size: 0.875rem;
+        }
+
+        .card-img-top {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 0.5rem;
+        }
+
+        .btn {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.5rem;
+        }
+
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body a {
+            font-weight: 600;
+        }
+    </style>
+{% endblock %}

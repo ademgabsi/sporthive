@@ -1,0 +1,73 @@
+{# templates/joueur/new.html.twig #}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Ajouter un nouveau joueur</h3>
+                </div>
+                
+                <div class="card-body">
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+                    
+                    <div class="mb-3">
+                        {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.nom) }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form_label(form.dateNaissance, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.dateNaissance, {'attr': {'class': 'form-control'}}) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.dateNaissance) }}
+                        </div>
+                    </div>
+                    
+                   <div class="mb-3">
+                        {{ form_label(form.photo, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.photo, {'attr': {'class': 'form-control'}})}}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.photo) }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        {{ form_label(form.equipe, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.equipe, {'attr': {'class': 'form-select'}}) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.equipe) }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save me-2"></i>Enregistrer
+                        </button>
+                    </div>
+                    
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+{# Style supplémentaire #}
+<style>
+    .form-control:focus, .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .invalid-feedback {
+        display: block;
+    }
+    .card {
+        border-radius: 0.5rem;
+    }
+</style>
