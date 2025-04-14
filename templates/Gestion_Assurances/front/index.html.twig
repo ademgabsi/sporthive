@@ -1,0 +1,309 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Assurances - SPORTHIVE
+{% endblock %}
+
+{% block body %}
+	<section class="assurance_section layout_padding">
+		<div class="container">
+			<div class="heading_container">
+				<h2>Nos Assurances Sportives</h2>
+				<p class="mt-3">Découvrez toutes nos offres d'assurance pour protéger votre pratique sportive</p>
+			</div>
+
+			<div class="row mt-5">
+				<div class="col-12">
+					<div class="search-filter mb-4">
+						<input type="text" id="assuranceSearch" class="form-control" placeholder="Rechercher une assurance...">
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				{% for assurance in assurances %}
+					<div class="col-lg-4 col-md-6 mb-4">
+						<div class="assurance-card">
+							<div class="card-header">
+								<h5>Contrat #{{ assurance.ID_contrat }}</h5>
+								<span class="badge {% if assurance.Statut == 'Actif' %}badge-success{% else %}badge-warning{% endif %}">
+									{{ assurance.Statut }}
+								</span>
+							</div>
+							<div class="card-body">
+								<ul class="assurance-details">
+									<li>
+										<span class="detail-label">Type:</span>
+										<span class="detail-value">{{ assurance.typeDeCouverture }}</span>
+									</li>
+									<li>
+										<span class="detail-label">Durée:</span>
+										<span class="detail-value">{{ assurance.Duree }}
+											mois</span>
+									</li>
+									<li>
+										<span class="detail-label">Date de début:</span>
+										<span class="detail-value">{{ assurance.dateDebut|date('d/m/Y') }}</span>
+									</li>
+								</ul>
+								<div class="assurance-conditions">
+									<p>{{ assurance.Conditions|length > 100 ? assurance.Conditions|slice(0, 100) ~ '...' : assurance.Conditions }}</p>
+								</div>
+							</div>
+							<div class="card-footer">
+								<a href="{{ path('app_assurance_show', {'ID_contrat': assurance.ID_contrat}) }}" class="btn-view">Détails</a>
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<div class="col-12 text-center">
+						<div class="no-records">
+							<img src="{{ asset('img/empty.png') }}" alt="Aucune assurance" class="mb-3">
+							<p>Aucune assurance n'est disponible pour le moment</p>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+
+		</div>
+	</section>
+{% endblock %}
+
+{% block css %}
+	<style>
+		.assurance_section {
+			padding-top: 120px;
+			padding-bottom: 80px;
+			background-color: #f8f9fa;
+		}
+
+		.heading_container {
+			text-align: center;
+			margin-bottom: 45px;
+		}
+
+		.heading_container h2 {
+			font-weight: bold;
+			color: #252525;
+			position: relative;
+			padding-bottom: 10px;
+		}
+
+		.heading_container h2:after {
+			content: "";
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 60px;
+			height: 3px;
+			background-color: #ff4f5a;
+		}
+
+		.search-filter {
+			max-width: 500px;
+			margin: 0 auto;
+		}
+
+		.assurance-card {
+			background-color: white;
+			border-radius: 15px;
+			overflow: hidden;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.assurance-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+		}
+
+		.card-header {
+			background-color: #ff4f5a;
+			color: white;
+			padding: 15px 20px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.card-header h5 {
+			margin: 0;
+			font-weight: 600;
+		}
+
+		.badge {
+			padding: 5px 10px;
+			border-radius: 50px;
+			font-size: 12px;
+			font-weight: normal;
+		}
+
+		.badge-success {
+			background-color: #28a745;
+		}
+
+		.badge-warning {
+			background-color: #ffc107;
+			color: #212529;
+		}
+
+		.card-body {
+			padding: 20px;
+			flex-grow: 1;
+		}
+
+		.assurance-details {
+			list-style: none;
+			padding: 0;
+			margin: 0 0 15px;
+		}
+
+		.assurance-details li {
+			padding: 8px 0;
+			border-bottom: 1px dashed #eaeaea;
+			display: flex;
+		}
+
+		.detail-label {
+			font-weight: 600;
+			min-width: 120px;
+			color: #495057;
+		}
+
+		.detail-value {
+			color: #212529;
+		}
+
+		.assurance-conditions {
+			background-color: #f8f9fa;
+			padding: 10px;
+			border-radius: 5px;
+			font-size: 14px;
+			margin-top: 15px;
+		}
+
+		.card-footer {
+			padding: 15px 20px;
+			background-color: #f8f9fa;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.btn-view,
+		.btn-edit {
+			padding: 8px 15px;
+			border-radius: 5px;
+			text-decoration: none;
+			font-weight: 500;
+			font-size: 14px;
+			transition: all 0.3s ease;
+		}
+
+		.btn-view {
+			background-color: #17a2b8;
+			color: white;
+		}
+
+		.btn-view:hover {
+			background-color: #138496;
+		}
+
+		.btn-edit {
+			background-color: #6c757d;
+			color: white;
+		}
+
+		.btn-edit:hover {
+			background-color: #5a6268;
+		}
+
+		.no-records {
+			padding: 40px 0;
+		}
+
+		.no-records img {
+			max-width: 150px;
+			opacity: 0.5;
+		}
+
+		.no-records p {
+			font-size: 18px;
+			color: #6c757d;
+		}
+
+		.create-btn {
+			display: inline-block;
+			background-color: #ff4f5a;
+			color: white;
+			padding: 12px 30px;
+			border-radius: 50px;
+			text-decoration: none;
+			font-weight: 600;
+			transition: all 0.3s ease;
+			margin-top: 20px;
+		}
+
+		.create-btn:hover {
+			background-color: #ff3541;
+			transform: translateY(-2px);
+		}
+
+		.plus-icon {
+			display: inline-block;
+			width: 16px;
+			height: 16px;
+			position: relative;
+			margin-right: 5px;
+		}
+
+		.plus-icon:before,
+		.plus-icon:after {
+			content: "";
+			position: absolute;
+			background-color: white;
+		}
+
+		.plus-icon:before {
+			width: 16px;
+			height: 2px;
+			top: 7px;
+			left: 0;
+		}
+
+		.plus-icon:after {
+			width: 2px;
+			height: 16px;
+			top: 0;
+			left: 7px;
+		}
+	</style>
+{% endblock %}
+
+{% block js %}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () { // Fonction de recherche
+const searchInput = document.getElementById('assuranceSearch');
+
+if (searchInput) {
+searchInput.addEventListener('keyup', function () {
+const value = this.value.toLowerCase();
+const cards = document.querySelectorAll('.assurance-card');
+
+cards.forEach(card => {
+const cardText = card.textContent.toLowerCase();
+const columnElement = card.closest('.col-lg-4');
+
+if (cardText.includes(value)) {
+columnElement.style.display = '';
+} else {
+columnElement.style.display = 'none';
+}
+});
+});
+}
+});
+	</script>
+{% endblock %}
