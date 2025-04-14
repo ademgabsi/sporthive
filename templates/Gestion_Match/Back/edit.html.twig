@@ -1,0 +1,41 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Modifier le Match{% endblock %}
+
+{% block body %}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Modifier le Match</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Modifier les informations du match</h3>
+                    </div>
+                    <div class="card-body">
+                        {{ include('Gestion_Match/Back/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ path('app_gestion_match_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à la liste
+                        </a>
+                        <form method="post" action="{{ path('app_gestion_match_delete', {'id': gestion_match.id}) }}" style="display: inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce match ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ gestion_match.id) }}">
+                            <button class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

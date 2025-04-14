@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New GestionMatch{% endblock %}
+
+{% block body %}
+    <h1>Create new GestionMatch</h1>
+
+    {{ include('gestion_match/_form.html.twig') }}
+
+    <a href="{{ path('app_gestion_match_index') }}">back to list</a>
+{% endblock %}

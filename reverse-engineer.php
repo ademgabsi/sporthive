@@ -6,7 +6,7 @@ require_once 'vendor/autoload.php';
 $dbHost = 'localhost';
 $dbName = 'test';
 $dbUser = 'root';
-$dbPass = '';
+$dbPass = '1234';
 $dbPort = 3306;
 
 // Entity namespace and output directory

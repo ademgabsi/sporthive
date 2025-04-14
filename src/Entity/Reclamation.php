@@ -35,7 +35,7 @@ class Reclamation
     private ?string $Documents = null;
 
     #[ORM\ManyToOne(targetEntity: Assurance::class, inversedBy: 'reclamations')]
-    #[ORM\JoinColumn(name: 'contrat', referencedColumnName: 'ID_contrat', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'ID_contrat', referencedColumnName: 'ID_contrat', nullable: false, onDelete: 'CASCADE')]
     private ?Assurance $assurance = null;
 
     // Getters and Setters
