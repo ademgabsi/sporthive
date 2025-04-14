@@ -1,0 +1,147 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Détails de la Réclamation #{{ reclamation.ID_reclamation }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .detail-card {
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        
+        .detail-header {
+            background-color: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+        
+        .detail-body {
+            padding: 1.5rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            width: 200px;
+            color: #495057;
+        }
+        
+        .detail-value {
+            flex: 1;
+        }
+        
+        .badge {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .badge-pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .badge-approved {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .badge-rejected {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .badge-processing {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .action-buttons {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-clipboard-list"></i>Détails de la Réclamation #{{ reclamation.ID_reclamation }}
+            </h1>
+        </div>
+
+        <div class="card detail-card">
+            <div class="detail-header">
+                <h2 class="mb-0">Informations principales</h2>
+            </div>
+            <div class="card-body detail-body">
+                <div class="detail-row">
+                    <div class="detail-label">Date :</div>
+                    <div class="detail-value">{{ reclamation.Date ? reclamation.Date|date('d/m/Y') : '' }}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Statut :</div>
+                    <div class="detail-value">
+                        {% set badgeClass = '' %}
+                        {% if reclamation.Etat == 'En attente' %}
+                            {% set badgeClass = 'badge-pending' %}
+                        {% elseif reclamation.Etat == 'Approuvée' %}
+                            {% set badgeClass = 'badge-approved' %}
+                        {% elseif reclamation.Etat == 'Rejetée' %}
+                            {% set badgeClass = 'badge-rejected' %}
+                        {% elseif reclamation.Etat == 'En traitement' %}
+                            {% set badgeClass = 'badge-processing' %}
+                        {% endif %}
+                        <span class="badge {{ badgeClass }}">{{ reclamation.Etat }}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Montant réclamé :</div>
+                    <div class="detail-value">{{ reclamation.Montantreclame|number_format(2, ',', ' ') }} €</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Montant remboursé :</div>
+                    <div class="detail-value">{{ reclamation.Montantrembourse|number_format(2, ',', ' ') }} €</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Description :</div>
+                    <div class="detail-value">{{ reclamation.Description }}</div>
+                </div>
+                
+                {% if reclamation.Documents %}
+                    <div class="detail-row">
+                        <div class="detail-label">Documents :</div>
+                        <div class="detail-value">
+                            <a href="{{ asset('uploads/documents/' ~ reclamation.Documents) }}" target="_blank" class="btn btn-outline-primary">
+                                <i class="fas fa-file-download me-1"></i>Télécharger
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <div class="action-buttons">
+                    <a href="{{ path('app_admin_reclamation_index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Retour à la liste
+                    </a>
+                    <a href="{{ path('app_admin_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn btn-primary">
+                        <i class="fas fa-edit me-1"></i>Modifier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

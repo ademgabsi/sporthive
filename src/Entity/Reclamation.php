@@ -13,25 +13,25 @@ class Reclamation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(name: 'ID_reclamation', type: 'integer')]
     private ?int $ID_reclamation = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'Date', type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $Date = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(name: 'Description', type: Types::TEXT, nullable: true)]
     private ?string $Description = null;
 
-    #[ORM\Column(type: Types::STRING, length: 50, nullable: true)]
+    #[ORM\Column(name: 'Etat', type: Types::STRING, length: 50, nullable: true)]
     private ?string $Etat = null;
 
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $Montant_reclame = null;
+    #[ORM\Column(name: 'montant_reclame', type: Types::INTEGER, nullable: true)]
+    private ?int $Montantreclame = null;
 
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $Montant_rembourse = null;
+    #[ORM\Column(name: 'montant_rembourse', type: Types::INTEGER, nullable: true)]
+    private ?int $Montantrembourse = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(name: 'Documents', type: Types::STRING, length: 255, nullable: true)]
     private ?string $Documents = null;
 
     #[ORM\ManyToOne(targetEntity: Assurance::class, inversedBy: 'reclamations')]
@@ -77,25 +77,25 @@ class Reclamation
         return $this;
     }
 
-    public function getMontant_reclame(): ?int
+    public function getMontantreclame(): ?int
     {
-        return $this->Montant_reclame;
+        return $this->Montantreclame;
     }
 
-    public function setMontant_reclame(?int $Montant_reclame): self
+    public function setMontantreclame(?int $Montantreclame): self
     {
-        $this->Montant_reclame = $Montant_reclame;
+        $this->Montantreclame = $Montantreclame;
         return $this;
     }
 
-    public function getMontant_rembourse(): ?int
+    public function getMontantrembourse(): ?int
     {
-        return $this->Montant_rembourse;
+        return $this->Montantrembourse;
     }
 
-    public function setMontant_rembourse(?int $Montant_rembourse): self
+    public function setMontantrembourse(?int $Montantrembourse): self
     {
-        $this->Montant_rembourse = $Montant_rembourse;
+        $this->Montantrembourse = $Montantrembourse;
         return $this;
     }
 
