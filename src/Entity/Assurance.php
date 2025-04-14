@@ -39,6 +39,10 @@ class Assurance
     #[ORM\OneToMany(targetEntity: Reclamation::class, mappedBy: 'assurance', cascade: ['persist', 'remove'])]
     private Collection $reclamations;
 
+    public function getId(): ?int
+    {
+        return $this->ID_contrat;
+    }
     public function __construct()
     {
         $this->reclamations = new ArrayCollection();

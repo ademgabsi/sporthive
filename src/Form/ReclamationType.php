@@ -20,8 +20,8 @@ class ReclamationType extends AbstractType
             ])
             ->add('Description')
             ->add('Etat')
-            ->add('Montant_reclame', IntegerType::class)
-            ->add('Montant_rembourse', IntegerType::class)
+            ->add('Montantreclame', IntegerType::class)
+            ->add('Montantrembourse', IntegerType::class)
             ->add('Documents')
             ->add('assurance', EntityType::class, [
                 'class' => Assurance::class,

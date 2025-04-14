@@ -51,6 +51,7 @@
 							</div>
 							<div class="card-footer">
 								<a href="{{ path('app_assurance_show', {'ID_contrat': assurance.ID_contrat}) }}" class="btn-view">Détails</a>
+								<a href="{{ path('app_admin_reclamation_new', {'ID_contrat': assurance.ID_contrat}) }}" class="btn-claim ms-2">Réclamer</a>
 							</div>
 						</div>
 					</div>
@@ -218,6 +219,15 @@
 
 		.btn-edit:hover {
 			background-color: #5a6268;
+		}
+
+		.btn-claim {
+			background-color: #ff4f5a;
+			color: white;
+		}
+
+		.btn-claim:hover {
+			background-color: #ff3541;
 		}
 
 		.no-records {

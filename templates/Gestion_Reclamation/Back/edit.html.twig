@@ -1,0 +1,201 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Modifier Réclamation #{{ reclamation.ID_reclamation }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .edit-card {
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 2rem;
+        }
+        
+        .edit-header {
+            background-color: #f1f5f9;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+        
+        .edit-header h2 {
+            font-size: 1.25rem;
+            margin: 0;
+            color: #334155;
+        }
+        
+        .edit-body {
+            padding: 1.5rem;
+            background-color: #ffffff;
+        }
+        
+        .page-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            color: #334155;
+        }
+        
+        .page-title i {
+            margin-right: 0.5rem;
+            color: #3b82f6;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #475569;
+            display: block;
+        }
+        
+        .form-control {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+        }
+        
+        .form-control:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-col {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .action-buttons {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-secondary {
+            background-color: #e5e7eb;
+            border: 1px solid #d1d5db;
+            color: #4b5563;
+        }
+        
+        .btn-primary {
+            background-color: #3b82f6;
+            border: 1px solid #2563eb;
+            color: white;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-edit"></i>Modifier Réclamation #{{ reclamation.ID_reclamation }}
+            </h1>
+        </div>
+
+        <div class="card edit-card">
+            <div class="edit-header">
+                <h2>Formulaire de modification</h2>
+            </div>
+            <div class="card-body edit-body">
+                {{ form_start(form) }}
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                {{ form_label(form.Date, 'Date', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.Date, {'attr': {'class': 'form-control'}}) }}
+                                <div class="help-text">Date de la réclamation</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                {{ form_label(form.Etat, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.Etat, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                {{ form_label(form.Montantreclame, 'Montant réclamé', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.Montantreclame, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                {{ form_label(form.Montantrembourse, 'Montant remboursé', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.Montantrembourse, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.Description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.Description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.Documents, 'Documents', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.Documents, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <a href="{{ path('app_admin_reclamation_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i>Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>Enregistrer
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
