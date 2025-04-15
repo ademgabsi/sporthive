@@ -6,8 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Terrain;
-
 use App\Repository\ReservationRepository;
+use Symfony\Component\Validator\Constraints as Assert; // ✅ Ajout pour les contraintes
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 #[ORM\Table(name: 'reservation')]
@@ -60,18 +60,20 @@ class Reservation
     }
 
     #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Assert\NotNull(message: 'La date et l\'heure sont obligatoires.')]
+    #[Assert\GreaterThanOrEqual('today', message: 'La date doit être supérieure ou égale à aujourd\'hui.')] // ✅ Contrainte de validation ajoutée
     private ?\DateTimeInterface $Date_Heure = null;
 
     public function getDateHeure(): ?\DateTimeInterface
-{
-    return $this->Date_Heure;
-}
+    {
+        return $this->Date_Heure;
+    }
 
-public function setDateHeure(?\DateTimeInterface $DateHeure): self
-{
-    $this->Date_Heure = $DateHeure;
-    return $this;
-}
+    public function setDateHeure(?\DateTimeInterface $DateHeure): self
+    {
+        $this->Date_Heure = $DateHeure;
+        return $this;
+    }
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $Duree = null;
@@ -86,5 +88,4 @@ public function setDateHeure(?\DateTimeInterface $DateHeure): self
         $this->Duree = $Duree;
         return $this;
     }
-
 }

@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create New Terrain{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="form-wrapper">
+        <h1 class="title">Créer un nouveau terrain</h1>
+        <p class="subtitle">Remplissez les informations du terrain</p>
+
+        <div class="form-card">
+            {{ form_start(form, {'attr': {'class': 'terrain-form', 'enctype': 'multipart/form-data'}}) }}
+
+            <div class="form-group">
+                {{ form_label(form.nom, 'Nom') }}
+                {{ form_widget(form.nom, {'attr': {'class': 'input'}}) }}
+                {{ form_errors(form.nom) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.typeSurface, 'Type de surface') }}
+                {{ form_widget(form.typeSurface, {'attr': {'class': 'input'}}) }}
+                {{ form_errors(form.typeSurface) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.localisation, 'Localisation') }}
+                {{ form_widget(form.localisation, {'attr': {'class': 'input'}}) }}
+                {{ form_errors(form.localisation) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.prix, 'Prix') }}
+                {{ form_widget(form.prix, {'attr': {'class': 'input'}}) }}
+                {{ form_errors(form.prix) }}
+            </div>
+
+            <div class="form-group full-width">
+                {{ form_label(form.imageTer, 'Image') }}
+                {{ form_widget(form.imageTer, {'attr': {'class': 'input'}}) }}
+                {{ form_errors(form.imageTer) }}
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ path('app_terrain_index') }}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 3rem auto;
+        padding: 1.5rem;
+    }
+
+    .form-wrapper {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #2b2d42;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+
+    .form-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .terrain-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .form-group label {
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .input {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+    .input:focus {
+        border-color: #3f51b5;
+        box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+        outline: none;
+    }
+
+    .form-error {
+        color: #e63946;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    .form-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #3f51b5;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background-color: #2c3ea7;
+    }
+
+    .btn-secondary {
+        background-color: #e0e0e0;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background-color: #cfcfcf;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    @media (max-width: 768px) {
+        .terrain-form {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+</style>
+{% endblock %}

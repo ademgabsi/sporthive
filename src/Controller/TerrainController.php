@@ -59,7 +59,36 @@ final class TerrainController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
+    #[Route('/front/new', name: 'app_terrain_newfront', methods: ['GET', 'POST'])]
+    public function newFront(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $terrain = new Terrain();
+        $form = $this->createForm(TerrainType::class, $terrain);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('imageTer')->getData();
+            if ($imageFile) {
+                $imageFilename = uniqid() . '.' . $imageFile->guessExtension();
+                $imageFile->move(
+                    $this->getParameter('terrain_images_directory'),
+                    $imageFilename
+                );
+                $terrain->setImageTer($imageFilename);
+            }
+    
+            $entityManager->persist($terrain);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
+        }
+    
+        return $this->render('terrain/front/new.html.twig', [
+            'terrain' => $terrain,
+            'form' => $form->createView(),
+        ]);
+    }
+    
     #[Route('/{idTerrain}', name: 'app_terrain_show', methods: ['GET'])]
     public function show(Terrain $terrain): Response
     {

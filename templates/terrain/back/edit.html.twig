@@ -2,141 +2,6 @@
 
 {% block title %}Modifier le terrain - Administration{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/material_blue.min.css">
-    <style>
-        .dashboard-container {
-            padding: 1.5rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .dashboard-header {
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 0.8rem;
-        }
-
-        .dashboard-title {
-            color: #333;
-            font-size: 1.5rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .dashboard-subtitle {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.4rem;
-            color: #555;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .form-input,
-        .form-select,
-        .form-textarea {
-            width: 100%;
-            padding: 0.6rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: #4361ee;
-        }
-
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .form-actions {
-            margin-top: 1.5rem;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.8rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.6rem 1rem;
-            border-radius: 4px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .btn i {
-            margin-right: 0.4rem;
-            font-size: 0.9rem;
-        }
-
-        .btn-cancel {
-            background: #f8f9fa;
-            color: #555;
-            border: 1px solid #ddd;
-        }
-
-        .btn-cancel:hover {
-            background: #eee;
-        }
-
-        .btn-save {
-            background: #4361ee;
-            color: white;
-            border: none;
-        }
-
-        .btn-save:hover {
-            background: #3a56d4;
-        }
-
-        .form-error {
-            color: #e63946;
-            font-size: 0.8rem;
-            margin-top: 0.3rem;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
     <div class="dashboard-container">
         <div class="dashboard-header">
@@ -146,8 +11,44 @@
 
         <div class="card">
             <div class="card-body">
-                {{ include('terrain/back/_form.html.twig', {'button_label': 'Update'}) }}
-                
+                {{ form_start(form, {'attr': {'class': 'terrain-form', 'id': 'terrain-form', 'enctype': 'multipart/form-data'}}) }}
+
+                <div class="form-group">
+                    {{ form_label(form.nom) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'input'}}) }}
+                    {{ form_errors(form.nom) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.typeSurface) }}
+                    {{ form_widget(form.typeSurface, {'attr': {'class': 'input'}}) }}
+                    {{ form_errors(form.typeSurface) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.localisation) }}
+                    {{ form_widget(form.localisation, {'attr': {'class': 'input'}}) }}
+                    {{ form_errors(form.localisation) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.prix) }}
+                    {{ form_widget(form.prix, {'attr': {'class': 'input'}}) }}
+                    {{ form_errors(form.prix) }}
+                </div>
+
+                <div class="form-group full-width">
+                    {{ form_label(form.imageTer) }}
+                    {{ form_widget(form.imageTer, {'attr': {'class': 'input'}}) }}
+                    {{ form_errors(form.imageTer) }}
+                </div>
+
+                <div class="form-group full-width">
+                    {{ form_label(form.utilisateur) }}
+                    {{ form_widget(form.utilisateur, {'attr': {'class': 'input'}}) }}
+                    {{ form_errors(form.utilisateur) }}
+                </div>
+
                 <div class="form-actions">
                     <a href="{{ path('app_terrain_index') }}" class="btn btn-cancel">
                         <i class="fas fa-arrow-left"></i> Retour à la liste
@@ -156,9 +57,121 @@
                         <i class="fas fa-save"></i> Enregistrer
                     </button>
                 </div>
+
+                {{ form_end(form) }}
             </div>
         </div>
 
         {{ include('terrain/back/_delete_form.html.twig') }}
     </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d2d2d;
+            margin-bottom: 0.3rem;
+        }
+
+        .dashboard-subtitle {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-save {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+        }
+
+        .btn-save:hover {
+            background-color: #303f9f;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 {% endblock %}

@@ -2,6 +2,63 @@
 
 {% block title %}Create New Terrain{% endblock %}
 
+
+{% block body %}
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Create New Terrain</h1>
+            <p class="dashboard-subtitle">Enter the details for a new terrain</p>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'form-grid', 'enctype': 'multipart/form-data'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.nom, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.typeSurface, 'Type de surface', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.typeSurface, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.typeSurface, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.localisation, 'Localisation', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.localisation, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.localisation, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.prix, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.prix, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.imageTer, 'Image', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.imageTer, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.imageTer, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-actions full-width">
+                    <a href="{{ path('app_terrain_index') }}" class="btn btn-cancel">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-save">
+                        <i class="fas fa-save"></i>
+                        Save
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
@@ -135,60 +192,4 @@
             grid-column: 1 / -1;
         }
     </style>
-{% endblock %}
-
-{% block body %}
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <h1 class="dashboard-title">Create New Terrain</h1>
-            <p class="dashboard-subtitle">Enter the details for a new terrain</p>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form-grid', 'enctype': 'multipart/form-data'}}) }}
-                <div class="form-group">
-                    {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.nom, {'attr': {'class': 'form-input'}}) }}
-                    {{ form_errors(form.nom, {'attr': {'class': 'form-error'}}) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.typeSurface, 'Type de surface', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.typeSurface, {'attr': {'class': 'form-input'}}) }}
-                    {{ form_errors(form.typeSurface, {'attr': {'class': 'form-error'}}) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.localisation, 'Localisation', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.localisation, {'attr': {'class': 'form-input'}}) }}
-                    {{ form_errors(form.localisation, {'attr': {'class': 'form-error'}}) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.prix, {'attr': {'class': 'form-input'}}) }}
-                    {{ form_errors(form.prix, {'attr': {'class': 'form-error'}}) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.imageTer, 'Image', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.imageTer, {'attr': {'class': 'form-input'}}) }}
-                    {{ form_errors(form.imageTer, {'attr': {'class': 'form-error'}}) }}
-                </div>
-
-                <div class="form-actions full-width">
-                    <a href="{{ path('app_terrain_index') }}" class="btn btn-cancel">
-                        <i class="fas fa-times"></i>
-                        Cancel
-                    </a>
-                    <button type="submit" class="btn btn-save">
-                        <i class="fas fa-save"></i>
-                        Save
-                    </button>
-                </div>
-                {{ form_end(form) }}
-            </div>
-        </div>
-    </div>
 {% endblock %}

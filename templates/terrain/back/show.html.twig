@@ -2,6 +2,58 @@
 
 {% block title %}Détails du Terrain - Administration{% endblock %}
 
+
+{% block body %}
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Détails du Terrain</h1>
+            <p class="dashboard-subtitle">Informations complètes sur le terrain</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Terrain #{{ terrain.idTerrain }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Nom</div>
+                        <div class="detail-value">{{ terrain.Nom }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Type de surface</div>
+                        <div class="detail-value">{{ terrain.TypeSurface }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Localisation</div>
+                        <div class="detail-value">{{ terrain.Localisation }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Prix</div>
+                        <div class="detail-value">{{ terrain.Prix }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Image</div>
+                        <div class="detail-value">
+                            <img src="{{ asset('uploads/terrains/' ~ terrain.imageTer ?: 'placeholder.jpg') }}" alt="Image du terrain" style="max-width: 100%; height: auto; border-radius: 10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ path('app_terrain_indexback') }}" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+                <a href="{{ path('app_terrain_edit', {'idTerrain': terrain.idTerrain}) }}" class="btn btn-edit">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {{ include('terrain/back/_delete_form.html.twig') }}
+{% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
     <style>
@@ -197,55 +249,4 @@
             gap: 1rem;
         }
     </style>
-{% endblock %}
-
-{% block body %}
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <h1 class="dashboard-title">Détails du Terrain</h1>
-            <p class="dashboard-subtitle">Informations complètes sur le terrain</p>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">Terrain #{{ terrain.idTerrain }}</h2>
-            </div>
-            <div class="card-body">
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <div class="detail-label">Nom</div>
-                        <div class="detail-value">{{ terrain.Nom }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Type de surface</div>
-                        <div class="detail-value">{{ terrain.TypeSurface }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Localisation</div>
-                        <div class="detail-value">{{ terrain.Localisation }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Prix</div>
-                        <div class="detail-value">{{ terrain.Prix }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Image</div>
-                        <div class="detail-value">
-                            <img src="{{ asset('uploads/terrains/' ~ terrain.imageTer ?: 'placeholder.jpg') }}" alt="Image du terrain" style="max-width: 100%; height: auto; border-radius: 10px;">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <a href="{{ path('app_terrain_indexback') }}" class="btn btn-back">
-                    <i class="fas fa-arrow-left"></i> Retour à la liste
-                </a>
-                <a href="{{ path('app_terrain_edit', {'idTerrain': terrain.idTerrain}) }}" class="btn btn-edit">
-                    <i class="fas fa-edit"></i> Modifier
-                </a>
-            </div>
-        </div>
-    </div>
-
-    {{ include('terrain/back/_delete_form.html.twig') }}
 {% endblock %}

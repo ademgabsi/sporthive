@@ -41,7 +41,7 @@ class TerrainType extends AbstractType
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
                 'label' => 'Propriétaire',
-                'choice_label' => 'id', // Tu peux mettre 'nom' ou 'email' si tu veux un affichage plus parlant
+                'choice_label' => 'id', 
                 'required' => true,
             ]);
     }
@@ -50,6 +50,7 @@ class TerrainType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Terrain::class,
+            'attr' => ['novalidate' => 'novalidate']
         ]);
     }
 }
