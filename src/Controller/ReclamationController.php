@@ -4,25 +4,28 @@ namespace App\Controller;
 
 use App\Entity\Reclamation;
 use App\Form\ReclamationType;
-use App\Repository\ReclamationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/reclamation')]
-final class ReclamationBackController extends AbstractController
+#[Route('/reclamation')]
+class ReclamationController extends AbstractController
 {
-    #[Route('/', name: 'app_admin_reclamation_index', methods: ['GET'])]
-    public function index(ReclamationRepository $reclamationRepository): Response
+    #[Route('/', name: 'app_reclamation_index', methods: ['GET'])]
+    public function index(EntityManagerInterface $entityManager): Response
     {
-        return $this->render('Gestion_Reclamation/Back/index.html.twig', [
-            'reclamations' => $reclamationRepository->findAll(),
+        $reclamations = $entityManager
+            ->getRepository(Reclamation::class)
+            ->findAll();
+
+        return $this->render('Gestion_Reclamation/Front/index.html.twig', [
+            'reclamations' => $reclamations,
         ]);
     }
 
-    #[Route('/new', name: 'app_admin_reclamation_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_reclamation_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $reclamation = new Reclamation();
@@ -33,24 +36,24 @@ final class ReclamationBackController extends AbstractController
             $entityManager->persist($reclamation);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_admin_reclamation_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_reclamation_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('Gestion_Reclamation/Back/new.html.twig', [
+        return $this->render('Gestion_Reclamation/Front/new.html.twig', [
             'reclamation' => $reclamation,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{ID_reclamation}', name: 'app_admin_reclamation_show', methods: ['GET'])]
+    #[Route('/{ID_reclamation}', name: 'app_reclamation_show', methods: ['GET'])]
     public function show(Reclamation $reclamation): Response
     {
-        return $this->render('Gestion_Reclamation/Back/show.html.twig', [
+        return $this->render('Gestion_Reclamation/Front/show.html.twig', [
             'reclamation' => $reclamation,
         ]);
     }
 
-    #[Route('/{ID_reclamation}/edit', name: 'app_admin_reclamation_edit', methods: ['GET', 'POST'])]
+    #[Route('/{ID_reclamation}/edit', name: 'app_reclamation_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Reclamation $reclamation, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ReclamationType::class, $reclamation);
@@ -59,16 +62,16 @@ final class ReclamationBackController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_admin_reclamation_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_reclamation_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('Gestion_Reclamation/Back/edit.html.twig', [
+        return $this->render('Gestion_Reclamation/Front/edit.html.twig', [
             'reclamation' => $reclamation,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{ID_reclamation}/delete', name: 'app_admin_reclamation_delete', methods: ['POST', 'DELETE'])]
+    #[Route('/{ID_reclamation}', name: 'app_reclamation_delete', methods: ['POST'])]
     public function delete(Request $request, Reclamation $reclamation, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$reclamation->getID_reclamation(), $request->request->get('_token'))) {
@@ -76,6 +79,6 @@ final class ReclamationBackController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_admin_reclamation_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_reclamation_index', [], Response::HTTP_SEE_OTHER);
     }
 }

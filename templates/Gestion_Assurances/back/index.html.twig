@@ -9,6 +9,37 @@
             <p class="dashboard-subtitle">Liste de toutes les assurances disponibles</p>
         </div>
 
+        <div class="stats-container">
+            <div class="stat-box stat-total">
+                <i class="fas fa-chart-pie stat-icon"></i>
+                <div class="stat-info">
+                    <span class="stat-label">Total</span>
+                    <span class="stat-value">{{ assurances|length }}</span>
+                </div>
+            </div>
+            <div class="stat-box stat-active">
+                <i class="fas fa-check-circle stat-icon"></i>
+                <div class="stat-info">
+                    <span class="stat-label">Actives</span>
+                    <span class="stat-value">{{ assurances|filter(a => a.statut == 'active')|length }}</span>
+                </div>
+            </div>
+            <div class="stat-box stat-expired">
+                <i class="fas fa-times-circle stat-icon"></i>
+                <div class="stat-info">
+                    <span class="stat-label">Expirées</span>
+                    <span class="stat-value">{{ assurances|filter(a => a.statut == 'expired')|length }}</span>
+                </div>
+            </div>
+            <div class="stat-box stat-pending">
+                <i class="fas fa-hourglass-half stat-icon"></i>
+                <div class="stat-info">
+                    <span class="stat-label">En attente</span>
+                    <span class="stat-value">{{ assurances|filter(a => a.statut == 'pending')|length }}</span>
+                </div>
+            </div>
+        </div>
+
         <div class="table-top">
             <div class="search-filter">
                 <input type="text" class="search-input" placeholder="Rechercher une assurance...">
@@ -98,6 +129,22 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stats-container { display: flex; gap: 1rem; margin: 1.5rem 0; }
+        .stat-box { background: #fff; flex: 1; padding: 1rem; border-radius: .5rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; }
+        .stat-icon { font-size: 1.5rem; margin-right: 0.75rem; color: #6c757d; }
+        .stat-info { text-align: left; }
+        .stat-label { font-size: 0.85rem; color: #6c757d; }
+        .stat-value { font-size: 1.4rem; font-weight: 600; display: block; }
+        .stat-box.stat-total .stat-icon { color: #007bff; }
+        .stat-box.stat-active .stat-icon { color: #28a745; }
+        .stat-box.stat-expired .stat-icon { color: #dc3545; }
+        .stat-box.stat-pending .stat-icon { color: #ffc107; }
+    </style>
 {% endblock %}
 
 {% block javascripts %}
