@@ -97,6 +97,19 @@
             background-color: #17a2b8;
             color: white;
         }
+        
+        /* Stats styles */
+        .stats-container { display: flex; gap: 1rem; margin: 1.5rem 0; }
+        .stat-box { background: #fff; flex: 1; padding: 1rem; border-radius: .5rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; }
+        .stat-icon { font-size: 1.5rem; margin-right: 0.75rem; color: #6c757d; }
+        .stat-info { text-align: left; }
+        .stat-label { font-size: 0.85rem; color: #6c757d; }
+        .stat-value { font-size: 1.4rem; font-weight: 600; display: block; }
+        .stat-box.stat-total .stat-icon { color: #007bff; }
+        .stat-box.stat-pending .stat-icon { color: #ffc107; }
+        .stat-box.stat-approved .stat-icon { color: #28a745; }
+        .stat-box.stat-rejected .stat-icon { color: #dc3545; }
+        .stat-box.stat-processing .stat-icon { color: #17a2b8; }
     </style>
 {% endblock %}
 
@@ -108,7 +121,43 @@
             </h1>
             
         </div>
-
+        <div class="stats-container">
+            <div class="stat-box stat-total">
+                <i class="fas fa-chart-pie stat-icon"></i>
+                <div class="stat-info">
+                    <span class="stat-label">Total</span>
+                    <span class="stat-value">{{ reclamations|length }}</span>
+                </div>
+            </div>
+            <div class="stat-box stat-pending">
+                <i class="fas fa-hourglass-half stat-icon"></i>
+                <div class="stat-info">
+                    <span class="stat-label">En attente</span>
+                    <span class="stat-value">{{ reclamations|filter(r => r.Etat == 'En attente')|length }}</span>
+                </div>
+            </div>
+            <div class="stat-box stat-approved">
+                <i class="fas fa-check-circle stat-icon"></i>
+                <div class="stat-info">
+                    <span class="stat-label">Approuvées</span>
+                    <span class="stat-value">{{ reclamations|filter(r => r.Etat == 'Approuvée')|length }}</span>
+                </div>
+            </div>
+            <div class="stat-box stat-rejected">
+                <i class="fas fa-times-circle stat-icon"></i>
+                <div class="stat-info">
+                    <span class="stat-label">Rejetées</span>
+                    <span class="stat-value">{{ reclamations|filter(r => r.Etat == 'Rejetée')|length }}</span>
+                </div>
+            </div>
+            <div class="stat-box stat-processing">
+                <i class="fas fa-spinner stat-icon"></i>
+                <div class="stat-info">
+                    <span class="stat-label">En traitement</span>
+                    <span class="stat-value">{{ reclamations|filter(r => r.Etat == 'En traitement')|length }}</span>
+                </div>
+            </div>
+        </div>
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
