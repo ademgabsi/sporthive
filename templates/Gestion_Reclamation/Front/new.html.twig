@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Reclamation{% endblock %}
+{% block title %}Nouvelle Réclamation{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Reclamation</h1>
-
-    {{ include('Gestion_Reclamation/Front/_form.html.twig') }}
-
-    <a href="{{ path('app_assurance_index') }}">back to list</a>
+    <div class="container">
+        {{ include('Gestion_Reclamation/Front/_form.html.twig') }}
+    </div>
 {% endblock %}

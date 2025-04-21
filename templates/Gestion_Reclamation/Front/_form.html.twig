@@ -1,4 +1,186 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<style>
+    .reclamation-form {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .form-title {
+        color: #0d6efd;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: 600;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        color: #495057;
+        font-weight: 500;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+    
+    .form-control:focus {
+        border-color: #0d6efd;
+        outline: none;
+    }
+    
+    textarea.form-control {
+        min-height: 100px;
+    }
+    
+    .form-error {
+        color: #dc3545;
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+    
+    .form-actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        padding-top: 15px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn i {
+        margin-right: 5px;
+    }
+    
+    .btn-primary {
+        background-color: #0d6efd;
+        color: white;
+        border: none;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+    }
+</style>
+
+<div class="reclamation-form">
+    <h4 class="form-title">{{ button_label is defined ? 'Modifier la réclamation' : 'Nouvelle réclamation' }}</h4>
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="form-group">
+        {{ form_label(form.Date, 'Date de la réclamation', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.Date, {'attr': {'class': 'form-control datepicker'}}) }}
+        <div class="form-error">
+            {{ form_errors(form.Date) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.Etat, 'État de la réclamation', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.Etat, {'attr': {'class': 'form-control form-select'}}) }}
+        <div class="form-error">
+            {{ form_errors(form.Etat) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.Montantreclame, 'Montant réclamé (€)', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.Montantreclame, {'attr': {'class': 'form-control'}}) }}
+        <div class="form-error">
+            {{ form_errors(form.Montantreclame) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.Montantrembourse, 'Montant remboursé (€)', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.Montantrembourse, {'attr': {'class': 'form-control'}}) }}
+        <div class="form-error">
+            {{ form_errors(form.Montantrembourse) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.Description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.Description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+        <div class="form-error">
+            {{ form_errors(form.Description) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.Documents, 'Documents', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.Documents, {'attr': {'class': 'form-control'}}) }}
+        <small class="text-muted">Formats acceptés: PDF. Taille max: 5 Mo</small>
+        {% if reclamation.Documents is defined and reclamation.Documents is not empty %}
+            <div class="mt-2">
+                <p class="mb-1"><strong>Document actuel:</strong></p>
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-file-pdf text-danger me-2"></i>
+                    <a href="{{ asset('fichier_reclamation/' ~ reclamation.Documents) }}" target="_blank" class="text-decoration-none">
+                        {{ reclamation.Documents }}
+                    </a>
+                </div>
+                <small class="text-muted">Télécharger un nouveau fichier remplacera le document actuel</small>
+            </div>
+        {% endif %}
+        <div class="form-error">
+            {{ form_errors(form.Documents) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.assurance, 'Contrat d\'assurance', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.assurance, {'attr': {'class': 'form-control form-select'}}) }}
+        <div class="form-error">
+            {{ form_errors(form.assurance) }}
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="{{ path('app_reclamation_index') }}" class="btn btn-secondary">
+            <i class="fas fa-times"></i>
+            Annuler
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i>
+            {{ button_label|default('Enregistrer') }}
+        </button>
+    </div>
 {{ form_end(form) }}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize datepicker if available
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr('.datepicker', {
+                locale: "fr",
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d F Y"
+            });
+        }
+    });
+</script>

@@ -1,15 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reclamation{% endblock %}
+{% block title %}Détails de la Réclamation{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    .reclamation-detail {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+    .reclamation-header {
+        background-color: #0d6efd;
+        color: white;
+        padding: 15px 20px;
+    }
+    .reclamation-header h3 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    .reclamation-content {
+        padding: 20px;
+    }
+    .btn-group {
+        display: flex;
+        gap: 10px;
+    }
+    .table {
+        margin-bottom: 0;
+    }
+    .table th {
+        width: 30%;
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-    <h1>Reclamation</h1>
+    <div class="container">
+        <div class="reclamation-detail">
+           
+            <div class="reclamation-content">
 
     <table class="table">
         <tbody>
             <tr>
                 <th>ID_reclamation</th>
-                <td>{{ reclamation.IDReclamation }}</td>
+                <td>{{ reclamation.ID_reclamation }}</td>
             </tr>
             <tr>
                 <th>Date</th>
@@ -25,22 +63,42 @@
             </tr>
             <tr>
                 <th>Montant_reclame</th>
-                <td>{{ reclamation.MontantReclame }}</td>
+                <td>{{ reclamation.Montantreclame }}</td>
             </tr>
             <tr>
                 <th>Montant_rembourse</th>
-                <td>{{ reclamation.MontantRembourse }}</td>
+                <td>{{ reclamation.Montantrembourse }}</td>
             </tr>
             <tr>
                 <th>Documents</th>
-                <td>{{ reclamation.Documents }}</td>
+                <td>
+                    {% if reclamation.Documents %}
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-file-pdf text-danger me-2"></i>
+                            <a href="{{ asset('fichier_reclamation/' ~ reclamation.Documents) }}" target="_blank" class="text-decoration-none">
+                                Télécharger le document
+                            </a>
+                        </div>
+                    {% else %}
+                        <span class="text-muted">Aucun document</span>
+                    {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_reclamation_index') }}">back to list</a>
-
-    <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}">edit</a>
-
-    {{ include('reclamation/_delete_form.html.twig') }}
+                <div class="mt-4 d-flex justify-content-between">
+                    <a href="{{ path('app_reclamation_index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                    </a>
+                    <div class="btn-group">
+                        <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn btn-warning">
+                            <i class="fas fa-edit me-1"></i> Modifier
+                        </a>
+                        {{ include('Gestion_Reclamation/Front/_delete_form.html.twig', {'button_label': 'Supprimer', 'button_class': 'btn btn-danger'}) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

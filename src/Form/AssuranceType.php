@@ -15,20 +15,36 @@ class AssuranceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Duree')
-            ->add('typeDeCouverture')
-            ->add('dateDebut')
+            ->add('Duree', null, [
+                'required' => false,
+                'attr' => ['novalidate' => 'novalidate']
+            ])
+            ->add('typeDeCouverture', null, [
+                'required' => false,
+                'attr' => ['novalidate' => 'novalidate']
+            ])
+            ->add('dateDebut', null, [
+                'required' => false,
+                'attr' => ['novalidate' => 'novalidate']
+            ])
             ->add('Statut', ChoiceType::class, [
                 'choices' => [
                     'Active' => 'Active',
                     'En attente' => 'En attente',
                     'Expirée' => 'Expirée'
-                ]
+                ],
+                'required' => false,
+                'attr' => ['novalidate' => 'novalidate']
             ])
-            ->add('Conditions')
+            ->add('Conditions', null, [
+                'required' => false,
+                'attr' => ['novalidate' => 'novalidate']
+            ])
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
                 'choice_label' => 'id',
+                'required' => false,
+                'attr' => ['novalidate' => 'novalidate']
             ])
         ;
     }

@@ -80,6 +80,12 @@
             resize: vertical;
         }
 
+        .form-error {
+            color: #e63946;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
         .form-actions {
             margin-top: 1.5rem;
             display: flex;
@@ -125,11 +131,6 @@
             background: #3a56d4;
         }
 
-        .form-error {
-            color: #e63946;
-            font-size: 0.8rem;
-            margin-top: 0.3rem;
-        }
 
         .full-width {
             grid-column: 1 / -1;
@@ -237,35 +238,53 @@
 
         <div class="card">
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form-grid'}}) }}
+                {{ form_start(form, {'attr': {'class': 'form-grid', 'novalidate': 'novalidate'}}) }}
                 <div class="form-group">
                     {{ form_label(form.typeDeCouverture, 'Type de couverture', {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(form.typeDeCouverture, {'attr': {'class': 'form-input'}}) }}
+                    <div class="form-error">
+                        {{ form_errors(form.typeDeCouverture) }}
+                    </div>
                 </div>
 
                 <div class="form-group">
                     {{ form_label(form.Duree, 'Durée (en mois)', {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(form.Duree, {'attr': {'class': 'form-input'}}) }}
+                    <div class="form-error">
+                        {{ form_errors(form.Duree) }}
+                    </div>
                 </div>
 
                 <div class="form-group">
                     {{ form_label(form.dateDebut, 'Date de début', {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(form.dateDebut, {'attr': {'class': 'form-input'}}) }}
+                    <div class="form-error">
+                        {{ form_errors(form.dateDebut) }}
+                    </div>
                 </div>
 
                 <div class="form-group">
                     {{ form_label(form.Statut, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(form.Statut, {'attr': {'class': 'form-select'}}) }}
+                    <div class="form-error">
+                        {{ form_errors(form.Statut) }}
+                    </div>
                 </div>
 
                 <div class="form-group">
                     {{ form_label(form.utilisateur, 'Utilisateur', {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(form.utilisateur, {'attr': {'class': 'form-select'}}) }}
+                    <div class="form-error">
+                        {{ form_errors(form.utilisateur) }}
+                    </div>
                 </div>
 
                 <div class="form-group full-width">
                     {{ form_label(form.Conditions, 'Conditions', {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(form.Conditions, {'attr': {'class': 'form-textarea'}}) }}
+                    <div class="form-error">
+                        {{ form_errors(form.Conditions) }}
+                    </div>
                 </div>
 
                 <div class="form-actions full-width">
@@ -307,16 +326,11 @@
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "d MMM Y",
-                minDate: "today",
+                // minDate constraint removed
                 theme: "material_blue",
                 animate: true,
                 static: true,
-                onOpen: function() {
-                    dateInput.classList.add('active');
-                },
-                onClose: function() {
-                    dateInput.classList.remove('active');
-                }
+                // Validation controls removed
             });
 
             const todayBtn = document.createElement('button');

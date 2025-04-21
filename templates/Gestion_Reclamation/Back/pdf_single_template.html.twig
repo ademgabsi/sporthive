@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Réclamation #{{ reclamation.ID_reclamation }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0d6efd;
+            margin-bottom: 5px;
+        }
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .date {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .detail-row {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        .detail-label {
+            font-weight: bold;
+            width: 200px;
+        }
+        .detail-value {
+            flex: 1;
+        }
+        .status-active {
+            color: green;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: orange;
+            font-weight: bold;
+        }
+        .status-expired {
+            color: red;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">SPORTHIVE</div>
+        <div class="title">Réclamation #{{ reclamation.ID_reclamation }}</div>
+        <div class="date">Généré le {{ date|date('d/m/Y à H:i') }}</div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Informations générales</div>
+        
+        <div class="detail-row">
+            <div class="detail-label">ID de la réclamation :</div>
+            <div class="detail-value">{{ reclamation.ID_reclamation }}</div>
+        </div>
+        
+        <div class="detail-row">
+            <div class="detail-label">Date :</div>
+            <div class="detail-value">{{ reclamation.Date ? reclamation.Date|date('d/m/Y') : 'Non spécifiée' }}</div>
+        </div>
+        
+        <div class="detail-row">
+            <div class="detail-label">Statut :</div>
+            <div class="detail-value status-{% if reclamation.Etat == 'Active' %}active{% elseif reclamation.Etat == 'En attente' %}pending{% elseif reclamation.Etat == 'Expirée' %}expired{% endif %}">
+                {{ reclamation.Etat }}
+            </div>
+        </div>
+        
+        <div class="detail-row">
+            <div class="detail-label">Contrat d'assurance :</div>
+            <div class="detail-value">
+                {% if reclamation.assurance %}
+                    Contrat #{{ reclamation.assurance.ID_contrat }} - {{ reclamation.assurance.typeDeCouverture }}
+                {% else %}
+                    Non spécifié
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Détails financiers</div>
+        
+        <div class="detail-row">
+            <div class="detail-label">Montant réclamé :</div>
+            <div class="detail-value">{{ reclamation.Montantreclame|number_format(2, ',', ' ') }} TND</div>
+        </div>
+        
+        <div class="detail-row">
+            <div class="detail-label">Montant remboursé :</div>
+            <div class="detail-value">{{ reclamation.Montantrembourse|number_format(2, ',', ' ') }} TND</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Description</div>
+        <p>{{ reclamation.Description }}</p>
+    </div>
+    
+    <div class="footer">
+        <p>SPORTHIVE - Gestion des Réclamations - Document généré automatiquement</p>
+        <p>© {{ date|date('Y') }} SPORTHIVE. Tous droits réservés.</p>
+    </div>
+</body>
+</html>

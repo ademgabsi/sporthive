@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Réclamations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0d6efd;
+            margin-bottom: 5px;
+        }
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .date {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .status-active {
+            color: green;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: orange;
+            font-weight: bold;
+        }
+        .status-expired {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">SPORTHIVE</div>
+        <div class="title">Liste des Réclamations</div>
+        <div class="date">Généré le {{ date|date('d/m/Y à H:i') }}</div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Montant réclamé</th>
+                <th>Montant remboursé</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reclamation in reclamations %}
+                <tr>
+                    <td>{{ reclamation.ID_reclamation }}</td>
+                    <td>{{ reclamation.Date ? reclamation.Date|date('d/m/Y') : '' }}</td>
+                    <td>
+                        {% if reclamation.Description|length > 50 %}
+                            {{ reclamation.Description|slice(0, 50) }}...
+                        {% else %}
+                            {{ reclamation.Description }}
+                        {% endif %}
+                    </td>
+                    <td>{{ reclamation.Montantreclame|number_format(2, ',', ' ') }} TND</td>
+                    <td>{{ reclamation.Montantrembourse|number_format(2, ',', ' ') }} TND</td>
+                    <td class="status-{% if reclamation.Etat == 'Active' %}active{% elseif reclamation.Etat == 'En attente' %}pending{% elseif reclamation.Etat == 'Expirée' %}expired{% endif %}">
+                        {{ reclamation.Etat }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center;">Aucune réclamation trouvée</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="footer">
+        <p>SPORTHIVE - Gestion des Réclamations - Document généré automatiquement</p>
+        <p>© {{ date|date('Y') }} SPORTHIVE. Tous droits réservés.</p>
+    </div>
+</body>
+</html>

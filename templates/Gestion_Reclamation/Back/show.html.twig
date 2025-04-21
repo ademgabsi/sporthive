@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .detail-card {
             border-radius: 0.5rem;
@@ -96,12 +97,10 @@
                         {% set badgeClass = '' %}
                         {% if reclamation.Etat == 'En attente' %}
                             {% set badgeClass = 'badge-pending' %}
-                        {% elseif reclamation.Etat == 'Approuvée' %}
+                        {% elseif reclamation.Etat == 'Active' %}
                             {% set badgeClass = 'badge-approved' %}
-                        {% elseif reclamation.Etat == 'Rejetée' %}
+                        {% elseif reclamation.Etat == 'Expirée' %}
                             {% set badgeClass = 'badge-rejected' %}
-                        {% elseif reclamation.Etat == 'En traitement' %}
-                            {% set badgeClass = 'badge-processing' %}
                         {% endif %}
                         <span class="badge {{ badgeClass }}">{{ reclamation.Etat }}</span>
                     </div>
@@ -126,9 +125,10 @@
                     <div class="detail-row">
                         <div class="detail-label">Documents :</div>
                         <div class="detail-value">
-                            <a href="{{ asset('uploads/documents/' ~ reclamation.Documents) }}" target="_blank" class="btn btn-outline-primary">
-                                <i class="fas fa-file-download me-1"></i>Télécharger
+                            <a href="{{ asset('fichier_reclamation/' ~ reclamation.Documents) }}" target="_blank" class="btn btn-outline-primary">
+                                <i class="fas fa-file-pdf me-1"></i>Télécharger le document
                             </a>
+                            <small class="text-muted d-block mt-2">{{ reclamation.Documents }}</small>
                         </div>
                     </div>
                 {% endif %}

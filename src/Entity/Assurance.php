@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Repository\AssuranceRepository;
 
@@ -18,22 +19,49 @@ class Assurance
     private ?int $ID_contrat = null;
 
     #[ORM\Column(type: 'integer', nullable: false)]
+    #[Assert\NotBlank(message: 'La durée ne peut pas être vide')]
+    #[Assert\Type(type: 'integer', message: 'La durée doit être un nombre entier')]
+    #[Assert\Range(
+        min: 1,
+        max: 120,
+        notInRangeMessage: 'La durée doit être comprise entre {{ min }} et {{ max }} mois',
+    )]
     private ?int $Duree = null;
 
     #[ORM\Column(name: 'type_de_couverture', type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le type de couverture ne peut pas être vide')]
+    #[Assert\Length(
+        min: 3,
+        max: 100,
+        minMessage: 'Le type de couverture doit comporter au moins {{ limit }} caractères',
+        maxMessage: 'Le type de couverture ne peut pas dépasser {{ limit }} caractères',
+    )]
     private ?string $typeDeCouverture = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'La date de début ne peut pas être vide')]
+    #[Assert\Date(message: 'La date n\'est pas valide')]
     private ?string $dateDebut = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le statut ne peut pas être vide')]
+    #[Assert\Choice(
+        choices: ['Active', 'En attente', 'Expirée'],
+        message: 'Choisissez un statut valide',
+    )]
     private ?string $Statut = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Les conditions ne peuvent pas être vides')]
+    #[Assert\Length(
+        min: 10,
+        minMessage: 'Les conditions doivent comporter au moins {{ limit }} caractères',
+    )]
     private ?string $Conditions = null;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'assurances')]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    #[Assert\NotNull(message: 'Veuillez sélectionner un utilisateur')]
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\OneToMany(targetEntity: Reclamation::class, mappedBy: 'assurance', cascade: ['persist', 'remove'])]

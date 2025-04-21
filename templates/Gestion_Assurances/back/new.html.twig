@@ -81,6 +81,12 @@
 			resize: vertical;
 		}
 
+		.form-error {
+			color: #e63946;
+			font-size: 0.8rem;
+			margin-top: 0.3rem;
+		}
+
 		.form-actions {
 			margin-top: 1.5rem;
 			display: flex;
@@ -126,11 +132,6 @@
 			background: #3a56d4;
 		}
 
-		.form-error {
-			color: #e63946;
-			font-size: 0.8rem;
-			margin-top: 0.3rem;
-		}
 
 		.full-width {
 			grid-column: 1 / -1;
@@ -235,163 +236,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/fr.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Validation des champs
-            const form = document.querySelector('form');
-            const typeDeCouverture = document.getElementById("{{ form.typeDeCouverture.vars.id }}");
-            const duree = document.getElementById("{{ form.Duree.vars.id }}");
             const dateDebut = document.getElementById("{{ form.dateDebut.vars.id }}");
-            const conditions = document.getElementById("{{ form.Conditions.vars.id }}");
-            const utilisateur = document.getElementById("{{ form.utilisateur.vars.id }}");
-
-            // Fonction pour afficher les erreurs
-            function showError(input, message) {
-                const errorDiv = input.nextElementSibling;
-                if (!errorDiv || !errorDiv.classList.contains('form-error')) {
-                    const error = document.createElement('div');
-                    error.className = 'form-error';
-                    error.textContent = message;
-                    input.parentNode.insertBefore(error, input.nextSibling);
-                } else {
-                    errorDiv.textContent = message;
-                }
-                input.classList.add('error');
-            }
-
-            // Fonction pour supprimer les erreurs
-            function clearError(input) {
-                const errorDiv = input.nextElementSibling;
-                if (errorDiv && errorDiv.classList.contains('form-error')) {
-                    errorDiv.remove();
-                }
-                input.classList.remove('error');
-            }
-
-            // Validation du type de couverture
-            typeDeCouverture.addEventListener('blur', function() {
-                if (this.value.trim() === '') {
-                    showError(this, 'Le type de couverture est requis');
-                } else {
-                    clearError(this);
-                }
-            });
-
-            // Validation de la durée
-            duree.addEventListener('blur', function() {
-                const value = parseInt(this.value);
-                if (isNaN(value) || value <= 0) {
-                    showError(this, 'La durée doit être un nombre supérieur à 0');
-                } else if (value > 120) {
-                    showError(this, 'La durée ne peut pas excéder 120 mois');
-                } else {
-                    clearError(this);
-                }
-            });
-
-            // Validation des conditions
-            conditions.addEventListener('blur', function() {
-                if (this.value.trim() === '') {
-                    showError(this, 'Les conditions sont requises');
-                } else {
-                    clearError(this);
-                }
-            });
-
-            // Validation de l'utilisateur
-            utilisateur.addEventListener('change', function() {
-                if (this.value === '') {
-                    showError(this, 'Veuillez sélectionner un utilisateur');
-                } else {
-                    clearError(this);
-                }
-            });
-
-            // Validation finale avant soumission
-            form.addEventListener('submit', function(e) {
-                let isValid = true;
-
-                // Vérifier type de couverture
-                if (typeDeCouverture.value.trim() === '') {
-                    showError(typeDeCouverture, 'Le type de couverture est requis');
-                    isValid = false;
-                }
-
-                // Vérifier durée
-                const dureeValue = parseInt(duree.value);
-                if (isNaN(dureeValue) || dureeValue <= 0 || dureeValue > 120) {
-                    showError(duree, 'La durée doit être un nombre entre 1 et 120');
-                    isValid = false;
-                }
-
-                // Vérifier date de début
-                if (!dateDebut.value) {
-                    showError(dateDebut, 'La date de début est requise');
-                    isValid = false;
-                }
-
-                // Vérifier conditions
-                if (conditions.value.trim() === '') {
-                    showError(conditions, 'Les conditions sont requises');
-                    isValid = false;
-                }
-
-                // Vérifier utilisateur
-                if (utilisateur.value === '') {
-                    showError(utilisateur, 'Veuillez sélectionner un utilisateur');
-                    isValid = false;
-                }
-
-                if (!isValid) {
-                    e.preventDefault();
-                }
-            });
-
-            // Initialisation du datepicker
-            const datePicker = flatpickr(dateDebut, {
+            
+            // Initialisation d'un datepicker simple
+            flatpickr(dateDebut, {
                 locale: "fr",
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "d MMMM Y",
-                minDate: "today",
                 theme: "material_blue",
-                animate: true,
-                static: true,
-                onOpen: function() {
-                    dateDebut.classList.add('active');
-                },
-                onClose: function() {
-                    dateDebut.classList.remove('active');
-                }
+                animate: true
             });
-
-            // Ajout des boutons Aujourd'hui et Demain
-            const todayBtn = document.createElement('button');
-            todayBtn.type = 'button';
-            todayBtn.textContent = "Aujourd'hui";
-            todayBtn.className = 'btn btn-cancel';
-            todayBtn.style = 'padding: 0.3rem 0.6rem; font-size: 0.8rem; margin-top: 0.5rem;';
-            todayBtn.addEventListener('click', function() {
-                const today = new Date();
-                datePicker.setDate(today);
-            });
-
-            const tomorrowBtn = document.createElement('button');
-            tomorrowBtn.type = 'button';
-            tomorrowBtn.textContent = "Demain";
-            tomorrowBtn.className = 'btn btn-cancel';
-            tomorrowBtn.style = 'padding: 0.3rem 0.6rem; font-size: 0.8rem; margin-left: 0.5rem; margin-top: 0.5rem;';
-            tomorrowBtn.addEventListener('click', function() {
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                datePicker.setDate(tomorrow);
-            });
-
-            const quickBtns = document.createElement('div');
-            quickBtns.style = 'display: flex; gap: 0.5rem;';
-            quickBtns.appendChild(todayBtn);
-            quickBtns.appendChild(tomorrowBtn);
-
-            const dateWrapper = dateDebut.closest('.form-group');
-            dateWrapper.appendChild(quickBtns);
         });
     </script>
 {% endblock %}
@@ -405,35 +260,53 @@
 
 		<div class="card">
 			<div class="card-body">
-				{{ form_start(form, {'attr': {'class': 'form-grid'}}) }}
+				{{ form_start(form, {'attr': {'class': 'form-grid', 'novalidate': 'novalidate'}}) }}
 				<div class="form-group">
 					{{ form_label(form.typeDeCouverture, 'Type de couverture', {'label_attr': {'class': 'form-label'}}) }}
 					{{ form_widget(form.typeDeCouverture, {'attr': {'class': 'form-input'}}) }}
+					<div class="form-error">
+						{{ form_errors(form.typeDeCouverture) }}
+					</div>
 				</div>
 
 				<div class="form-group">
 					{{ form_label(form.Duree, 'Durée (en mois)', {'label_attr': {'class': 'form-label'}}) }}
 					{{ form_widget(form.Duree, {'attr': {'class': 'form-input'}}) }}
+					<div class="form-error">
+						{{ form_errors(form.Duree) }}
+					</div>
 				</div>
 
 				<div class="form-group">
 					{{ form_label(form.dateDebut, 'Date de début', {'label_attr': {'class': 'form-label'}}) }}
 					{{ form_widget(form.dateDebut, {'attr': {'class': 'form-input'}}) }}
+					<div class="form-error">
+						{{ form_errors(form.dateDebut) }}
+					</div>
 				</div>
 
 				<div class="form-group">
 					{{ form_label(form.Statut, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
 					{{ form_widget(form.Statut, {'attr': {'class': 'form-select'}}) }}
+					<div class="form-error">
+						{{ form_errors(form.Statut) }}
+					</div>
 				</div>
 
 				<div class="form-group">
 					{{ form_label(form.utilisateur, 'Utilisateur', {'label_attr': {'class': 'form-label'}}) }}
 					{{ form_widget(form.utilisateur, {'attr': {'class': 'form-select'}}) }}
+					<div class="form-error">
+						{{ form_errors(form.utilisateur) }}
+					</div>
 				</div>
 
 				<div class="form-group full-width">
 					{{ form_label(form.Conditions, 'Conditions', {'label_attr': {'class': 'form-label'}}) }}
 					{{ form_widget(form.Conditions, {'attr': {'class': 'form-textarea'}}) }}
+					<div class="form-error">
+						{{ form_errors(form.Conditions) }}
+					</div>
 				</div>
 
 				<div class="form-actions full-width">
