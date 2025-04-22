@@ -30,14 +30,6 @@
     {{ form_errors(form.imageTer) }}
 </div>
 
-{# Si besoin plus tard :
-<div class="form-group">
-    {{ form_label(form.utilisateur) }}
-    {{ form_widget(form.utilisateur) }}
-    {{ form_errors(form.utilisateur) }}
-</div>
-#}
-
-<button class="btn btn-primary mt-3">{{ button_label|default('Enregistrer') }}</button>
+<button class="btn mt-3">{{ button_label|default('Enregistrer') }}</button>
 
 {{ form_end(form) }}

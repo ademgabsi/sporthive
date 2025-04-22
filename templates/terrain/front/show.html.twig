@@ -46,6 +46,15 @@
 
                     <div class="card-footer">
                         <a href="{{ path('app_terrain_index') }}" class="btn-back">Retour à la liste</a>
+                        
+                        <!-- Button Modifier -->
+                        <a href="{{ path('app_terrain_edit_front', {idTerrain: terrain.idTerrain}) }}" class="btn-edit">Modifier</a>
+                        
+                        <!-- Formulaire de suppression -->
+                        <form action="{{ path('app_terrain_delete_front', {idTerrain: terrain.idTerrain}) }}" method="POST" style="display: inline-block;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ terrain.idTerrain) }}">
+                            <button type="submit" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce terrain ?');">Supprimer</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -136,7 +145,8 @@
         background-color: #f8f9fa;
         padding: 20px;
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .btn-back {
@@ -152,6 +162,35 @@
     .btn-back:hover {
         background-color: #5a6268;
         color: white;
+    }
+
+    .btn-edit {
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #ff4f5a;
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-edit:hover {
+        background-color: #e63946;
+    }
+
+    .btn-delete {
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-delete:hover {
+        background-color: #c82333;
     }
 
     .img-fluid {

@@ -23,12 +23,25 @@ final class TerrainController extends AbstractController
     }
 
     #[Route('/back', name: 'app_terrain_indexback', methods: ['GET'])]
-    public function backindex(TerrainRepository $terrainRepository): Response
-    {
-        return $this->render('terrain/back/index.html.twig', [
-            'terrains' => $terrainRepository->findAll(),
-        ]);
-    }
+public function backindex(TerrainRepository $terrainRepository, Request $request): Response
+{
+    $searchTerm = $request->query->get('q');
+    $sortBy = $request->query->get('sort_by', 'idTerrain');
+    $direction = $request->query->get('direction', 'ASC');
+
+    $terrains = $terrainRepository->searchAndSort(
+        $searchTerm,
+        $sortBy,
+        $direction
+    );
+
+    return $this->render('terrain/back/index.html.twig', [
+        'terrains' => $terrains,
+        'searchTerm' => $searchTerm,
+        'current_sort' => $sortBy,
+        'current_direction' => $direction
+    ]);
+}
 
     #[Route('/new', name: 'app_terrain_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -141,4 +154,63 @@ final class TerrainController extends AbstractController
 
         return $this->redirectToRoute('app_terrain_indexback', [], Response::HTTP_SEE_OTHER);
     }
+    #[Route('/front/{idTerrain}/edit', name: 'app_terrain_edit_front', methods: ['GET', 'POST'])]
+public function Frontedit(Request $request, Terrain $terrain, EntityManagerInterface $entityManager): Response
+{
+    $form = $this->createForm(TerrainType::class, $terrain);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $imageFile = $form->get('imageTer')->getData();
+        if ($imageFile) {
+            $imageFilename = uniqid() . '.' . $imageFile->guessExtension();
+            $imageFile->move(
+                $this->getParameter('terrain_images_directory'),
+                $imageFilename
+            );
+            $terrain->setImageTer($imageFilename);
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    return $this->render('terrain/front/edit.html.twig', [
+        'terrain' => $terrain,
+        'form' => $form->createView(),
+    ]);
+}
+
+#[Route('/front/{idTerrain}', name: 'app_terrain_delete_front', methods: ['POST'])]
+public function Frontdelete(Request $request, Terrain $terrain, EntityManagerInterface $entityManager): Response
+{
+    if ($this->isCsrfTokenValid('delete' . $terrain->getIdTerrain(), $request->request->get('_token'))) {
+        $entityManager->remove($terrain);
+        $entityManager->flush();
+    }
+
+    return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

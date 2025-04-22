@@ -30,52 +30,56 @@ final class ReservationController extends AbstractController
         ]);
     }
 
-        #[Route('/new/{id_Terrain}', name: 'app_reservation_new', methods: ['GET', 'POST'])]
-        public function new(
-            Request $request, 
-            EntityManagerInterface $entityManager, 
-            TerrainRepository $terrainRepository,
-            int $id_Terrain
-        ): Response
-        {
-            // Retrieve the terrain by ID
-            $terrain = $terrainRepository->find($id_Terrain);
-            
-            // If the terrain is not found, redirect with an error
-            if (!$terrain) {
-                $this->addFlash('error', 'Terrain not found');
-                return $this->redirectToRoute('app_terrain_index');
-            }
+    #[Route('/new/{id_Terrain}', name: 'app_reservation_new', methods: ['GET', 'POST'])]
+    public function new(
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        TerrainRepository $terrainRepository,
+        ReservationRepository $reservationRepository,
+        int $id_Terrain
+    ): Response
+    {
+        // Récupérer le terrain
+        $terrain = $terrainRepository->find($id_Terrain);
         
-            // Create a new Reservation and associate it with the terrain
-            $reservation = new Reservation();
-            $reservation->setTerrain($terrain);
-        
-            // Create the form for the reservation
-            $form = $this->createForm(ReservationType::class, $reservation);
-            $form->handleRequest($request);
-        
-            // Process form submission and validation
-            if ($form->isSubmitted() && $form->isValid()) {
-                // Persist the reservation in the database
+        if (!$terrain) {
+            $this->addFlash('error', 'Terrain non trouvé.');
+            return $this->redirectToRoute('app_terrain_index');
+        }
+    
+        $reservation = new Reservation();
+        $reservation->setTerrain($terrain);
+    
+        $form = $this->createForm(ReservationType::class, $reservation);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            // 🔒 Vérifier si une réservation existe déjà à la même date/heure pour ce terrain
+            $existing = $reservationRepository->findOneBy([
+                'terrain' => $reservation->getTerrain(),
+                'Date_Heure' => $reservation->getDateHeure()
+            ]);
+    
+            if ($existing) {
+                $form->get('Date_Heure')->addError(
+                    new \Symfony\Component\Form\FormError('Ce terrain est déjà réservé à cette date et heure.')
+                );
+            } else {
                 $entityManager->persist($reservation);
                 $entityManager->flush();
-        
-                // Add a success flash message
-                $this->addFlash('success', 'Reservation added successfully.');
-        
-                // Redirect to the reservation index page
+    
+                $this->addFlash('success', 'Réservation ajoutée avec succès.');
+    
                 return $this->redirectToRoute('app_reservation_index');
-            } else {
-                // Add an error flash message if form is invalid
-                $this->addFlash('error', 'Please correct the form errors.');
             }
-        
-            return $this->render('reservation/new.html.twig', [
-                'reservation' => $reservation,
-                'form' => $form->createView(),
-            ]);
         }
+    
+        return $this->render('reservation/new.html.twig', [
+            'reservation' => $reservation,
+            'form' => $form->createView(),
+        ]);
+    }
+    
 
     #[Route('/{ID_Reservation}', name: 'app_reservation_show', methods: ['GET'])]
     public function show(Reservation $reservation): Response

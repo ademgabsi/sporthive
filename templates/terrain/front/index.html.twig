@@ -9,7 +9,15 @@
             <h2>Nos Terrains Disponibles</h2>
         </div>
 
-        <div class="row">
+        <!-- Champ de recherche -->
+        <div class="row mb-4">
+            <div class="col-md-6 mx-auto">
+                <input type="text" id="searchInput" class="form-control" 
+                       placeholder="Rechercher par nom, localisation ou prix...">
+            </div>
+        </div>
+
+        <div class="row" id="terrainContainer">
             {% for terrain in terrains %}
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="terrain-card">
@@ -45,13 +53,17 @@
             {% endfor %}
         </div>
 
-        <!-- BOUTON MES RESERVATIONS -->
-        <!-- BOUTONS -->
-<div class="text-center mt-5">
-    <a href="{{ path('app_reservation_index') }}" class="btn-mes-reservations">Mes Réservations</a>
-    <a href="{{ path('app_terrain_newfront') }}" class="btn-mes-reservations">Nouveau Terrain</a>
-</div>
+        <!-- Message aucun résultat -->
+        <div id="noResults" class="text-center mt-4" style="display: none;">
+            <img src="{{ asset('img/empty.png') }}" alt="Aucun résultat" class="mb-3">
+            <p>Aucun terrain ne correspond à votre recherche</p>
+        </div>
 
+        <!-- Boutons -->
+        <div class="text-center mt-5">
+            <a href="{{ path('app_reservation_index') }}" class="btn-mes-reservations">Mes Réservations</a>
+            <a href="{{ path('app_terrain_newfront') }}" class="btn-mes-reservations">Nouveau Terrain</a>
+        </div>
     </div>
 </section>
 {% endblock %}
@@ -67,6 +79,20 @@
     .heading_container {
         text-align: center;
         margin-bottom: 45px;
+    }
+
+    /* Style du champ de recherche */
+    #searchInput {
+        border-radius: 25px;
+        padding: 12px 20px;
+        border: 2px solid #007bff;
+        transition: all 0.3s ease;
+    }
+
+    #searchInput:focus {
+        box-shadow: 0 0 8px rgba(0,123,255,0.25);
+        border-color: #0056b3;
+        outline: none;
     }
 
     .terrain-card {
@@ -85,97 +111,55 @@
         box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
 
-    .card-header {
-        background-color: #007bff;
-        color: white;
-        padding: 15px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .card-body {
-        padding: 20px;
-        flex-grow: 1;
-    }
-
-    .card-footer {
-        padding: 15px 20px;
-        background-color: #f8f9fa;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
-
-    .btn-view {
-        background-color: #17a2b8;
-        color: white;
-        padding: 8px 15px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 14px;
+    /* Animation des résultats */
+    .col-lg-4.col-md-6.mb-4 {
         transition: all 0.3s ease;
     }
 
-    .btn-view:hover {
-        background-color: #138496;
+    /* Message aucun résultat */
+    #noResults {
+        animation: fadeIn 0.5s ease;
     }
 
-    .terrain-details {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .terrain-details li {
-        margin-bottom: 10px;
-        display: flex;
-    }
-
-    .detail-label {
-        font-weight: bold;
-        min-width: 100px;
-        color: #343a40;
-    }
-
-    .detail-value {
-        color: #495057;
-    }
-
-    .terrain-image img {
-        width: 100%;
-        height: 180px;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-
-    .no-records img {
-        max-width: 150px;
-        opacity: 0.5;
-    }
-
-    .no-records p {
-        font-size: 18px;
+    #noResults p {
         color: #6c757d;
+        font-size: 1.2rem;
+        margin-top: 15px;
     }
 
-    .btn-mes-reservations {
-        background-color: #28a745;
-        color: white;
-        padding: 12px 30px;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: background-color 0.3s ease;
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
-    .btn-mes-reservations:hover {
-        background-color: #218838;
-    }
+    /* Reste du CSS existant... */
 </style>
 {% endblock %}
 
-{% block js %}
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const terrainContainer = document.getElementById('terrainContainer');
+    const terrainCards = document.querySelectorAll('.col-lg-4.col-md-6.mb-4');
+    const noResults = document.getElementById('noResults');
+
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        terrainCards.forEach(card => {
+            const content = card.textContent.toLowerCase();
+            const isVisible = content.includes(searchTerm);
+            
+            card.style.display = isVisible ? 'block' : 'none';
+            if(isVisible) visibleCount++;
+        });
+
+        // Gestion du message "Aucun résultat"
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        terrainContainer.style.display = visibleCount === 0 ? 'none' : 'flex';
+    });
+});
+</script>
 {% endblock %}

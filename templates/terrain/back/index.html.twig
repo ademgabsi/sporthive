@@ -11,6 +11,20 @@
 
         <div class="table-top">
             <div class="search-filter">
+                <form action="{{ path('app_terrain_indexback') }}" method="get">
+                    <div class="input-group">
+                        <input type="text" 
+                               name="q" 
+                               class="form-control search-input" 
+                               placeholder="Rechercher un terrain..."
+                               value="{{ searchTerm|default('') }}">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-search">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <a href="{{ path('app_terrain_new') }}" class="add-btn">
                 <i class="fas fa-plus"></i>
@@ -19,48 +33,89 @@
         </div>
 
         <table class="data-table">
-            <thead>
-                <tr>
-                    <th>ID Terrain</th>
-                    <th>Nom</th>
-                    <th>Type de Surface</th>
-                    <th>Localisation</th>
-                    <th>Prix</th>
-                    <th>Image</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for terrain in terrains %}
-                    <tr>
-                        <td>{{ terrain.idTerrain }}</td>
-                        <td>{{ terrain.Nom }}</td>
-                        <td>{{ terrain.TypeSurface }}</td>
-                        <td>{{ terrain.Localisation }}</td>
-                        <td>{{ terrain.Prix }} TND</td>
-                        <td>
-                            {% if terrain.imageTer %}
-                                <img src="{{ asset('uploads/terrains/' ~ terrain.imageTer) }}" alt="Image du terrain" width="100" height="auto">
-                            {% else %}
-                                <span>Aucune image</span>
-                            {% endif %}
-                        </td>
-                        <td class="action-cell">
-                            <a href="{{ path('app_terrainback_show', {'idTerrain': terrain.idTerrain}) }}" class="action-btn view" title="Voir">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="{{ path('app_terrain_edit', {'idTerrain': terrain.idTerrain}) }}" class="action-btn edit" title="Modifier">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="7" class="text-center">Aucun terrain trouvé</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <thead>
+        <tr>
+            <th>
+                <a href="{{ path('app_terrain_indexback', {
+                    'sort_by': 'idTerrain',
+                    'direction': (current_sort == 'idTerrain' and current_direction == 'ASC') ? 'DESC' : 'ASC',
+                    'q': searchTerm
+                }) }}" class="sort-link">
+                    ID Terrain
+                    {% if current_sort == 'idTerrain' %}
+                        <span class="sort-arrow">{{ current_direction == 'ASC' ? '↑' : '↓' }}</span>
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ path('app_terrain_indexback', {
+                    'sort_by': 'nom',
+                    'direction': (current_sort == 'nom' and current_direction == 'ASC') ? 'DESC' : 'ASC',
+                    'q': searchTerm
+                }) }}" class="sort-link">
+                    Nom
+                    {% if current_sort == 'nom' %}
+                        <span class="sort-arrow">{{ current_direction == 'ASC' ? '↑' : '↓' }}</span>
+                    {% endif %}
+                </a>
+            </th>
+            <th>Type de Surface</th>
+            <th>Localisation</th>
+            <th>
+                <a href="{{ path('app_terrain_indexback', {
+                    'sort_by': 'prix',
+                    'direction': (current_sort == 'prix' and current_direction == 'ASC') ? 'DESC' : 'ASC',
+                    'q': searchTerm
+                }) }}" class="sort-link">
+                    Prix
+                    {% if current_sort == 'prix' %}
+                        <span class="sort-arrow">{{ current_direction == 'ASC' ? '↑' : '↓' }}</span>
+                    {% endif %}
+                </a>
+            </th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for terrain in terrains %}
+            <tr>
+                <td>{{ terrain.idTerrain }}</td>
+                <td>{{ terrain.Nom }}</td>
+                <td>{{ terrain.TypeSurface }}</td>
+                <td>{{ terrain.Localisation }}</td>
+                <td>{{ terrain.Prix }} TND</td>
+                <td>
+                    {% if terrain.imageTer %}
+                        <img src="{{ asset('uploads/terrains/' ~ terrain.imageTer) }}" 
+                             alt="Image du terrain" 
+                             width="100" 
+                             height="auto"
+                             class="img-thumbnail">
+                    {% else %}
+                        <span>Aucune image</span>
+                    {% endif %}
+                </td>
+                <td class="action-cell">
+                    <a href="{{ path('app_terrainback_show', {'idTerrain': terrain.idTerrain}) }}" 
+                       class="action-btn view" 
+                       title="Voir">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="{{ path('app_terrain_edit', {'idTerrain': terrain.idTerrain}) }}" 
+                       class="action-btn edit" 
+                       title="Modifier">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7" class="text-center">Aucun terrain trouvé</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
        
     </div>

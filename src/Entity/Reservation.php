@@ -76,8 +76,13 @@ class Reservation
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: 'La durée est obligatoire.')]
+    #[Assert\Regex(
+        pattern: '/^\d{1,2}h(\d{1,2})?$/',
+        message: 'Le format de la durée est invalide. Exemple : 1h, 1h30, 2h15...'
+    )]
     private ?string $Duree = null;
-
+    
     public function getDuree(): ?string
     {
         return $this->Duree;
