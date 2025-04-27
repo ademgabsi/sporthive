@@ -3,15 +3,28 @@
 {% block title %}Liste des Joueurs{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-        <h1 class="my-4">Liste des Joueurs</h1>
+    <div class="container-fluid px-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mt-4"><i class="fas fa-users me-2"></i>Gestion des joueurs</h1>
+            <div class="d-flex align-items-center">
+                <div class="input-group me-3" style="width: 300px;">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un joueur...">
+                    <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <a href="{{ path('app_joueur_new') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> Nouveau joueur
+                </a>
+                <a href="{{ path('app_joueur_export_pdf') }}" class="btn btn-success ms-2">
+                    <i class="fas fa-file-pdf me-1"></i> Exporter en PDF
+                </a>
+            </div>
+        </div>
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Tous les joueurs</h6>
-                <a href="{{ path('app_joueur_new') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus-circle"></i> Ajouter un joueur
-                </a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -26,51 +39,8 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        {% for joueur in joueurs %}
-                            <tr>
-                                <td>{{ joueur.id }}</td>
-                                <td class="text-center">
-                                    {% if joueur.photo %}
-                                        <img src="{{ asset('uploads/photos/' ~ joueur.photo) }}" 
-                                             alt="Photo de {{ joueur.nom }}" 
-                                             class="img-thumbnail rounded-circle"
-                                             style="width: 60px; height: 60px; object-fit: cover;">
-                                    {% else %}
-                                        <div class="no-photo bg-light rounded-circle d-flex align-items-center justify-content-center"
-                                             style="width: 60px; height: 60px;">
-                                            <i class="fas fa-user text-muted"></i>
-                                        </div>
-                                    {% endif %}
-                                </td>
-                                <td>{{ joueur.nom }}</td>
-                                <td>{{ joueur.dateNaissance ? joueur.dateNaissance|date('d/m/Y') : 'N/A' }}</td>
-                                <td>
-                                    {% if joueur.dateNaissance %}
-                                        {{ 'now'|date('Y') - joueur.dateNaissance|date('Y') }} ans
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ path('app_joueur_show', {'id': joueur.id}) }}" 
-                                           class="btn btn-info btn-sm" 
-                                           title="Voir">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ path('app_joueur_edit', {'id': joueur.id}) }}" 
-                                           class="btn btn-warning btn-sm" 
-                                           title="Modifier">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        {{ include('joueur/_delete_form.html.twig') }}
-                                    </div>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="6" class="text-center">Aucun joueur trouvé</td>
-                            </tr>
-                        {% endfor %}
+                        <tbody id="joueursTableBody">
+                            {% include 'joueur/_joueurs_list.html.twig' with {'joueurs': joueurs} %}
                         </tbody>
                     </table>
                 </div>
@@ -79,6 +49,19 @@
     </div>
 
     <style>
+        .container-fluid {
+            min-width: 1200px;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .card {
+            min-width: 1000px;
+            max-width: 100%;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            min-height: 0.01%;
+        }
         .no-photo {
             border: 1px dashed #ccc;
         }
@@ -95,4 +78,37 @@
             transform: scale(1.1);
         }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const clearButton = document.getElementById('clearSearch');
+            const joueursTableBody = document.getElementById('joueursTableBody');
+            let timeout;
+
+            function search() {
+                const searchTerm = searchInput.value.trim();
+                const url = '/joueur/search?search=' + encodeURIComponent(searchTerm);
+                
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        joueursTableBody.innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                    });
+            }
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(search, 300);
+            });
+
+            clearButton.addEventListener('click', function() {
+                searchInput.value = '';
+                search();
+            });
+        });
+    </script>
 {% endblock %}

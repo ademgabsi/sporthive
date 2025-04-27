@@ -1,4 +1,4 @@
-{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 
 {{ form_errors(form) }} {# <--- très important ! #}
 
@@ -19,10 +19,10 @@
     </div>
 
     <div class="mb-3">
-        {{ form_label(form.Annee_fondation, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.Annee_fondation, {'attr': {'class': 'form-control'}}) }}
+        {{ form_label(form.annee_fondation, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.annee_fondation, {'attr': {'class': 'form-control'}}) }}
         <div class="invalid-feedback d-block">
-            {{ form_errors(form.Annee_fondation) }}
+            {{ form_errors(form.annee_fondation) }}
         </div>
     </div>
 

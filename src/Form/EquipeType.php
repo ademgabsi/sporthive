@@ -11,36 +11,58 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class EquipeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
-            ->add('ville')
-            ->add('Annee_fondation', DateType::class, [
+            ->add('nom', TextType::class, [
+                'label' => 'Nom de l\'équipe',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('ville', TextType::class, [
+                'label' => 'Ville',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('annee_fondation', DateType::class, [
+                'label' => 'Année de fondation',
                 'widget' => 'single_text',
                 'html5' => true,
-                'input' => 'datetime', // <--- ici on précise que Symfony doit convertir en objet DateTime
+                'attr' => ['class' => 'form-control']
             ])
-            
-            
-            ->add('stade')
+            ->add('stade', TextType::class, [
+                'label' => 'Nom du stade',
+                'attr' => ['class' => 'form-control']
+            ])
             ->add('logo', FileType::class, [
-                'label' => 'Image Joueur',
-                'mapped' => false, // Clé ! Ne lie pas directement à l'entité
+                'label' => 'Logo de l\'équipe',
+                'mapped' => false,
+                'required' => false,
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'La photo est obligatoire.']),
                     new Assert\File([
                         'maxSize' => '2M',
-                        'mimeTypes' => ['image/jpeg', 'image/png'],
-                    ]),
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif'
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPG, PNG ou GIF)',
+                        'maxSizeMessage' => 'L\'image ne doit pas dépasser 2Mo'
+                    ])
                 ],
+                'attr' => ['class' => 'form-control']
             ])
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
-                'choice_label' => 'id',
+                'choice_label' => function(Utilisateur $utilisateur) {
+                    return $utilisateur->getNom() . ' ' . $utilisateur->getPrenom() . ' (ID: ' . $utilisateur->getId() . ')';
+                },
+                'label' => 'Utilisateur',
+                'placeholder' => 'Sélectionnez un utilisateur',
+                'required' => false,
+                'attr' => ['class' => 'form-control']
             ])
         ;
     }

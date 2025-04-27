@@ -5,7 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     photos_directory: '%kernel.project_dir%/public/uploads/photos'
-    logo_directory: '%kernel.project_dir%/public/uploads/logos'
+    logos_directory: '%kernel.project_dir%/public/uploads/logos'
+    qr_directory: '%kernel.project_dir%/public/uploads/qr'
 
 
 services:
@@ -22,6 +23,12 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

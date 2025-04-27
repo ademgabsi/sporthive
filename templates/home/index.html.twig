@@ -193,7 +193,7 @@
 												ASSURANCE & RÉCLAMATIONS
 											</h5>
 											<p>
-												Souscrivez une assurance sportive et gérez vos réclamations en toute simplicité depuis l’appli.
+												Souscrivez une assurance sportive et gérez vos réclamations en toute simplicité depuis l'appli.
 											</p>
 										</div>
 									</div>
@@ -208,7 +208,7 @@
 												COMPÉTITIONS SPORTIVES
 											</h5>
 											<p>
-												Participez à des compétitions organisées par la salle et affrontez d’autres équipes !
+												Participez à des compétitions organisées par la salle et affrontez d'autres équipes !
 											</p>
 										</div>
 									</div>
@@ -226,7 +226,7 @@
 										UNE EXPÉRIENCE SPORTIVE COMPLÈTE
 									</h2>
 									<p>
-										Notre plateforme vous offre bien plus qu’un simple espace sportif. Réservez vos terrains en toute simplicité, rejoignez des équipes dynamiques, participez à des compétitions passionnantes, et assurez votre pratique grâce à une gestion facile des assurances et des réclamations. Que vous soyez amateur ou compétiteur, nous avons tout prévu pour vous accompagner dans votre parcours sportif, en toute sécurité et avec flexibilité.
+										Notre plateforme vous offre bien plus qu'un simple espace sportif. Réservez vos terrains en toute simplicité, rejoignez des équipes dynamiques, participez à des compétitions passionnantes, et assurez votre pratique grâce à une gestion facile des assurances et des réclamations. Que vous soyez amateur ou compétiteur, nous avons tout prévu pour vous accompagner dans votre parcours sportif, en toute sécurité et avec flexibilité.
 									</p>
 									<div class="btn-box">
 										<a href="">
@@ -236,6 +236,87 @@
 								</div>
 							</div>
 						</div>
+					</div>
+				</section>
+				<section class="equipes_section layout_padding">
+					<div class="container">
+						<div class="heading_container">
+							<h2>
+								Nos Équipes
+							</h2>
+						</div>
+						<div class="row">
+							{% for equipe in pagination %}
+								<div class="col-lg-4 col-md-6 mb-4">
+									<div class="card h-100" style="max-width: 300px; margin: 0 auto;">
+										<div class="card-body text-center">
+											{% if equipe.logo %}
+												<img src="{{ asset('uploads/logos/' ~ equipe.logo) }}" alt="{{ equipe.nom }}" class="img-fluid mb-3" style="max-height: 100px;">
+											{% else %}
+												<img src="{{ asset('images/default-team.png') }}" alt="Logo par défaut" class="img-fluid mb-3" style="max-height: 100px;">
+											{% endif %}
+											<h5 class="card-title">{{ equipe.nom }}</h5>
+											<p class="card-text">
+												<strong>Ville:</strong> {{ equipe.ville }}<br>
+												<strong>Stade:</strong> {{ equipe.stade }}<br>
+												<strong>Année de création:</strong> {{ equipe.anneeFondation|date('Y') }}
+											</p>
+											<a href="{{ path('app_equipe_joueurs', {'id': equipe.id}) }}" class="btn btn-primary">
+												Voir les joueurs
+											</a>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+						<div class="d-flex justify-content-center mt-4">
+    {{ knp_pagination_render(pagination) }}
+</div>
+<style>
+    .pagination {
+        display: flex;
+        list-style: none;
+        background: #ffffff;
+        border-radius: 50px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 10px 25px;
+    }
+
+    .page-item {
+        margin: 0 5px;
+    }
+
+    .page-link {
+        border: none;
+        border-radius: 30px;
+        padding: 10px 18px;
+        background: #f8f9fa;
+        color: #007bff;
+        transition: all 0.3s ease;
+    }
+
+    .page-link:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .page-item.active .page-link {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+        box-shadow: 0 0 10px rgba(0,123,255,0.3);
+    }
+
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+</style>
+
 					</div>
 				</section>
 			{% endblock %}

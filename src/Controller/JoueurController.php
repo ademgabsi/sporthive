@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Psr\Log\LoggerInterface;
 
 #[Route('/joueur')]
 final class JoueurController extends AbstractController
@@ -135,5 +138,79 @@ final class JoueurController extends AbstractController
         }
 
         return $this->redirectToRoute('app_joueur_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/export/pdf', name: 'app_joueur_export_pdf', methods: ['GET'])]
+    public function exportPdf(JoueurRepository $joueurRepository, LoggerInterface $logger): Response
+    {
+        try {
+            $logger->info('Début de la génération du PDF des joueurs');
+            
+            $joueurs = $joueurRepository->findAll();
+            $logger->info(sprintf('Nombre de joueurs récupérés : %d', count($joueurs)));
+            
+            $html = $this->renderView('joueur/pdf.html.twig', [
+                'joueurs' => $joueurs
+            ]);
+            $logger->info('Template Twig rendu avec succès');
+            
+            $options = new Options();
+            $options->set('isHtml5ParserEnabled', true);
+            $options->set('isPhpEnabled', true);
+            $options->set('isRemoteEnabled', true);
+            $logger->info('Options Dompdf configurées');
+            
+            $dompdf = new Dompdf($options);
+            $logger->info('Instance Dompdf créée');
+            
+            $dompdf->loadHtml($html);
+            $logger->info('HTML chargé dans Dompdf');
+            
+            $dompdf->setPaper('A4', 'portrait');
+            $logger->info('Format de papier configuré');
+            
+            $dompdf->render();
+            $logger->info('PDF généré avec succès');
+            
+            $output = $dompdf->output();
+            $filename = 'joueurs_' . date('Y-m-d_H-i-s') . '.pdf';
+            $logger->info(sprintf('Nom du fichier généré : %s', $filename));
+            $logger->info(sprintf('Taille du PDF : %d octets', strlen($output)));
+            
+            $response = new Response($output);
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+            $response->headers->set('Cache-Control', 'private, max-age=0, must-revalidate');
+            $response->headers->set('Pragma', 'public');
+            $response->headers->set('Content-length', strlen($output));
+            
+            return $response;
+        } catch (\Exception $e) {
+            $logger->error('Erreur lors de la génération du PDF : ' . $e->getMessage());
+            $this->addFlash('error', 'Une erreur est survenue lors de la génération du PDF.');
+            return $this->redirectToRoute('app_joueur_index');
+        }
+    }
+
+    #[Route('/search', name: 'app_joueur_search', methods: ['GET'])]
+    public function search(Request $request, JoueurRepository $joueurRepository): Response
+    {
+        try {
+            $search = $request->query->get('search', '');
+            $query = $joueurRepository->createQueryBuilder('j')
+                ->where('j.nom LIKE :search')
+                ->setParameter('search', '%' . $search . '%')
+                ->orderBy('j.nom', 'ASC');
+
+            $joueurs = $query->getQuery()->getResult();
+
+            return $this->render('joueur/_joueurs_list.html.twig', [
+                'joueurs' => $joueurs
+            ]);
+        } catch (\Exception $e) {
+            return $this->render('joueur/_joueurs_list.html.twig', [
+                'joueurs' => []
+            ]);
+        }
     }
 }

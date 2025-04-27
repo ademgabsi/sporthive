@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des joueurs</title>
+    <style>
+        @page {
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            page-break-inside: auto;
+        }
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .date {
+            text-align: right;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        .header {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Liste des joueurs</h1>
+        <div class="date">Généré le {{ "now"|date("d/m/Y H:i") }}</div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Date de naissance</th>
+                <th>Équipe</th>
+                <th>Âge</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for joueur in joueurs %}
+                <tr>
+                    <td>{{ joueur.id }}</td>
+                    <td>{{ joueur.nom }}</td>
+                    <td>{{ joueur.dateNaissance ? joueur.dateNaissance|date('d/m/Y') : 'N/A' }}</td>
+                    <td>{{ joueur.equipe ? joueur.equipe.nom : 'N/A' }}</td>
+                    <td>
+                        {% if joueur.dateNaissance %}
+                            {{ 'now'|date('Y') - joueur.dateNaissance|date('Y') }} ans
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html> 

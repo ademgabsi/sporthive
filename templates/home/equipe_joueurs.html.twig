@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Joueurs de {{ equipe.nom }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .player-card {
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        .player-card img {
+            height: 150px;
+            object-fit: cover;
+        }
+        .player-card .card-body {
+            padding: 0.75rem;
+        }
+        .player-card .card-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .player-card .card-text {
+            font-size: 0.875rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Joueurs de {{ equipe.nom }}</h1>
+        
+        <div class="row justify-content-center">
+            {% if joueurs|length > 0 %}
+                {% for joueur in joueurs %}
+                    <div class="col-6 col-md-4 col-lg-3 mb-4">
+                        <div class="card h-100 player-card">
+                            {% if joueur.photo %}
+                                <img src="{{ asset('uploads/photos/' ~ joueur.photo) }}" class="card-img-top" alt="Photo de {{ joueur.nom }}">
+                            {% else %}
+                                <img src="{{ asset('images/default-player.jpg') }}" class="card-img-top" alt="Photo par défaut">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ joueur.nom }}</h5>
+                                <p class="card-text">
+                                    {% if joueur.dateNaissance %}
+                                        <strong>Âge:</strong> {{ 'now'|date('Y') - joueur.dateNaissance|date('Y') }} ans
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        Aucun joueur n'est disponible dans cette équipe pour le moment.
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ path('index_front') }}" class="btn btn-primary">Retour aux équipes</a>
+        </div>
+    </div>
+{% endblock %} 

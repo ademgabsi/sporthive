@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Equipe;
 use App\Form\EquipeType;
 use App\Repository\EquipeRepository;
@@ -9,69 +9,110 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Psr\Log\LoggerInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
+
 
 #[Route('/equipe')]
-final class EquipeController extends AbstractController
+class EquipeController extends AbstractController
 {
-    #[Route(name: 'app_equipe_index', methods: ['GET'])]
-    public function index(EquipeRepository $equipeRepository): Response
+    private $equipeRepository;
+
+    public function __construct(EquipeRepository $equipeRepository)
     {
-        return $this->render('equipe/index.html.twig', [
-            'equipes' => $equipeRepository->findAll(),
-        ]);
+        $this->equipeRepository = $equipeRepository;
     }
 
+    #[Route('/', name: 'app_equipe_index', methods: ['GET'])]
+public function index(Request $request, PaginatorInterface $paginator): Response
+{
+    $query = $this->equipeRepository->createQueryBuilder('e')
+                                     ->getQuery();
+
+    $pagination = $paginator->paginate(
+        $query, /* Query, pas un tableau */
+        $request->query->getInt('page', 1), /* page actuelle */
+        5 /* Limite par page */
+    );
+
+    return $this->render('equipe/index.html.twig', [
+        'pagination' => $pagination
+    ]);}
+    #[Route('/search', name: 'app_equipe_search', methods: ['GET'])]
+    public function search(Request $request): Response
+    {
+        $search = $request->query->get('search', '');
+        $equipes = $search ? 
+            $this->equipeRepository->searchByNomOrVille($search) : 
+            $this->equipeRepository->findAll();
+
+        return $this->render('equipe/_equipes_list.html.twig', [
+            'equipes' => $equipes,
+            'search' => $search
+        ]);
+    }
     #[Route('/new', name: 'app_equipe_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,        SluggerInterface $slugger
-    ): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $equipe = new Equipe();
         $form = $this->createForm(EquipeType::class, $equipe);
         $form->handleRequest($request);
-        $oldPhoto = $equipe->getLogo();
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $photoFile = $form->get('logo')->getData();
-            
-            if ($photoFile) {
-                // Supprimer l'ancienne photo si elle existe
-                if ($oldPhoto) {
-                    $oldPhotoPath = $this->getParameter('logo_directory').'/'.$oldPhoto;
-                    if (file_exists($oldPhotoPath)) {
-                        unlink($oldPhotoPath);
-                    }
-                }
-                
-                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $logoFile = $form->get('logo')->getData();
+    
+            if ($logoFile) {
+                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$photoFile->guessExtension();
-                
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
+    
                 try {
-                    $photoFile->move(
-                        $this->getParameter('logo_directory'),
-                        $newFilename
-                    );
+                    $logoFile->move($this->getParameter('logos_directory'), $newFilename);
                     $equipe->setLogo($newFilename);
                 } catch (FileException $e) {
-                    $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de la photo.');
-                    return $this->redirectToRoute('app_equipe_edit', ['id' => $joueur->getId()]);
+                    $this->addFlash('error', 'Erreur lors du téléchargement du logo.');
+                    return $this->redirectToRoute('app_equipe_new');
                 }
             }
-
-            $entityManager->persist($equipe);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_equipe_index', [], Response::HTTP_SEE_OTHER);
+    
+            try {
+                $entityManager->persist($equipe);
+                $entityManager->flush();
+    
+                // ✅ Génération du QR Code après obtention de l'ID
+                $qrContent = 'Équipe : '.$equipe->getNom().' | ID : '.$equipe->getId();
+                $qrPath = $this->getParameter('kernel.project_dir').'/public/qrcodes/equipe-'.$equipe->getId().'.png';
+    
+                Builder::create()
+                    ->writer(new PngWriter())
+                    ->data($qrContent)
+                    ->size(300)
+                    ->margin(10)
+                    ->build()
+                    ->saveToFile($qrPath);
+    
+                $this->addFlash('success', 'L\'équipe a été créée avec succès et le QR Code généré.');
+                return $this->redirectToRoute('app_equipe_index');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de la création de l\'équipe.');
+                return $this->redirectToRoute('app_equipe_new');
+            }
         }
-
+    
         return $this->render('equipe/new.html.twig', [
             'equipe' => $equipe,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
-
+    
     #[Route('/{id}', name: 'app_equipe_show', methods: ['GET'])]
     public function show(Equipe $equipe): Response
     {
@@ -81,15 +122,47 @@ final class EquipeController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_equipe_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Equipe $equipe, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Equipe $equipe, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(EquipeType::class, $equipe);
         $form->handleRequest($request);
+        $oldLogo = $equipe->getLogo();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $logoFile = $form->get('logo')->getData();
+            
+            if ($logoFile) {
+                if ($oldLogo) {
+                    $oldLogoPath = $this->getParameter('logos_directory').'/'.$oldLogo;
+                    if (file_exists($oldLogoPath)) {
+                        unlink($oldLogoPath);
+                    }
+                }
+                
+                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
+                
+                try {
+                    $logoFile->move(
+                        $this->getParameter('logos_directory'),
+                        $newFilename
+                    );
+                    $equipe->setLogo($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Une erreur est survenue lors du téléchargement du logo.');
+                    return $this->redirectToRoute('app_equipe_edit', ['id' => $equipe->getId()]);
+                }
+            }
 
-            return $this->redirectToRoute('app_equipe_index', [], Response::HTTP_SEE_OTHER);
+            try {
+                $entityManager->flush();
+                $this->addFlash('success', 'L\'équipe a été modifiée avec succès.');
+                return $this->redirectToRoute('app_equipe_index', [], Response::HTTP_SEE_OTHER);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Une erreur est survenue lors de la modification de l\'équipe.');
+                return $this->redirectToRoute('app_equipe_edit', ['id' => $equipe->getId()]);
+            }
         }
 
         return $this->render('equipe/edit.html.twig', [
@@ -102,21 +175,105 @@ final class EquipeController extends AbstractController
     public function delete(Request $request, Equipe $equipe, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$equipe->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($equipe);
-            $entityManager->flush();
+            try {
+                $logo = $equipe->getLogo();
+                if ($logo) {
+                    $logoPath = $this->getParameter('logos_directory').'/'.$logo;
+                    if (file_exists($logoPath)) {
+                        unlink($logoPath);
+                    }
+                }
+                
+                $entityManager->remove($equipe);
+                $entityManager->flush();
+                $this->addFlash('success', 'L\'équipe a été supprimée avec succès.');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Une erreur est survenue lors de la suppression de l\'équipe.');
+            }
         }
 
         return $this->redirectToRoute('app_equipe_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/index_front', name: 'index_front', methods: ['GET'])]
-    public function index_front(EquipeRepository $equipeRepository): Response
+    public function index_front(): Response
     {
-        return $this->render('home/equipe/index.html.twig', [
-            'equipes' => $equipeRepository->findAllWithStats(), 
-            'featuredTeams' => $equipeRepository->findFeaturedTeams(3), 
+        return $this->render('home/equipe_front.html.twig', [
+            'equipes' => $this->equipeRepository->findAll(), 
+        ]);
+    }
+    
+    #[Route('/{id}/joueurs', name: 'app_equipe_joueurs', methods: ['GET'])]
+    public function showJoueurs(Equipe $equipe): Response
+    {
+        return $this->render('home/equipe_joueurs.html.twig', [
+            'equipe' => $equipe,
+            'joueurs' => $equipe->getJoueurs(),
         ]);
     }
 
-    
+    #[Route('/export/pdf', name: 'app_equipe_export_pdf', methods: ['GET'])]
+    public function exportPdf(EquipeRepository $equipeRepository, LoggerInterface $logger): Response
+    {
+        try {
+            $logger->info('Début de la génération du PDF');
+            
+            $equipes = $equipeRepository->findAll();
+            $logger->info(sprintf('Nombre d\'équipes récupérées : %d', count($equipes)));
+            
+            $html = $this->renderView('equipe/pdf.html.twig', [
+                'equipes' => $equipes
+            ]);
+            $logger->info('Template Twig rendu avec succès');
+            
+            $options = new Options();
+            $options->set('isHtml5ParserEnabled', true);
+            $options->set('isPhpEnabled', true);
+            $options->set('isRemoteEnabled', true);
+            $logger->info('Options Dompdf configurées');
+            
+            $dompdf = new Dompdf($options);
+            $logger->info('Instance Dompdf créée');
+            
+            $dompdf->loadHtml($html);
+            $logger->info('HTML chargé dans Dompdf');
+            
+            $dompdf->setPaper('A4', 'portrait');
+            $logger->info('Format de papier configuré');
+            
+            $dompdf->render();
+            $logger->info('PDF généré avec succès');
+            
+            $output = $dompdf->output();
+            $filename = 'equipes_' . date('Y-m-d_H-i-s') . '.pdf';
+            $logger->info(sprintf('Nom du fichier généré : %s', $filename));
+            $logger->info(sprintf('Taille du PDF : %d octets', strlen($output)));
+            
+            $response = new Response($output);
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+            $response->headers->set('Cache-Control', 'private, max-age=0, must-revalidate');
+            $response->headers->set('Pragma', 'public');
+            $response->headers->set('Content-length', strlen($output));
+            
+            return $response;
+        } catch (\Exception $e) {
+            $logger->error('Erreur lors de la génération du PDF : ' . $e->getMessage());
+            $this->addFlash('error', 'Une erreur est survenue lors de la génération du PDF.');
+            return $this->redirectToRoute('app_equipe_index');
+        }
+    }
+
+
+    #[Route('/equipe/check-latest', name: 'check_latest_equipe', methods: ['GET'])]
+public function checkLatestEquipe(EquipeRepository $equipeRepository): JsonResponse
+{
+    $latestEquipe = $equipeRepository->findOneBy([], ['id' => 'DESC']);
+
+    return new JsonResponse([
+        'id' => $latestEquipe->getId(),
+        'nom' => $latestEquipe->getNom(),
+    ]);
+}
+
 }

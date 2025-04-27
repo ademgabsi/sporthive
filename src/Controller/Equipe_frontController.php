@@ -10,17 +10,29 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/front')]
 final class Equipe_frontController extends AbstractController
 {
-#[Route('/', name: 'index_front', methods: ['GET'])]
-    public function index_front(EquipeRepository $equipeRepository): Response
+    #[Route('/', name: 'index_front', methods: ['GET'])]
+    public function index_front(Request $request, EquipeRepository $equipeRepository, PaginatorInterface $paginator): Response
     {
+        $query = $equipeRepository->createQueryBuilder('e')
+                                   ->getQuery();
+    
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            5
+        );
+    
         return $this->render('home/equipe_front.html.twig', [
-            'equipes' => $equipeRepository->findAll(), 
+            'pagination' => $pagination
         ]);
     }
+    
 
 
     
@@ -47,4 +59,43 @@ public function index_front_joueur(JoueurRepository $joueurRepository): Response
             'equipe' => $equipe,
         ]);
     }
+
+
+    #[Route('/chatbot/gemini', name: 'chatbot_gemini', methods: ['POST'])]
+public function chatbotGemini(Request $request): JsonResponse
+{
+    $apiKey = "AIzaSyDmMTwwTdxBIjhiH0HcGrJHk88dyzO3r0I";
+    $userMessage = trim($request->request->get('message'));
+
+    $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" . $apiKey;
+
+    $data = [
+        "contents" => [
+            [
+                "parts" => [
+                    ["text" => $userMessage]
+                ]
+            ]
+        ]
+    ];
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $decoded = json_decode($response, true);
+
+    $botResponse = "Je ne comprends pas.";
+    if (isset($decoded["candidates"][0]["content"]["parts"][0]["text"])) {
+        $botResponse = $decoded["candidates"][0]["content"]["parts"][0]["text"];
+    }
+
+    return new JsonResponse(["bot" => $botResponse]);
+}
+
 }

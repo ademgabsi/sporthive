@@ -25,7 +25,103 @@
 		<link href="{{ asset('css/style.css') }}" rel="stylesheet"/>
 		<!-- responsive style -->
 		<link href="{{ asset('css/responsive.css') }}" rel="stylesheet"/>
-		{% block css %}{% endblock %}
+		{% block css %}
+		
+<style>
+    #chat-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 55px;
+        height: 55px;
+        background: linear-gradient(135deg, #007bff, #00d4ff);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+    }
+
+    #chat-container {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 350px;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: none;
+        flex-direction: column;
+        z-index: 1000;
+    }
+
+    .chat-box {
+        padding: 15px;
+        height: 300px;
+        overflow-y: auto;
+        background: #f9f9f9;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message {
+        max-width: 75%;
+        padding: 10px 15px;
+        margin: 5px 0;
+        border-radius: 20px;
+        word-wrap: break-word;
+        font-size: 14px;
+    }
+
+    .user-message {
+        background: #007bff;
+        color: #fff;
+        align-self: flex-end;
+    }
+
+    .bot-message {
+        background: #e0e0e0;
+        color: #000;
+        align-self: flex-start;
+    }
+
+    .input-box {
+        display: flex;
+        padding: 10px;
+        background: #fff;
+        border-top: 1px solid #ddd;
+    }
+
+    .input-box input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        outline: none;
+    }
+
+    .input-box button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin-left: 10px;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+
+    .input-box button:hover {
+        background: #0056b3;
+    }
+</style>
+		
+		
+		{% endblock %}
 	</head>
 
 	<body>
@@ -135,6 +231,106 @@
 		<script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
 		<script src="{{ asset('js/bootstrap.js') }}"></script>
 
-		{% block js %}{% endblock %}
+		{% block js %}
+<script>
+    let lastEquipeId = null;
+
+    $(document).ready(function() {
+        // On récupère l'ID actuel le plus élevé
+        $.get("{{ path('check_latest_equipe') }}", function(data) {
+            lastEquipeId = data.id;
+        });
+
+        // Vérification toutes les 5 secondes
+        setInterval(function() {
+            $.get("{{ path('check_latest_equipe') }}", function(data) {
+                if (data.id > lastEquipeId) {
+                    showNotification("Nouvelle équipe ajoutée : " + data.nom);
+                    lastEquipeId = data.id;
+                }
+            });
+        }, 5000);
+    });
+
+    function showNotification(message) {
+        let notif = $('<div></div>', {
+            text: message,
+            css: {
+                position: 'fixed',
+                top: '20px',
+                right: '20px',
+                background: '#17a2b8',
+                color: '#fff',
+                padding: '15px 25px',
+                'border-radius': '8px',
+                'box-shadow': '0 4px 10px rgba(0,0,0,0.2)',
+                'z-index': 9999,
+                'font-weight': 'bold'
+            }
+        }).hide().fadeIn();
+
+        $('body').append(notif);
+
+        setTimeout(function() {
+            notif.fadeOut(function() { $(this).remove(); });
+        }, 6000);
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#chat-button").click(function () {
+            $("#chat-container").fadeToggle();
+        });
+
+        $("#send-btn").click(function () {
+            sendMessage();
+        });
+
+        $("#user-message").keypress(function (e) {
+            if (e.which == 13) {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            var userMessage = $("#user-message").val().trim();
+            if (userMessage === "") return;
+
+            $("#chat-box").append('<div class="message user-message">' + userMessage + '</div>');
+            $("#user-message").val("");
+            $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+
+            $.ajax({
+                url: "{{ path('chatbot_gemini') }}",
+                type: "POST",
+                data: { message: userMessage },
+                dataType: "json",
+                success: function (response) {
+                    $("#chat-box").append('<div class="message bot-message">' + response.bot + '</div>');
+                    $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+                },
+                error: function() {
+                    $("#chat-box").append('<div class="message bot-message">Erreur de connexion au chatbot.</div>');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+
+<!-- Bouton flottant -->
+<div id="chat-button">💬</div>
+
+<!-- Conteneur du chat -->
+<div id="chat-container">
+    <div class="chat-box" id="chat-box"></div>
+    <div class="input-box">
+        <input type="text" id="user-message" placeholder="Écrivez un message...">
+        <button id="send-btn">Envoyer</button>
+    </div>
+</div>
+
 	</body>
 </html>

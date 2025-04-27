@@ -110,8 +110,7 @@ class Equipe
     }
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'equipes')]
-    #[ORM\JoinColumn(name: 'id_user', referencedColumnName: 'id')]
-    #[Assert\NotNull(message: "L'utilisateur est obligatoire.")]
+    #[ORM\JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id', nullable: true)]
     private ?Utilisateur $utilisateur = null;
 
     public function getUtilisateur(): ?Utilisateur
