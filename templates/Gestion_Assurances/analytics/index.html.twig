@@ -1,0 +1,211 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Tableau de bord analytique des assurances{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stats-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stats-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
+            margin-bottom: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .dashboard-title {
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        /* Styles pour les graphiques vides */
+        .empty-chart-message {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #6c757d;
+            font-style: italic;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid px-4">
+        <h1 class="mt-4 dashboard-title">Tableau de bord analytique des assurances</h1>
+        
+        <!-- Statistiques générales -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="card stats-card bg-primary text-white mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-0">Total des assurances</h5>
+                                <h2 class="mt-2 mb-0">{{ generalStats.totalAssurances }}</h2>
+                            </div>
+                            <div class="stats-icon bg-white text-primary">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="card stats-card bg-success text-white mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-0">Assurances actives</h5>
+                                <h2 class="mt-2 mb-0">{{ generalStats.activeAssurances }}</h2>
+                            </div>
+                            <div class="stats-icon bg-white text-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="card stats-card bg-warning text-white mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-0">Durée moyenne</h5>
+                                <h2 class="mt-2 mb-0">{{ generalStats.avgDuration }} mois</h2>
+                            </div>
+                            <div class="stats-icon bg-white text-warning">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="card stats-card bg-info text-white mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-0">Réclamations</h5>
+                                <h2 class="mt-2 mb-0">{{ generalStats.totalReclamations }}</h2>
+                            </div>
+                            <div class="stats-icon bg-white text-info">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Graphiques -->
+        <div class="row">
+            <!-- Graphique de répartition par type -->
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <div class="chart-title">Répartition par type d'assurance</div>
+                    {% if typeChart.data.datasets[0].data|length > 0 %}
+                        {{ render_chart(typeChart) }}
+                    {% else %}
+                        <div class="empty-chart-message">
+                            <p>Aucune donnée disponible pour ce graphique</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Graphique de répartition par statut -->
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <div class="chart-title">Répartition par statut d'assurance</div>
+                    {% if statusChart.data.datasets[0].data|length > 0 %}
+                        {{ render_chart(statusChart) }}
+                    {% else %}
+                        <div class="empty-chart-message">
+                            <p>Aucune donnée disponible pour ce graphique</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Graphique d'évolution mensuelle -->
+            <div class="col-lg-8">
+                <div class="chart-container">
+                    <div class="chart-title">Évolution des souscriptions par mois</div>
+                    {% if monthlyChart.data.datasets[0].data|length > 0 %}
+                        {{ render_chart(monthlyChart) }}
+                    {% else %}
+                        <div class="empty-chart-message">
+                            <p>Aucune donnée disponible pour ce graphique</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Graphique de répartition par durée -->
+            <div class="col-lg-4">
+                <div class="chart-container">
+                    <div class="chart-title">Répartition par durée d'assurance</div>
+                    {% if durationChart.data.datasets[0].data|length > 0 %}
+                        {{ render_chart(durationChart) }}
+                    {% else %}
+                        <div class="empty-chart-message">
+                            <p>Aucune donnée disponible pour ce graphique</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lien de retour -->
+        <div class="row mt-4 mb-5">
+            <div class="col-12">
+                <a href="{{ path('app_admin_assurance_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Retour à la liste des assurances
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

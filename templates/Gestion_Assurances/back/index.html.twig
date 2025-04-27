@@ -42,13 +42,14 @@
 
         <div class="table-top">
             <div class="search-filter">
-                <input type="text" class="search-input" placeholder="Rechercher une assurance...">
-                <select class="filter-dropdown">
-                    <option value="">Tous les statuts</option>
-                    <option value="Active">Active</option>
-                    <option value="Expirée">Expirée</option>
-                    <option value="En attente">En attente</option>
+                <input type="text" id="search-input" class="search-input" placeholder="Rechercher une assurance..." value="{{ searchTerm }}">
+                <select id="status-filter" class="filter-dropdown">
+                    <option value="" {% if statusFilter == '' %}selected{% endif %}>Tous les statuts</option>
+                    <option value="Active" {% if statusFilter == 'Active' %}selected{% endif %}>Active</option>
+                    <option value="Expirée" {% if statusFilter == 'Expirée' %}selected{% endif %}>Expirée</option>
+                    <option value="En attente" {% if statusFilter == 'En attente' %}selected{% endif %}>En attente</option>
                 </select>
+                <button id="apply-filter" class="filter-btn">Filtrer</button>
             </div>
             <a href="{{ path('app_admin_assurance_new') }}" class="add-btn">
                 <i class="fas fa-plus"></i>
@@ -56,55 +57,45 @@
             </a>
         </div>
 
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>ID Contrat</th>
-                    <th>Type de couverture</th>
-                    <th>Durée</th>
-                    <th>Date de début</th>
-                    <th>Statut</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for assurance in assurances %}
+        <div id="assurance-table-container">
+            <table class="data-table">
+                <thead>
                     <tr>
-                        <td>{{ assurance.ID_contrat }}</td>
-                        <td>{{ assurance.typeDeCouverture }}</td>
-                        <td>{{ assurance.duree }} mois</td>
-                        <td>{{ assurance.dateDebut }}</td>
-                        <td>
-                            <span class="badge {% if assurance.statut == 'Active' %}badge-success{% elseif assurance.statut == 'Expirée' %}badge-danger{% else %}badge-warning{% endif %}">
-                                {{ assurance.statut }}
-                            </span>
-                        </td>
-                        <td class="action-cell">
-                            <a href="{{ path('app_admin_assurance_show', {'ID_contrat': assurance.ID_contrat}) }}" class="action-btn view" title="Voir">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="{{ path('app_admin_assurance_edit', {'ID_contrat': assurance.ID_contrat}) }}" class="action-btn edit" title="Modifier">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <button class="action-btn delete" title="Supprimer" onclick="openDeleteModal('{{ assurance.ID_contrat }}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
+                        <th>ID Contrat</th>
+                        <th>Type de couverture</th>
+                        <th>Durée</th>
+                        <th>Date de début</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
                     </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="6" class="text-center">Aucune assurance trouvée</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="assurance-list">
+                    {% include 'Gestion_Assurances/back/_assurance_list.html.twig' %}
+                </tbody>
+            </table>
+        </div>
 
-        <div class="pagination">
-            <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">2</button>
-            <button class="page-btn">3</button>
-            <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+        <div class="pagination" id="pagination-container">
+            {% set startPage = max(1, page - 2) %}
+            {% set endPage = min(totalPages, page + 2) %}
+            
+            {% if startPage > 1 %}
+                <button class="page-btn" data-page="1">1</button>
+                {% if startPage > 2 %}
+                    <span class="page-ellipsis">...</span>
+                {% endif %}
+            {% endif %}
+            
+            {% for i in startPage..endPage %}
+                <button class="page-btn {% if i == page %}active{% endif %}" data-page="{{ i }}">{{ i }}</button>
+            {% endfor %}
+            
+            {% if endPage < totalPages %}
+                {% if endPage < totalPages - 1 %}
+                    <span class="page-ellipsis">...</span>
+                {% endif %}
+                <button class="page-btn" data-page="{{ totalPages }}">{{ totalPages }}</button>
+            {% endif %}
         </div>
     </div>
 
@@ -138,58 +129,230 @@
         .stat-box { background: #fff; flex: 1; padding: 1rem; border-radius: .5rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; }
         .stat-icon { font-size: 1.5rem; margin-right: 0.75rem; color: #6c757d; }
         .stat-info { text-align: left; }
-        .stat-label { font-size: 0.85rem; color: #6c757d; }
-        .stat-value { font-size: 1.4rem; font-weight: 600; display: block; }
-        .stat-box.stat-total .stat-icon { color: #007bff; }
-        .stat-box.stat-active .stat-icon { color: #28a745; }
-        .stat-box.stat-expired .stat-icon { color: #dc3545; }
-        .stat-box.stat-pending .stat-icon { color: #ffc107; }
+        .stat-label { display: block; font-size: 0.8rem; color: #6c757d; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; color: #212529; }
+        
+        .dashboard-container { padding: 1.5rem; }
+        .dashboard-header { margin-bottom: 1.5rem; }
+        .dashboard-title { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .dashboard-subtitle { color: #6c757d; }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .filter-btn:hover {
+            background-color: #45a049;
+        }
+        
+        /* Styles pour la pagination AJAX */
+        #assurance-table-container { position: relative; min-height: 200px; }
+        .pagination { display: flex; justify-content: center; margin: 2rem 0; gap: 0.5rem; }
+        .page-btn { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 0.5rem 0.75rem; cursor: pointer; transition: all 0.2s; }
+        .page-btn:hover:not([disabled]) { background: #e9ecef; }
+        .page-btn.active { background: #007bff; color: white; border-color: #007bff; }
+        .page-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+        .page-ellipsis { padding: 0.5rem 0.25rem; }
+        .pagination-info { text-align: center; margin-top: 1rem; color: #6c757d; }
+        
+        /* Animation de chargement */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fa-spin { animation: spin 1s linear infinite; }
     </style>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
-        function openDeleteModal(id) {
-            const modal = document.getElementById('deleteModal');
-            const form = document.getElementById('deleteForm');
-            document.getElementById('assurance_id').value = id;
-            form.action = "/admin/assurance/" + id + "/delete";
-            modal.classList.add('show');
-        }
-
-        function closeDeleteModal() {
-            const modal = document.getElementById('deleteModal');
-            document.getElementById('assurance_id').value = '';
-            modal.classList.remove('show');
-        }
-
-        // Recherche et filtrage
-        document.querySelector('.search-input').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('.data-table tbody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
-        });
-
-        document.querySelector('.filter-dropdown').addEventListener('change', function(e) {
-            const filterValue = e.target.value;
-            const rows = document.querySelectorAll('.data-table tbody tr');
-            
-            rows.forEach(row => {
-                if (!filterValue) {
-                    row.style.display = '';
-                    return;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fonction pour charger une page via AJAX
+            function loadPage(page) {
+                // Afficher l'indicateur de chargement
+                document.getElementById('assurance-list').innerHTML = '<tr><td colspan="6" class="text-center"><div class="loader"></div></td></tr>';
+                
+                // Récupérer les filtres actuels
+                const searchTerm = document.getElementById('search-input').value;
+                const statusFilter = document.getElementById('status-filter').value;
+                
+                // Construire l'URL avec les paramètres
+                let url = `/admin/assurance/?page=${page}`;
+                if (searchTerm) {
+                    url += `&search=${encodeURIComponent(searchTerm)}`;
+                }
+                if (statusFilter) {
+                    url += `&status=${encodeURIComponent(statusFilter)}`;
                 }
                 
-                const statusCell = row.querySelector('td:nth-child(5)');
-                if (statusCell) {
-                    const status = statusCell.textContent.trim();
-                    row.style.display = status === filterValue ? '' : 'none';
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    // Mettre à jour le contenu de la table
+                    document.getElementById('assurance-list').innerHTML = html;
+                    
+                    // Mettre à jour l'URL avec le paramètre de page
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('page', page);
+                    window.history.pushState({page: page}, '', url);
+                    
+                    // Mettre à jour la pagination
+                    updatePagination();
+                    
+                    // Mettre à jour les statistiques
+                    updateStats();
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement de la page:', error);
+                    document.getElementById('assurance-list').innerHTML = '<tr><td colspan="6" class="text-center">Erreur lors du chargement des données</td></tr>';
+                });
+            }
+            
+            // Fonction pour mettre à jour les boutons de pagination
+            function updatePagination() {
+                const paginationInfo = document.querySelector('.pagination-info');
+                if (!paginationInfo) return;
+                
+                const currentPage = parseInt(paginationInfo.dataset.currentPage);
+                
+                // Mettre à jour les numéros de page
+                const pageButtons = document.querySelectorAll('.page-btn');
+                pageButtons.forEach(button => {
+                    const page = parseInt(button.dataset.page);
+                    if (page === currentPage) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Fonction pour mettre à jour les statistiques
+            function updateStats() {
+                const paginationInfo = document.querySelector('.pagination-info');
+                if (!paginationInfo || !paginationInfo.dataset.stats) return;
+                
+                try {
+                    const stats = JSON.parse(paginationInfo.dataset.stats);
+                    document.querySelector('.stat-total .stat-value').textContent = stats.total;
+                    document.querySelector('.stat-active .stat-value').textContent = stats.active;
+                    document.querySelector('.stat-expired .stat-value').textContent = stats.expired;
+                    document.querySelector('.stat-pending .stat-value').textContent = stats.pending;
+                } catch (e) {
+                    console.error('Erreur lors de la mise à jour des statistiques:', e);
                 }
+            }
+            
+            // Gérer les clics sur les boutons de pagination
+            document.getElementById('pagination-container').addEventListener('click', function(e) {
+                // Trouver le bouton cliqué (soit directement, soit un enfant comme l'icône)
+                const target = e.target.closest('.page-btn');
+                if (!target || target.disabled) return;
+                
+                let page;
+                // Bouton numéroté
+                page = parseInt(target.dataset.page);
+                
+                if (page && page > 0) {
+                    loadPage(page);
+                }
+            });
+            
+            // Gérer le filtrage
+            document.getElementById('apply-filter').addEventListener('click', function() {
+                applyFilters();
+            });
+            
+            // Gérer la touche Entrée dans le champ de recherche
+            document.getElementById('search-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    applyFilters();
+                }
+            });
+            
+            // Initialiser la pagination et les statistiques
+            updatePagination();
+            updateStats();
+            
+            // Gérer les retours en arrière/avant du navigateur
+            window.addEventListener('popstate', function(e) {
+                if (e.state && e.state.page) {
+                    loadPage(e.state.page);
+                }
+            });
+            
+            // Fonction pour appliquer les filtres
+            function applyFilters() {
+                const searchTerm = document.getElementById('search-input').value;
+                const statusFilter = document.getElementById('status-filter').value;
+                
+                // Construire l'URL avec les paramètres
+                let url = '/admin/assurance/?page=1';
+                if (searchTerm) {
+                    url += `&search=${encodeURIComponent(searchTerm)}`;
+                }
+                if (statusFilter) {
+                    url += `&status=${encodeURIComponent(statusFilter)}`;
+                }
+                
+                // Rediriger vers l'URL avec les filtres
+                window.location.href = url;
+            }
+            
+            // Fonctions pour le modal de suppression
+            window.openDeleteModal = function(id) {
+                const modal = document.getElementById('deleteModal');
+                const form = document.getElementById('deleteForm');
+                document.getElementById('assurance_id').value = id;
+                form.action = "/admin/assurance/" + id + "/delete";
+                modal.classList.add('show');
+            };
+
+            window.closeDeleteModal = function() {
+                const modal = document.getElementById('deleteModal');
+                document.getElementById('assurance_id').value = '';
+                modal.classList.remove('show');
+            };
+
+            // Recherche et filtrage
+            document.querySelector('.search-input').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('.data-table tbody tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+
+            document.querySelector('.filter-dropdown').addEventListener('change', function(e) {
+                const filterValue = e.target.value;
+                const rows = document.querySelectorAll('.data-table tbody tr');
+                
+                rows.forEach(row => {
+                    if (!filterValue) {
+                        row.style.display = '';
+                        return;
+                    }
+                    
+                    const statusCell = row.querySelector('td:nth-child(5)');
+                    if (statusCell) {
+                        const status = statusCell.textContent.trim();
+                        row.style.display = status === filterValue ? '' : 'none';
+                    }
+                });
             });
         });
     </script>
