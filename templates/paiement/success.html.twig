@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement réussi | SportHive{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Styles personnalisés en plus de Bootstrap */
+        .success-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .success-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .success-header-gradient {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            height: 8px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            color: #4CAF50;
+            margin-bottom: 1.5rem;
+        }
+        
+        .success-icon i {
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+        
+        .details-card {
+            border-left: 4px solid #4CAF50;
+            transition: all 0.3s ease;
+        }
+        
+        .details-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .detail-row {
+            border-bottom: 1px solid #eee;
+            padding: 0.75rem 0;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card success-card mb-4">
+                    <div class="success-header-gradient"></div>
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <div class="success-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h2 class="fw-bold mb-2">Paiement réussi !</h2>
+                            <p class="text-muted fs-5">Votre assurance est maintenant active</p>
+                            
+                            <div class="alert alert-success d-inline-flex align-items-center mt-3">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                <div>Vous êtes maintenant couvert par votre assurance</div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4 details-card">
+                            <div class="card-body">
+                                <h4 class="card-title border-bottom pb-3 mb-3">Détails de votre assurance</h4>
+                                
+                                <div class="row detail-row">
+                                    <div class="col-md-6 detail-label">Numéro de contrat</div>
+                                    <div class="col-md-6 detail-value text-md-end">#{{ assurance.ID_contrat }}</div>
+                                </div>
+                                
+                                <div class="row detail-row">
+                                    <div class="col-md-6 detail-label">Type de couverture</div>
+                                    <div class="col-md-6 detail-value text-md-end">
+                                        {{ assurance.typeDeCouverture }}
+                                        {% if assurance.typeDeCouverture == 'Basique' %}
+                                            <span class="badge bg-info text-white ms-2">Basique</span>
+                                        {% elseif assurance.typeDeCouverture == 'Standard' %}
+                                            <span class="badge bg-primary text-white ms-2">Standard</span>
+                                        {% elseif assurance.typeDeCouverture == 'Premium' %}
+                                            <span class="badge bg-warning text-dark ms-2">Premium</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row detail-row">
+                                    <div class="col-md-6 detail-label">Durée</div>
+                                    <div class="col-md-6 detail-value text-md-end">{{ assurance.Duree }} mois</div>
+                                </div>
+                                
+                                <div class="row detail-row">
+                                    <div class="col-md-6 detail-label">Date de début</div>
+                                    <div class="col-md-6 detail-value text-md-end">{{ assurance.dateDebut }}</div>
+                                </div>
+                                
+                                <div class="row detail-row">
+                                    <div class="col-md-6 detail-label">Statut</div>
+                                    <div class="col-md-6 detail-value text-md-end">
+                                        <span class="badge bg-success">{{ assurance.Statut }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4 g-3">
+                            <div class="col-md-6">
+                                <a href="{{ path('app_admin_assurance_index') }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-list me-2"></i> Voir mes assurances
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{{ path('app_home') }}" class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-home me-2"></i> Retour à l'accueil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

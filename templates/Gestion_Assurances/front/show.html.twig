@@ -48,6 +48,9 @@
 
                     <div class="card-footer">
                         <a href="{{ path('app_assurance_index', {'page': app.request.query.get('page')}) }}" class="btn-back">Retour à la liste</a>
+                        {% if assurance.getStatut() != 'Actif' %}
+                            <a href="{{ path('app_payment_form', {'id': assurance.id}) }}" class="btn-pay">Payer l'assurance</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -189,6 +192,21 @@
 
     .btn-back:hover {
         background-color: #5a6268;
+        color: white;
+    }
+    
+    .btn-pay {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-pay:hover {
+        background-color: #218838;
         color: white;
     }
 </style>

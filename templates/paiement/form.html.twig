@@ -1,0 +1,199 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement de votre assurance{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Styles personnalisés en plus de Bootstrap */
+        .card-header-gradient {
+            background: linear-gradient(90deg, #4a90e2, #63b3ed);
+            height: 8px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+        
+        .payment-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .payment-details {
+            border-left: 4px solid #4a90e2;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-details:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .price-total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4a90e2;
+        }
+        
+        .payment-btn {
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .payment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+        
+        .payment-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .security-feature {
+            display: flex;
+            align-items: center;
+        }
+        
+        .security-feature i {
+            color: #48bb78;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- Font Awesome CDN plus fiable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card payment-card mb-4">
+                    <div class="card-header-gradient"></div>
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold mb-2">Paiement de votre assurance</h2>
+                            <p class="text-muted">Veuillez vérifier les détails de votre assurance avant de procéder au paiement</p>
+                        </div>
+                        
+                        <!-- Information sur l'assurance -->
+                        <div class="alert alert-info d-flex align-items-center">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <div>
+                                <strong>Assurance #{{ assurance.id }}</strong> - {{ assurance.typeDeCouverture }} pour {{ assurance.duree }} mois
+                            </div>
+                        </div>
+
+                        <div class="card mb-4 payment-details">
+                            <div class="card-body">
+                                <h4 class="card-title border-bottom pb-3 mb-3">Récapitulatif de votre assurance</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-bold text-muted" style="width: 40%">Type de couverture:</td>
+                                                <td>
+                                                    <strong>{{ assurance.typeDeCouverture }}</strong>
+                                                    {% if assurance.typeDeCouverture == 'Basique' %}
+                                                        <span class="badge bg-info text-white ms-2">Basique</span>
+                                                    {% elseif assurance.typeDeCouverture == 'Standard' %}
+                                                        <span class="badge bg-primary text-white ms-2">Standard</span>
+                                                    {% elseif assurance.typeDeCouverture == 'Premium' %}
+                                                        <span class="badge bg-warning text-dark ms-2">Premium</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Durée du contrat:</td>
+                                                <td><strong>{{ assurance.duree }} mois</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Prix mensuel:</td>
+                                                <td>
+                                                    <strong>
+                                                    {% if assurance.typeDeCouverture == 'Basique' %}
+                                                        10,00 €
+                                                    {% elseif assurance.typeDeCouverture == 'Standard' %}
+                                                        20,00 €
+                                                    {% elseif assurance.typeDeCouverture == 'Premium' %}
+                                                        30,00 €
+                                                    {% else %}
+                                                        15,00 €
+                                                    {% endif %}
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Montant total:</td>
+                                                <td class="price-total">
+                                                    {% set prixBase = 0 %}
+                                                    {% if assurance.typeDeCouverture == 'Basique' %}
+                                                        {% set prixBase = 10 %}
+                                                    {% elseif assurance.typeDeCouverture == 'Standard' %}
+                                                        {% set prixBase = 20 %}
+                                                    {% elseif assurance.typeDeCouverture == 'Premium' %}
+                                                        {% set prixBase = 30 %}
+                                                    {% else %}
+                                                        {% set prixBase = 15 %}
+                                                    {% endif %}
+                                                    {{ (prixBase * assurance.duree)|number_format(2, ',', ' ') }} €
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4 payment-details">
+                            <div class="card-body">
+                                <h4 class="card-title border-bottom pb-3 mb-3">Paiement sécurisé</h4>
+                                <p>Votre paiement sera traité de manière sécurisée par Stripe, l'un des leaders mondiaux du paiement en ligne. Vos informations bancaires ne sont jamais stockées sur nos serveurs.</p>
+                                <div class="row mt-4">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="security-feature">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <span>Paiement 100% sécurisé</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="security-feature">
+                                            <i class="fas fa-lock"></i>
+                                            <span>Données cryptées SSL</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lien direct vers Stripe Checkout -->
+                        <a href="{{ path('app_stripe_checkout', {'id': assurance.id}) }}" class="btn btn-primary btn-lg payment-btn w-100 py-3">
+                            <i class="fas fa-credit-card me-2"></i> Procéder au paiement
+                        </a>
+                        
+                        <div class="d-flex justify-content-center align-items-center mt-3 text-muted">
+                            <i class="fas fa-lock me-2"></i> Paiement sécurisé via Stripe
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
