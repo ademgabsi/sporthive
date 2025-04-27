@@ -1,0 +1,109 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Test de Chart.js{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 400px;
+            width: 80%;
+            margin-bottom: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .debug-info {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 20px auto;
+            width: 80%;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Test de Chart.js</h1>
+        
+        <div class="debug-info">
+            <h4>Informations de débogage</h4>
+            <p>Type de graphique: {{ chart.type }}</p>
+            <p>Données: {{ chart.data.datasets[0].data|json_encode }}</p>
+            <p>Labels: {{ chart.data.labels|json_encode }}</p>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">Graphique de test</div>
+            {{ render_chart(chart) }}
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">Graphique de test manuel</div>
+            <canvas id="manualChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page chargée, initialisation du graphique manuel...');
+            
+            // Créer un graphique manuellement
+            var ctx = document.getElementById('manualChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Rouge', 'Bleu', 'Jaune', 'Vert', 'Violet', 'Orange'],
+                        datasets: [{
+                            label: 'Graphique de test manuel',
+                            data: [12, 19, 3, 5, 2, 3],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.7)',
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 206, 86, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(153, 102, 255, 0.7)',
+                                'rgba(255, 159, 64, 0.7)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Graphique créé manuellement avec Chart.js'
+                            }
+                        }
+                    }
+                });
+                console.log('Graphique manuel créé avec succès');
+            } else {
+                console.error('Canvas pour le graphique manuel non trouvé');
+            }
+        });
+    </script>
+{% endblock %}

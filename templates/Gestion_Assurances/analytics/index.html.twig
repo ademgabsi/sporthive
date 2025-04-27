@@ -63,13 +63,32 @@
             border-radius: 8px;
             margin-top: 10px;
         }
+        
+        /* Style de débogage */
+        .debug-info {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid px-4">
         <h1 class="mt-4 dashboard-title">Tableau de bord analytique des assurances</h1>
+        
+        <div class="debug-info">
+            <h4>Informations de débogage</h4>
+            <p>Nombre total d'assurances: {{ generalStats.totalAssurances }}</p>
+            <p>Données du graphique type: {{ typeChart.data.datasets[0].data|json_encode }}</p>
+            <p>Labels du graphique type: {{ typeChart.data.labels|json_encode }}</p>
+            
+            <!-- Ajouter un canvas de test -->
+            <canvas id="debugChart" width="400" height="200"></canvas>
+        </div>
         
         <!-- Statistiques générales -->
         <div class="row mb-4">
@@ -146,6 +165,8 @@
                     <div class="chart-title">Répartition par type d'assurance</div>
                     {% if typeChart.data.datasets[0].data|length > 0 %}
                         {{ render_chart(typeChart) }}
+                        <!-- Canvas de secours pour le graphique de type -->
+                        <canvas id="typeChartManual" width="400" height="200" style="display: none;"></canvas>
                     {% else %}
                         <div class="empty-chart-message">
                             <p>Aucune donnée disponible pour ce graphique</p>
@@ -160,6 +181,8 @@
                     <div class="chart-title">Répartition par statut d'assurance</div>
                     {% if statusChart.data.datasets[0].data|length > 0 %}
                         {{ render_chart(statusChart) }}
+                        <!-- Canvas de secours pour le graphique de statut -->
+                        <canvas id="statusChartManual" width="400" height="200" style="display: none;"></canvas>
                     {% else %}
                         <div class="empty-chart-message">
                             <p>Aucune donnée disponible pour ce graphique</p>
@@ -176,6 +199,8 @@
                     <div class="chart-title">Évolution des souscriptions par mois</div>
                     {% if monthlyChart.data.datasets[0].data|length > 0 %}
                         {{ render_chart(monthlyChart) }}
+                        <!-- Canvas de secours pour le graphique mensuel -->
+                        <canvas id="monthlyChartManual" width="400" height="200" style="display: none;"></canvas>
                     {% else %}
                         <div class="empty-chart-message">
                             <p>Aucune donnée disponible pour ce graphique</p>
@@ -190,6 +215,8 @@
                     <div class="chart-title">Répartition par durée d'assurance</div>
                     {% if durationChart.data.datasets[0].data|length > 0 %}
                         {{ render_chart(durationChart) }}
+                        <!-- Canvas de secours pour le graphique de durée -->
+                        <canvas id="durationChartManual" width="400" height="200" style="display: none;"></canvas>
                     {% else %}
                         <div class="empty-chart-message">
                             <p>Aucune donnée disponible pour ce graphique</p>
