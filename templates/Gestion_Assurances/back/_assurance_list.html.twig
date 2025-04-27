@@ -1,0 +1,45 @@
+{% if isAjax is defined and isAjax %}
+<!-- Mise à jour des statistiques via AJAX -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mettre à jour les statistiques
+        document.querySelector('.stat-total .stat-value').textContent = '{{ stats.total }}';
+        document.querySelector('.stat-active .stat-value').textContent = '{{ stats.active }}';
+        document.querySelector('.stat-expired .stat-value').textContent = '{{ stats.expired }}';
+        document.querySelector('.stat-pending .stat-value').textContent = '{{ stats.pending }}';
+    });
+</script>
+{% endif %}
+
+{% for assurance in assurances %}
+    <tr>
+        <td>{{ assurance.ID_contrat }}</td>
+        <td>{{ assurance.typeDeCouverture }}</td>
+        <td>{{ assurance.duree }} mois</td>
+        <td>{{ assurance.dateDebut }}</td>
+        <td>
+            <span class="badge {% if assurance.statut == 'Active' %}badge-success{% elseif assurance.statut == 'Expirée' %}badge-danger{% else %}badge-warning{% endif %}">
+                {{ assurance.statut }}
+            </span>
+        </td>
+        <td class="action-cell">
+            <a href="{{ path('app_admin_assurance_show', {'ID_contrat': assurance.ID_contrat}) }}" class="action-btn view" title="Voir">
+                <i class="fas fa-eye"></i>
+            </a>
+            <a href="{{ path('app_admin_assurance_edit', {'ID_contrat': assurance.ID_contrat}) }}" class="action-btn edit" title="Modifier">
+                <i class="fas fa-edit"></i>
+            </a>
+            <button class="action-btn delete" title="Supprimer" onclick="openDeleteModal('{{ assurance.ID_contrat }}')">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="6" class="text-center">Aucune assurance trouvée</td>
+    </tr>
+{% endfor %}
+
+<div class="pagination-info" data-current-page="{{ page }}" data-total-pages="{{ totalPages }}" data-stats='{{ stats|json_encode|raw }}'>
+    <span>Page {{ page }} sur {{ totalPages }}</span>
+</div>
