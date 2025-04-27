@@ -28,7 +28,8 @@
         .chart-container {
             position: relative;
             margin: auto;
-            height: 300px;
+            height: auto;
+            min-height: 350px;
             margin-bottom: 30px;
             background-color: white;
             border-radius: 10px;
@@ -51,7 +52,6 @@
             padding-left: 15px;
         }
         
-        /* Styles pour les graphiques vides */
         .empty-chart-message {
             display: flex;
             justify-content: center;
@@ -63,32 +63,12 @@
             border-radius: 8px;
             margin-top: 10px;
         }
-        
-        /* Style de débogage */
-        .debug-info {
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            font-family: monospace;
-        }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid px-4">
         <h1 class="mt-4 dashboard-title">Tableau de bord analytique des assurances</h1>
-        
-        <div class="debug-info">
-            <h4>Informations de débogage</h4>
-            <p>Nombre total d'assurances: {{ generalStats.totalAssurances }}</p>
-            <p>Données du graphique type: {{ typeChart.data.datasets[0].data|json_encode }}</p>
-            <p>Labels du graphique type: {{ typeChart.data.labels|json_encode }}</p>
-            
-            <!-- Ajouter un canvas de test -->
-            <canvas id="debugChart" width="400" height="200"></canvas>
-        </div>
         
         <!-- Statistiques générales -->
         <div class="row mb-4">
@@ -163,15 +143,7 @@
             <div class="col-lg-6">
                 <div class="chart-container">
                     <div class="chart-title">Répartition par type d'assurance</div>
-                    {% if typeChart.data.datasets[0].data|length > 0 %}
-                        {{ render_chart(typeChart) }}
-                        <!-- Canvas de secours pour le graphique de type -->
-                        <canvas id="typeChartManual" width="400" height="200" style="display: none;"></canvas>
-                    {% else %}
-                        <div class="empty-chart-message">
-                            <p>Aucune donnée disponible pour ce graphique</p>
-                        </div>
-                    {% endif %}
+                    <canvas id="typeChart" style="width: 100%; height: 300px;"></canvas>
                 </div>
             </div>
             
@@ -179,15 +151,7 @@
             <div class="col-lg-6">
                 <div class="chart-container">
                     <div class="chart-title">Répartition par statut d'assurance</div>
-                    {% if statusChart.data.datasets[0].data|length > 0 %}
-                        {{ render_chart(statusChart) }}
-                        <!-- Canvas de secours pour le graphique de statut -->
-                        <canvas id="statusChartManual" width="400" height="200" style="display: none;"></canvas>
-                    {% else %}
-                        <div class="empty-chart-message">
-                            <p>Aucune donnée disponible pour ce graphique</p>
-                        </div>
-                    {% endif %}
+                    <canvas id="statusChart" style="width: 100%; height: 300px;"></canvas>
                 </div>
             </div>
         </div>
@@ -197,15 +161,7 @@
             <div class="col-lg-8">
                 <div class="chart-container">
                     <div class="chart-title">Évolution des souscriptions par mois</div>
-                    {% if monthlyChart.data.datasets[0].data|length > 0 %}
-                        {{ render_chart(monthlyChart) }}
-                        <!-- Canvas de secours pour le graphique mensuel -->
-                        <canvas id="monthlyChartManual" width="400" height="200" style="display: none;"></canvas>
-                    {% else %}
-                        <div class="empty-chart-message">
-                            <p>Aucune donnée disponible pour ce graphique</p>
-                        </div>
-                    {% endif %}
+                    <canvas id="monthlyChart" style="width: 100%; height: 300px;"></canvas>
                 </div>
             </div>
             
@@ -213,15 +169,7 @@
             <div class="col-lg-4">
                 <div class="chart-container">
                     <div class="chart-title">Répartition par durée d'assurance</div>
-                    {% if durationChart.data.datasets[0].data|length > 0 %}
-                        {{ render_chart(durationChart) }}
-                        <!-- Canvas de secours pour le graphique de durée -->
-                        <canvas id="durationChartManual" width="400" height="200" style="display: none;"></canvas>
-                    {% else %}
-                        <div class="empty-chart-message">
-                            <p>Aucune donnée disponible pour ce graphique</p>
-                        </div>
-                    {% endif %}
+                    <canvas id="durationChart" style="width: 100%; height: 300px;"></canvas>
                 </div>
             </div>
         </div>
@@ -235,4 +183,184 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page analytics chargée, initialisation des graphiques...');
+            
+            // Données pour le graphique de type
+            var typeLabels = {{ typeChart.data.labels|json_encode|raw }};
+            var typeData = {{ typeChart.data.datasets[0].data|json_encode|raw }};
+            var typeColors = [
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 99, 132, 0.7)'
+            ];
+            
+            // Données pour le graphique de statut
+            var statusLabels = {{ statusChart.data.labels|json_encode|raw }};
+            var statusData = {{ statusChart.data.datasets[0].data|json_encode|raw }};
+            var statusColors = [
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(153, 102, 255, 0.7)'
+            ];
+            
+            // Données pour le graphique mensuel
+            var monthlyLabels = {{ monthlyChart.data.labels|json_encode|raw }};
+            var monthlyData = {{ monthlyChart.data.datasets[0].data|json_encode|raw }};
+            
+            // Données pour le graphique de durée
+            var durationLabels = {{ durationChart.data.labels|json_encode|raw }};
+            var durationData = {{ durationChart.data.datasets[0].data|json_encode|raw }};
+            
+            // Créer le graphique de type
+            var typeCtx = document.getElementById('typeChart');
+            if (typeCtx) {
+                typeCtx.style.maxHeight = '300px';
+                new Chart(typeCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: typeLabels,
+                        datasets: [{
+                            label: 'Types d\'assurance',
+                            data: typeData,
+                            backgroundColor: typeColors.slice(0, typeLabels.length)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Répartition par type d\'assurance'
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Créer le graphique de statut
+            var statusCtx = document.getElementById('statusChart');
+            if (statusCtx) {
+                statusCtx.style.maxHeight = '300px';
+                new Chart(statusCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: statusLabels,
+                        datasets: [{
+                            label: 'Statuts d\'assurance',
+                            data: statusData,
+                            backgroundColor: statusColors.slice(0, statusLabels.length)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Répartition par statut d\'assurance'
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Créer le graphique mensuel
+            var monthlyCtx = document.getElementById('monthlyChart');
+            if (monthlyCtx) {
+                monthlyCtx.style.maxHeight = '300px';
+                new Chart(monthlyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [{
+                            label: 'Souscriptions mensuelles',
+                            data: monthlyData,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Évolution des souscriptions par mois'
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Créer le graphique de durée
+            var durationCtx = document.getElementById('durationChart');
+            if (durationCtx) {
+                durationCtx.style.maxHeight = '300px';
+                new Chart(durationCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: durationLabels,
+                        datasets: [{
+                            label: 'Nombre d\'assurances',
+                            data: durationData,
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Répartition par durée d\'assurance'
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 {% endblock %}

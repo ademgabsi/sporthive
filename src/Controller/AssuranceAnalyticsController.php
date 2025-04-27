@@ -41,7 +41,7 @@ class AssuranceAnalyticsController extends AbstractController
         // Créer le graphique de répartition par durée
         $durationChart = $this->createDurationChart();
         
-        return $this->render('Gestion_Assurances/analytics/index_new.html.twig', [
+        return $this->render('Gestion_Assurances/analytics/index.html.twig', [
             'generalStats' => $generalStats,
             'typeChart' => $typeChart,
             'statusChart' => $statusChart,
