@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement annulé{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .cancel-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cancel-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .cancel-icon {
+            font-size: 4rem;
+            color: #f44336;
+            margin-bottom: 1rem;
+        }
+        
+        .cancel-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cancel-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        
+        .cancel-message {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a56d4;
+        }
+        
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="cancel-container">
+        <div class="cancel-header">
+            <div class="cancel-icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <h1 class="cancel-title">Paiement annulé</h1>
+            <p class="cancel-subtitle">Votre paiement n'a pas été finalisé</p>
+        </div>
+        
+        <div class="cancel-message">
+            <p>Votre assurance reste en statut "En attente" jusqu'à ce que le paiement soit effectué. Vous pouvez réessayer le paiement à tout moment.</p>
+            <p>Si vous avez rencontré des problèmes lors du paiement, n'hésitez pas à contacter notre service client.</p>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="{{ path('app_stripe_checkout', {'id': assurance.ID_contrat}) }}" class="btn-primary">
+                <i class="fas fa-credit-card"></i> Réessayer le paiement
+            </a>
+            <a href="{{ path('app_admin_assurance_index') }}" class="btn-secondary">
+                <i class="fas fa-list"></i> Retour aux assurances
+            </a>
+        </div>
+    </div>
+{% endblock %}
