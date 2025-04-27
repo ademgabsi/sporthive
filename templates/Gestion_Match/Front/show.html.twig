@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ match.nom }}{% endblock %}
+
+{% block body %}
+    <!-- match detail section -->
+    <section class="match_detail_section layout_padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h2 class="mb-0">{{ match.nom }}</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="match-info mb-4">
+                                <h4 class="text-muted mb-3">Informations du match</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong><i class="fas fa-tag"></i> Type:</strong> {{ match.type }}</p>
+                                        <p><strong><i class="far fa-calendar-alt"></i> Date:</strong> {{ match.date ? match.date|date('d/m/Y') : 'Non définie' }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong><i class="far fa-clock"></i> Heure:</strong> {{ match.heure ? match.heure|date('H:i') : 'Non définie' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="match-description mb-4">
+                                <h4 class="text-muted mb-3">Description</h4>
+                                <p class="card-text">{{ match.description }}</p>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <a href="{{ path('app_match_front_index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end match detail section -->
+{% endblock %}
