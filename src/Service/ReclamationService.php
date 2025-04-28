@@ -3,24 +3,38 @@
 namespace App\Service;
 
 use App\Entity\Reclamation;
+use App\Entity\User;
 use App\Service\PurgoMalumService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Psr\Log\LoggerInterface;
 
 class ReclamationService
 {
     private $entityManager;
     private $validator;
     private $purgoMalumService;
+    private $httpClient;
+    private $logger;
+    
+    // Identifiants Twilio directement dans le service
+    private $twilioSid = 'AC853faa2692acffbd99c7d9b2602fc5f5';
+    private $twilioToken = '9b1cf0aa27709a4b45837d7232bc0c91';
+    private $twilioFrom = '+16203171255';
 
     public function __construct(
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
-        PurgoMalumService $purgoMalumService
+        PurgoMalumService $purgoMalumService,
+        HttpClientInterface $httpClient,
+        LoggerInterface $logger = null
     ) {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
         $this->purgoMalumService = $purgoMalumService;
+        $this->httpClient = $httpClient;
+        $this->logger = $logger;
     }
 
     /**
@@ -108,9 +122,115 @@ class ReclamationService
         if (empty($errors)) {
             $this->entityManager->persist($reclamation);
             $this->entityManager->flush();
+            
+            // Récupérer l'utilisateur associé à l'assurance pour envoyer le SMS
+            $assurance = $reclamation->getAssurance();
+            if ($assurance && $assurance->getUtilisateur()) {
+                $utilisateur = $assurance->getUtilisateur();
+                $phoneNumber = $utilisateur->getNumero_tel();
+                
+                if ($phoneNumber) {
+                    // Envoyer un SMS de confirmation
+                    $this->sendSms($reclamation, $phoneNumber);
+                }
+            }
+            
             return null;
         }
         
         return $errors;
+    }
+    
+    /**
+     * Envoie un SMS de confirmation pour une réclamation
+     * 
+     * @param Reclamation $reclamation La réclamation concernée
+     * @param string $phoneNumber Le numéro de téléphone du destinataire
+     * @return bool True si l'envoi a réussi, false sinon
+     */
+    private function sendSms(Reclamation $reclamation, string $phoneNumber): bool
+    {
+        try {
+            // Formater le numéro de téléphone pour l'envoi international
+            $formattedPhoneNumber = $this->formatPhoneNumber($phoneNumber);
+            
+            // Créer le message SMS
+            $message = sprintf(
+                "Sporthive: Votre réclamation #%s a été soumise avec succès. Nous l'examinerons dans les plus brefs délais.",
+                $reclamation->getID_reclamation() ?: 'NEW'
+            );
+            
+            // Log la tentative d'envoi
+            if ($this->logger) {
+                $this->logger->info('Tentative d\'envoi de SMS pour réclamation', [
+                    'reclamation_id' => $reclamation->getID_reclamation(),
+                    'phone' => $formattedPhoneNumber
+                ]);
+            }
+            
+            // Appel direct à l'API Twilio
+            $response = $this->httpClient->request('POST', "https://api.twilio.com/2010-04-01/Accounts/{$this->twilioSid}/Messages.json", [
+                'auth_basic' => [$this->twilioSid, $this->twilioToken],
+                'body' => [
+                    'To' => $formattedPhoneNumber,
+                    'From' => $this->twilioFrom,
+                    'Body' => $message
+                ]
+            ]);
+            
+            $data = $response->toArray();
+            
+            // Log le succès
+            if ($this->logger) {
+                $this->logger->info('SMS envoyé avec succès', [
+                    'reclamation_id' => $reclamation->getID_reclamation(),
+                    'twilio_sid' => $data['sid'] ?? 'N/A',
+                    'status' => $data['status'] ?? 'N/A'
+                ]);
+            }
+            
+            return true;
+        } catch (\Exception $e) {
+            // Log l'erreur
+            if ($this->logger) {
+                $this->logger->error('Erreur lors de l\'envoi du SMS', [
+                    'reclamation_id' => $reclamation->getID_reclamation(),
+                    'phone' => $phoneNumber,
+                    'error' => $e->getMessage()
+                ]);
+            }
+            
+            return false;
+        }
+    }
+    
+    /**
+     * Formate un numéro de téléphone pour l'envoi de SMS
+     * 
+     * @param string $phoneNumber Le numéro de téléphone à formater
+     * @return string Le numéro formaté
+     */
+    private function formatPhoneNumber(string $phoneNumber): string
+    {
+        // Si le numéro est déjà au format international avec +, le conserver tel quel
+        if (strpos($phoneNumber, '+') === 0) {
+            // Supprimer les espaces, tirets, etc. mais conserver le +
+            return '+' . preg_replace('/[^0-9]/', '', substr($phoneNumber, 1));
+        }
+        
+        // Supprimer les espaces, tirets, etc.
+        $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
+        
+        // Détecter le pays en fonction du préfixe
+        if (substr($phoneNumber, 0, 3) === '216') {
+            // Numéro tunisien déjà avec l'indicatif mais sans +
+            return '+' . $phoneNumber;
+        } else if (substr($phoneNumber, 0, 1) === '0') {
+            // Numéro français commençant par 0
+            return '+33' . substr($phoneNumber, 1);
+        }
+        
+        // Par défaut, ajouter simplement un + si nécessaire
+        return '+' . $phoneNumber;
     }
 }

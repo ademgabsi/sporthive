@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Reclamation;
 use App\Form\ReclamationType;
+use App\Service\ReclamationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,7 @@ class ReclamationController extends AbstractController
     }
 
     #[Route('/new', name: 'app_reclamation_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, ReclamationService $reclamationService): Response
     {
         $reclamation = new Reclamation();
         $form = $this->createForm(ReclamationType::class, $reclamation);
@@ -67,10 +68,18 @@ class ReclamationController extends AbstractController
                 }
             }
             
-            $entityManager->persist($reclamation);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_reclamation_index', [], Response::HTTP_SEE_OTHER);
+            // Utiliser le service de réclamation pour sauvegarder et envoyer le SMS
+            $errors = $reclamationService->saveReclamation($reclamation);
+            
+            if (empty($errors)) {
+                $this->addFlash('success', 'Votre réclamation a été soumise avec succès. Un SMS de confirmation vous a été envoyé.');
+                return $this->redirectToRoute('app_reclamation_index', [], Response::HTTP_SEE_OTHER);
+            } else {
+                // Afficher les erreurs
+                foreach ($errors as $field => $message) {
+                    $this->addFlash('error', $message);
+                }
+            }
         }
 
         return $this->render('Gestion_Reclamation/Front/new.html.twig', [
