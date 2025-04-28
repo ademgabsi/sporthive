@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use App\Repository\ReclamationRepository;
 use App\Entity\Assurance;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\Constraints as CustomAssert;
 
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
 #[ORM\Table(name: 'reclamation')]
@@ -30,6 +31,7 @@ class Reclamation
         minMessage: 'La description doit comporter au moins {{ limit }} caractères',
         maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères',
     )]
+    #[CustomAssert\NoProfanity]
     private ?string $Description = null;
 
     #[ORM\Column(name: 'Etat', type: Types::STRING, length: 50, nullable: true)]
