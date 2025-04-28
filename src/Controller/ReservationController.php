@@ -11,7 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use Dompdf\Dompdf;
+use Dompdf\Options;
 #[Route('/reservation')]
 final class ReservationController extends AbstractController
 {
@@ -79,7 +80,53 @@ final class ReservationController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    
+    #[Route('/admin/reservations/pdf', name: 'admin_reservation_pdf')]
+public function generateReservationsPdf(ReservationRepository $reservationRepository, Request $request): Response
+{
+    // Récupération des paramètres
+    $searchTerm = $request->query->get('q');
+    $status = $request->query->get('status');
+    $sortBy = $request->query->get('sort_by', 'dateReservation');
+    $direction = $request->query->get('direction', 'DESC');
+
+    // Récupération des réservations
+    $reservations = $reservationRepository->searchAndSort(
+        $searchTerm,
+        $status,
+        $sortBy,
+        $direction
+    );
+
+    // Configuration PDF
+    $pdfOptions = new Options();
+    $pdfOptions->set('defaultFont', 'Arial');
+    $pdfOptions->setIsRemoteEnabled(true);
+
+    // Génération HTML
+    $html = $this->renderView('admin/reservation/pdf.html.twig', [
+        'reservations' => $reservations,
+        'filters' => [
+            'search' => $searchTerm,
+            'status' => $status,
+            'sort' => "$sortBy $direction"
+        ]
+    ]);
+
+    // Génération PDF
+    $dompdf = new Dompdf($pdfOptions);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'landscape');
+    $dompdf->render();
+
+    return new Response(
+        $dompdf->stream("reservations_".date('Ymd-His').".pdf", ["Attachment" => true]),
+        200,
+        [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="reservations.pdf"'
+        ]
+    );
+}
 
     #[Route('/{ID_Reservation}', name: 'app_reservation_show', methods: ['GET'])]
     public function show(Reservation $reservation): Response

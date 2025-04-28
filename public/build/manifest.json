@@ -1,0 +1,9 @@
+{
+  "build/map.js": "/build/map.js",
+  "build/runtime.js": "/build/runtime.js",
+  "build/images/marker-icon-2x.png": "/build/images/marker-icon-2x.png",
+  "build/images/marker-icon.png": "/build/images/marker-icon.png",
+  "build/images/layers-2x.png": "/build/images/layers-2x.png",
+  "build/images/layers.png": "/build/images/layers.png",
+  "build/images/marker-shadow.png": "/build/images/marker-shadow.png"
+}

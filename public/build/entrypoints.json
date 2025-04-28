@@ -1,0 +1,10 @@
+{
+  "entrypoints": {
+    "map": {
+      "js": [
+        "/build/runtime.js",
+        "/build/map.js"
+      ]
+    }
+  }
+}

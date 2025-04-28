@@ -12,6 +12,11 @@
     <div class="table-top">
         <div class="search-filter">
             <!-- Tu peux ajouter ici une barre de recherche ou des filtres -->
+            <a href="{{ path('admin_reservation_pdf', app.request.query.all) }}" 
+       class="btn btn-danger btn-sm"
+       title="Exporter en PDF">
+        <i class="fas fa-file-pdf"></i> PDF
+    </a>
         </div>
     </div>
 

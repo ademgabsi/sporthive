@@ -1,196 +1,367 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier le terrain - Administration{% endblock %}
+{% block title %}Modifier le Terrain - SPORTHIVE{% endblock %}
 
 {% block body %}
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <h1 class="dashboard-title">Modifier le terrain</h1>
-            <p class="dashboard-subtitle">Modifiez les détails du terrain #{{ terrain.idTerrain }}</p>
+<section class="terrain-create-section layout_padding">
+    <div class="container">
+        <div class="heading_container mb-5">
+            <h2>Modifier le Terrain</h2>
         </div>
 
-        <div class="card">
-            <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'terrain-form', 'id': 'terrain-form', 'enctype': 'multipart/form-data'}}) }}
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="detail-card">
+                    <div class="card-header">
+                        <h3>Informations du Terrain #{{ terrain.idTerrain }}</h3>
+                    </div>
 
-                <div class="form-group">
-                    {{ form_label(form.nom) }}
-                    {{ form_widget(form.nom, {'attr': {'class': 'input'}}) }}
-                    {{ form_errors(form.nom) }}
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+                        <div class="form-group">
+                            {{ form_label(form.nom) }}
+                            {{ form_widget(form.nom) }}
+                            {{ form_errors(form.nom) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.typeSurface) }}
+                            {{ form_widget(form.typeSurface) }}
+                            {{ form_errors(form.typeSurface) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.localisation) }}
+
+                            <div class="map-search-container">
+                                <input type="text" id="location-search" placeholder="Rechercher une adresse...">
+                                <button type="button" id="search-button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+
+                            <div id="map"></div>
+                            {{ form_widget(form.localisation, {'attr': {'class': 'd-none'}}) }}
+                            {{ form_errors(form.localisation) }}
+
+                            <div class="map-instructions">
+                                <p><i class="fas fa-info-circle"></i> Cliquez sur la carte pour placer un marqueur ou recherchez une adresse</p>
+                                <p><i class="fas fa-arrows-alt"></i> Vous pouvez déplacer le marqueur pour ajuster la position</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.prix) }}
+                            {{ form_widget(form.prix) }}
+                            {{ form_errors(form.prix) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.imageTer) }}
+                            {{ form_widget(form.imageTer) }}
+                            {{ form_errors(form.imageTer) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.utilisateur) }}
+                            {{ form_widget(form.utilisateur) }}
+                            {{ form_errors(form.utilisateur) }}
+                        </div>
+
+                        <button class="btn btn-primary mt-3">{{ button_label|default('Enregistrer') }}</button>
+
+                        {{ form_end(form) }}
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    {{ form_label(form.typeSurface) }}
-                    {{ form_widget(form.typeSurface, {'attr': {'class': 'input'}}) }}
-                    {{ form_errors(form.typeSurface) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.localisation) }}
-                    {{ form_widget(form.localisation, {'attr': {'class': 'input'}}) }}
-                    {{ form_errors(form.localisation) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.prix) }}
-                    {{ form_widget(form.prix, {'attr': {'class': 'input'}}) }}
-                    {{ form_errors(form.prix) }}
-                </div>
-
-                <div class="form-group full-width">
-                    {{ form_label(form.imageTer) }}
-                    {{ form_widget(form.imageTer, {'attr': {'class': 'input'}}) }}
-                    {{ form_errors(form.imageTer) }}
-                </div>
-
-                <div class="form-group full-width">
-                    {{ form_label(form.utilisateur) }}
-                    {{ form_widget(form.utilisateur, {'attr': {'class': 'input'}}) }}
-                    {{ form_errors(form.utilisateur) }}
-                </div>
-
-                <div class="form-actions">
-                    <a href="{{ path('app_terrain_index') }}" class="btn btn-cancel">
-                        <i class="fas fa-arrow-left"></i> Retour à la liste
-                    </a>
-                    <button type="submit" class="btn btn-save">
-                        <i class="fas fa-save"></i> Enregistrer
-                    </button>
-                </div>
-
-                {{ form_end(form) }}
             </div>
         </div>
-
     </div>
+</section>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        /* Variables CSS pour une gestion plus facile des couleurs */
-        :root {
-            --primary-color: #3f51b5;
-            --primary-dark-color: #303f9f;
-            --secondary-color: #6c757d;
-            --background-color: #f8f9fa;
-            --border-color: #ced4da;
-            --text-color: #2d2d2d;
-            --light-gray: #e0e0e0;
-            --white: #ffffff;
-        }
+{% block css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+<style>
+    .terrain-create-section {
+        padding-top: 120px;
+        padding-bottom: 80px;
+        background-color: #f8f9fa;
+    }
 
-        .dashboard-container {
-            padding: 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+    .heading_container {
+        text-align: center;
+    }
 
-        .dashboard-header {
-            margin-bottom: 2rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 2px solid var(--light-gray);
-        }
+    .heading_container h2 {
+        font-weight: bold;
+        color: #252525;
+        position: relative;
+        padding-bottom: 10px;
+    }
 
-        .dashboard-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 0.3rem;
-            font-family: 'Roboto', sans-serif;
-        }
+    .heading_container h2:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: #ff4f5a;
+    }
 
-        .dashboard-subtitle {
-            font-size: 1rem;
-            color: var(--secondary-color);
-            font-family: 'Roboto', sans-serif;
-        }
+    .detail-card {
+        background-color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
 
-        .card {
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            margin-bottom: 2rem;
-        }
+    .card-header {
+        background-color: #ff4f5a;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-        .card-body {
-            padding: 2rem;
-        }
+    .card-header h3 {
+        margin: 0;
+        font-size: 24px;
+    }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
+    .card-body {
+        padding: 30px;
+    }
 
-        .input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            transition: border-color 0.3s ease;
-        }
+    .form-group {
+        margin-bottom: 20px;
+    }
 
-        .input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
+    .form-group label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 5px;
+    }
 
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--light-gray);
-        }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
+    .form-group input[type="file"] {
+        padding: 5px;
+    }
 
-        .btn-cancel {
-            background-color: var(--background-color);
-            color: var(--secondary-color);
-            border: 1px solid #dee2e6;
-        }
+    .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #ff4f5a;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
 
-        .btn-cancel:hover {
-            background-color: #e9ecef;
-        }
+    .btn:hover {
+        background-color: #e63946;
+    }
 
-        .btn-save {
-            background-color: var(--primary-color);
-            color: var(--white);
-            border: none;
-        }
+    /* Map styles */
+    #map {
+        border: 2px solid #dee2e6;
+        transition: border-color 0.3s ease;
+        height: 400px;
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        position: relative;
+        z-index: 1;
+    }
 
-        .btn-save:hover {
-            background-color: var(--primary-dark-color);
-        }
+    #map:hover {
+        border-color: #ff4f5a;
+    }
 
-        @media (max-width: 768px) {
-            .dashboard-container {
-                padding: 1rem;
-            }
+    .leaflet-container {
+       background: #f8f9fa !important;
+    }
 
-            .card-body {
-                padding: 1.5rem;
-            }
+    .leaflet-marker-icon {
+        filter: hue-rotate(300deg); /* Adapter la couleur du marqueur */
+    }
 
-            .form-actions {
-                flex-direction: column;
-            }
+    .map-search-container {
+        display: flex;
+        margin-bottom: 15px;
+    }
 
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
+    #location-search {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px 0 0 5px;
+        font-size: 16px;
+    }
+
+    #search-button {
+        background-color: #ff4f5a;
+        color: white;
+        border: none;
+        border-radius: 0 5px 5px 0;
+        padding: 0 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #search-button:hover {
+        background-color: #e63946;
+    }
+
+    .map-instructions {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #6c757d;
+    }
     </style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script>
+    // Direct inline script to initialize the map
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Direct inline map script running');
+
+        setTimeout(function() {
+            try {
+                const mapElement = document.getElementById('map');
+                if (!mapElement) {
+                    console.error('Map element not found');
+                    return;
+                }
+
+                if (typeof L === 'undefined') {
+                    console.error('Leaflet not loaded');
+                    alert('La bibliothèque Leaflet n\'a pas été chargée correctement. Veuillez rafraîchir la page.');
+                    return;
+                }
+
+                initMap();
+
+                function initMap() {
+                    console.log('Initializing map...');
+                    // Create a map instance
+                    const map = L.map(mapElement, {
+                        center: [36.8065, 10.1815],
+                        zoom: 13
+                    });
+
+                    // Add the tile layer
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    // Add scale control
+                    L.control.scale().addTo(map);
+
+                    const input = document.querySelector('[name="terrain[localisation]"]');
+                    let marker = null;
+
+                    // Function to update marker position
+                    function updateMarkerPosition(latlng) {
+                        if(marker) map.removeLayer(marker);
+                        marker = L.marker(latlng, {draggable: true}).addTo(map);
+
+                        // Update input value when marker is placed
+                        if (input) {
+                            input.value = `${latlng.lat.toFixed(6)},${latlng.lng.toFixed(6)}`;
+                        }
+
+                        // Update input value when marker is dragged
+                        marker.on('dragend', function(e) {
+                            const position = marker.getLatLng();
+                            if (input) {
+                                input.value = `${position.lat.toFixed(6)},${position.lng.toFixed(6)}`;
+                            }
+                        });
+                    }
+
+                    // Handle map click to place marker
+                    map.on('click', function(e) {
+                        updateMarkerPosition(e.latlng);
+                    });
+
+                    // Initialize with existing value
+                    if(input && input.value) {
+                        const [lat, lng] = input.value.split(',');
+                        if(!isNaN(lat) && !isNaN(lng)) {
+                            const latlng = L.latLng(parseFloat(lat), parseFloat(lng));
+                            updateMarkerPosition(latlng);
+                            map.setView(latlng, 15);
+                        }
+                    }
+
+                    // Handle search functionality
+                    const searchInput = document.getElementById('location-search');
+                    const searchButton = document.getElementById('search-button');
+
+                    if(searchInput && searchButton) {
+                        searchButton.addEventListener('click', searchLocation);
+                        searchInput.addEventListener('keypress', function(e) {
+                            if(e.key === 'Enter') {
+                                e.preventDefault();
+                                searchLocation();
+                            }
+                        });
+                    }
+
+                    function searchLocation() {
+                        if (!searchInput) return;
+
+                        const query = searchInput.value.trim();
+                        if(query.length > 0) {
+                            // Use Nominatim for geocoding
+                            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if(data && data.length > 0) {
+                                        const result = data[0];
+                                        const latlng = L.latLng(parseFloat(result.lat), parseFloat(result.lon));
+                                        updateMarkerPosition(latlng);
+                                        map.setView(latlng, 15);
+                                    } else {
+                                        alert('Aucun résultat trouvé pour cette recherche.');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Erreur de recherche:', error);
+                                    alert('Erreur lors de la recherche. Veuillez réessayer.');
+                                });
+                        }
+                    }
+
+                    // Force a map resize after a short delay
+                    setTimeout(function() {
+                        map.invalidateSize();
+                    }, 100);
+                }
+            } catch (error) {
+                console.error('Error initializing map:', error);
+            }
+        }, 500); // Delay initialization to ensure DOM is fully loaded
+    });
+</script>
 {% endblock %}

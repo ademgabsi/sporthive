@@ -7,6 +7,7 @@ use App\Form\TerrainType;
 use App\Repository\TerrainRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,6 +15,31 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/terrain')]
 final class TerrainController extends AbstractController
 {
+    #[Route('/search', name: 'app_terrain_search', methods: ['GET'])]
+public function search(Request $request, TerrainRepository $terrainRepository): Response
+{
+    $query = $request->query->get('q', '');
+    $isAdmin = $request->query->get('admin', 'false') === 'true';
+    $sortBy = $request->query->get('sort_by', 'idTerrain');
+    $direction = $request->query->get('direction', 'ASC');
+
+    // Use the searchAndSort method to get sorted results
+    $terrains = $terrainRepository->searchAndSort($query, $sortBy, $direction);
+
+    $data = [];
+    foreach ($terrains as $terrain) {
+        $data[] = [
+            'id' => $terrain->getIdTerrain(),
+            'nom' => $terrain->getNom(),
+            'typeSurface' => $terrain->getTypeSurface(),
+            'localisation' => $terrain->getLocalisation(),
+            'prix' => $terrain->getPrix(),
+            'image' => $terrain->getImageTer()
+        ];
+    }
+
+    return new JsonResponse($data);
+}
     #[Route(name: 'app_terrain_index', methods: ['GET'])]
     public function index(TerrainRepository $terrainRepository): Response
     {
@@ -78,7 +104,7 @@ public function backindex(TerrainRepository $terrainRepository, Request $request
         $terrain = new Terrain();
         $form = $this->createForm(TerrainType::class, $terrain);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('imageTer')->getData();
             if ($imageFile) {
@@ -89,19 +115,19 @@ public function backindex(TerrainRepository $terrainRepository, Request $request
                 );
                 $terrain->setImageTer($imageFilename);
             }
-    
+
             $entityManager->persist($terrain);
             $entityManager->flush();
-    
+
             return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
         }
-    
+
         return $this->render('terrain/front/new.html.twig', [
             'terrain' => $terrain,
             'form' => $form->createView(),
         ]);
     }
-    
+
     #[Route('/{idTerrain}', name: 'app_terrain_show', methods: ['GET'])]
     public function show(Terrain $terrain): Response
     {
@@ -143,6 +169,10 @@ public function backindex(TerrainRepository $terrainRepository, Request $request
             'form' => $form->createView(),
         ]);
     }
+
+
+
+
 
     #[Route('/{idTerrain}', name: 'app_terrain_delete', methods: ['POST'])]
     public function delete(Request $request, Terrain $terrain, EntityManagerInterface $entityManager): Response
