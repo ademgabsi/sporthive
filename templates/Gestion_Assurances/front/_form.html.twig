@@ -1,4 +1,9 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {{ form_row(form.Date) }}
+    {{ form_row(form.Description) }}
+    {{ form_row(form.Etat) }}
+    {{ form_row(form.Montantreclame) }}
+    {{ form_row(form.Documents) }}
+    {{ form_row(form.assurance) }} 
+    <button class="btn btn-primary">Créer</button>
 {{ form_end(form) }}

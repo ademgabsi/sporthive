@@ -3,42 +3,64 @@
 {% block title %}Reclamation index{% endblock %}
 
 {% block body %}
-    <h1>Reclamation index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID_reclamation</th>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Etat</th>
-                <th>Montant_reclame</th>
-                <th>Montant_rembourse</th>
-                <th>Documents</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for reclamation in reclamations %}
-            <tr>
-                <td>{{ reclamation.ID_reclamation }}</td>
-                <td>{{ reclamation.Date ? reclamation.Date|date('Y-m-d') : '' }}</td>
-                <td>{{ reclamation.Description }}</td>
-                <td>{{ reclamation.Etat }}</td>
-                <td>{{ reclamation.MontantReclame }}</td>
-                <td>{{ reclamation.MontantRembourse }}</td>
-                <td>{{ reclamation.Documents }}</td>
-                <td>
-                    <a href="{{ path('app_reclamation_show', {'ID_reclamation': reclamation.ID_reclamation}) }}">show</a>
-                    <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}">edit</a>
-                </td>
-            </tr>
+    <div class="container">
+        <h1 class="my-4">Liste des Réclamations</h1>
+        
+        
+        
+        {% if reclamations|length > 0 %}
+            <div class="row">
+                {% for reclamation in reclamations %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Réclamation #{{ reclamation.ID_reclamation }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <p><i class="fas fa-calendar-alt me-2"></i> <strong>Date:</strong> {{ reclamation.Date ? reclamation.Date|date('d/m/Y') : 'N/A' }}</p>
+                                        <p><i class="fas fa-info-circle me-2"></i> <strong>État:</strong> 
+                                            <span class="badge bg-{{ reclamation.Etat == 'En attente' ? 'warning' : (reclamation.Etat == 'Active' ? 'success' : 'danger') }}">
+                                                {{ reclamation.Etat }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><i class="fas fa-money-bill-wave me-2"></i> <strong>Montant réclamé:</strong> {{ reclamation.MontantReclame }} TND</p>
+                                        <p><i class="fas fa-hand-holding-usd me-2"></i> <strong>Montant remboursé:</strong> {{ reclamation.MontantRembourse }} TND</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h6><i class="fas fa-align-left me-2"></i>Description :</h6>
+                                    <p class="text-muted">{{ reclamation.Description|length > 100 ? reclamation.Description|slice(0, 100) ~ '...' : reclamation.Description }}</p>
+                                </div>
+                                
+                                {% if reclamation.Documents %}
+                                    <div class="mb-3">
+                                        <h6><i class="fas fa-file-alt me-2"></i>Documents :</h6>
+                                        <p>{{ reclamation.Documents }}</p>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="d-flex justify-content-end">
+                                    <a href="{{ path('app_reclamation_show', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-eye me-1"></i> Détails
+                                    </a>
+                                    <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-edit me-1"></i> Modifier
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i> Aucune réclamation trouvée.
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

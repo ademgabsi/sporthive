@@ -2,6 +2,289 @@
 
 {% block title %}Liste des Matchs{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .content-header {
+            padding: 15px 0.5rem;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .content-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0;
+        }
+
+        .card {
+            box-shadow: 0 0 15px rgba(0,0,0,0.1) !important;
+            border: none !important;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem !important;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 20px rgba(0,0,0,0.15) !important;
+        }
+
+        .card-header {
+            background-color: #fff !important;
+            border-bottom: 1px solid #eee !important;
+            padding: 1.25rem 1.5rem !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3.card-title {
+            color: #3498db;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-tools .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+            transition: all 0.2s ease;
+        }
+
+        .card-tools .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
+        }
+
+        .table-responsive {
+            border-radius: 0.5rem;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            color: #2c3e50;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: #555;
+            font-size: 0.95rem;
+            border-color: #eee;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0,0,0,.02);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-group .btn {
+            padding: 0.4rem 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-group .btn i {
+            font-size: 0.875rem;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(23,162,184,.2);
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #2c3e50;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(255,193,7,.2);
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(220,53,69,.2);
+        }
+
+        .text-center {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        /* Styles pour la recherche */
+        .search-container {
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .search-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+            outline: none;
+        }
+        
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner i {
+            color: #3498db;
+            font-size: 2rem;
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+        }
+        
+        /* Styles pour le tri des colonnes */
+        .sortable {
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+        
+        .sortable:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .sortable i {
+            margin-left: 5px;
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+        
+        .sortable.asc i.fa-sort {
+            display: none;
+        }
+        
+        .sortable.asc i.fa-sort-up {
+            display: inline-block;
+            opacity: 1;
+        }
+        
+        .sortable.desc i.fa-sort {
+            display: none;
+        }
+        
+        .sortable.desc i.fa-sort-down {
+            display: inline-block;
+            opacity: 1;
+        }
+        
+        .sortable i.fa-sort-up,
+        .sortable i.fa-sort-down {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .content-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .card-tools {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+
+            .card-body {
+                padding: 0.75rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-group .btn {
+                width: 100%;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="content-wrapper">
         <div class="content-header">
@@ -26,22 +309,40 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        <!-- Barre de recherche -->
+                        <div class="search-container">
+                            <input type="text" id="searchMatch" class="search-input" placeholder="Rechercher un match par nom, type ou description...">
+                            <div class="filter-container">
+                                <button class="filter-btn active" data-filter="all">Tous</button>
+                                <button class="filter-btn" data-filter="football">Football</button>
+                                <button class="filter-btn" data-filter="basketball">Basketball</button>
+                                <button class="filter-btn" data-filter="volleyball">Volleyball</button>
+                                <button class="filter-btn" data-filter="handball">Handball</button>
+                                <button class="filter-btn" data-filter="autre">Autre</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Indicateur de chargement -->
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
+                            <table class="table table-bordered table-striped" id="matchesTable">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Nom</th>
-                                        <th>Type</th>
-                                        <th>Description</th>
-                                        <th>Date</th>
-                                        <th>Heure</th>
+                                        <th class="sortable" data-sort="id">ID <i class="fas fa-sort"></i></th>
+                                        <th class="sortable" data-sort="nom">Nom <i class="fas fa-sort"></i></th>
+                                        <th class="sortable" data-sort="type">Type <i class="fas fa-sort"></i></th>
+                                        <th class="sortable" data-sort="description">Description <i class="fas fa-sort"></i></th>
+                                        <th class="sortable" data-sort="date">Date <i class="fas fa-sort"></i></th>
+                                        <th class="sortable" data-sort="heure">Heure <i class="fas fa-sort"></i></th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="matchesTableBody">
                                     {% for match in gestion_matches %}
-                                        <tr>
+                                        <tr class="match-row" data-type="{{ match.type|lower }}">
                                             <td>{{ match.id }}</td>
                                             <td>{{ match.nom }}</td>
                                             <td>{{ match.type }}</td>
@@ -56,7 +357,7 @@
                                                     <a href="{{ path('app_gestion_match_edit', {'id': match.id}) }}" class="btn btn-warning btn-sm" title="Modifier">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form method="post" action="{{ path('app_gestion_match_delete', {'id': match.id}) }}" style="display: inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce match ?');">
+                                                    <form method="post" action="{{ path('app_gestion_match_delete', {'id': match.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce match ?');" style="margin: 0;">
                                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ match.id) }}">
                                                         <button class="btn btn-danger btn-sm" title="Supprimer">
                                                             <i class="fas fa-trash"></i>
@@ -78,4 +379,241 @@
             </div>
         </section>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Éléments DOM
+            const searchInput = document.getElementById('searchMatch');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const matchRows = document.querySelectorAll('.match-row');
+            const loadingSpinner = document.querySelector('.loading-spinner');
+            const sortableHeaders = document.querySelectorAll('.sortable');
+            const tableBody = document.getElementById('matchesTableBody');
+            
+            // Variables d'état
+            let activeFilter = 'all';
+            let currentSortColumn = 'id'; // Colonne de tri par défaut
+            let currentSortDirection = 'asc'; // Direction de tri par défaut
+            
+            // Fonction pour filtrer les matchs
+            function filterMatches() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                
+                // Afficher l'indicateur de chargement
+                loadingSpinner.style.display = 'block';
+                
+                // Simuler un délai pour l'effet AJAX
+                setTimeout(() => {
+                    // Filtrer les lignes
+                    matchRows.forEach(row => {
+                        const matchType = row.getAttribute('data-type');
+                        const matchName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                        const matchTypeText = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                        const matchDesc = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+                        
+                        // Vérifier si le match correspond au filtre actif et au terme de recherche
+                        const matchesFilter = activeFilter === 'all' || matchType === activeFilter;
+                        const matchesSearch = !searchTerm || 
+                                             matchName.includes(searchTerm) || 
+                                             matchTypeText.includes(searchTerm) || 
+                                             matchDesc.includes(searchTerm);
+                        
+                        // Afficher ou masquer la ligne selon les critères
+                        if (matchesFilter && matchesSearch) {
+                            row.style.display = '';
+                            
+                            // Mettre en surbrillance les termes trouvés
+                            if (searchTerm) {
+                                highlightText(row, searchTerm);
+                            } else {
+                                // Réinitialiser le texte sans surbrillance
+                                resetHighlight(row);
+                            }
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                    
+                    // Vérifier s'il y a des résultats
+                    checkNoResults();
+                    
+                    // Masquer l'indicateur de chargement
+                    loadingSpinner.style.display = 'none';
+                    
+                    // Réappliquer le tri actuel
+                    sortTable();
+                }, 300);
+            }
+            
+            // Fonction pour mettre en surbrillance le texte recherché
+            function highlightText(row, term) {
+                const cells = [
+                    row.querySelector('td:nth-child(2)'), // Nom
+                    row.querySelector('td:nth-child(3)'), // Type
+                    row.querySelector('td:nth-child(4)')  // Description
+                ];
+                
+                cells.forEach(cell => {
+                    if (!cell) return;
+                    
+                    const originalText = cell.textContent;
+                    if (!originalText.toLowerCase().includes(term)) return;
+                    
+                    const regex = new RegExp(`(${term})`, 'gi');
+                    cell.innerHTML = originalText.replace(regex, '<span class="highlight">$1</span>');
+                });
+            }
+            
+            // Fonction pour réinitialiser la surbrillance
+            function resetHighlight(row) {
+                const cells = [
+                    row.querySelector('td:nth-child(2)'), // Nom
+                    row.querySelector('td:nth-child(3)'), // Type
+                    row.querySelector('td:nth-child(4)')  // Description
+                ];
+                
+                cells.forEach(cell => {
+                    if (!cell) return;
+                    if (cell.querySelector('.highlight')) {
+                        cell.textContent = cell.textContent;
+                    }
+                });
+            }
+            
+            // Fonction pour vérifier s'il n'y a aucun résultat
+            function checkNoResults() {
+                const visibleRows = Array.from(matchRows).filter(row => row.style.display !== 'none');
+                const noResultsRow = tableBody.querySelector('.no-results');
+                
+                if (visibleRows.length === 0) {
+                    if (!noResultsRow) {
+                        const tr = document.createElement('tr');
+                        tr.className = 'no-results';
+                        tr.innerHTML = '<td colspan="7" class="text-center">Aucun match ne correspond à votre recherche</td>';
+                        tableBody.appendChild(tr);
+                    }
+                } else if (noResultsRow) {
+                    noResultsRow.remove();
+                }
+            }
+            
+            // Fonction pour obtenir l'indice de colonne à partir du nom de colonne
+            function getColumnIndex(column) {
+                switch (column) {
+                    case 'id': return 0;
+                    case 'nom': return 1;
+                    case 'type': return 2;
+                    case 'description': return 3;
+                    case 'date': return 4;
+                    case 'heure': return 5;
+                    default: return 0;
+                }
+            }
+            
+            // Fonction pour trier le tableau
+            function sortTable() {
+                // Réinitialiser les classes de tri sur tous les en-têtes
+                sortableHeaders.forEach(header => {
+                    header.classList.remove('sort-asc', 'sort-desc');
+                });
+                
+                // Ajouter la classe de tri appropriée à l'en-tête actif
+                const activeHeader = document.querySelector(`.sortable[data-sort="${currentSortColumn}"]`);
+                if (activeHeader) {
+                    activeHeader.classList.add(currentSortDirection === 'asc' ? 'sort-asc' : 'sort-desc');
+                }
+                
+                // Obtenir l'indice de colonne pour le tri
+                const columnIndex = getColumnIndex(currentSortColumn);
+                
+                // Obtenir les lignes visibles uniquement (toutes les lignes sauf .no-results)
+                const rows = Array.from(tableBody.querySelectorAll('tr.match-row')).filter(row => row.style.display !== 'none');
+                
+                // Trier les lignes
+                rows.sort((a, b) => {
+                    // Récupérer les valeurs à comparer
+                    let aValue = a.cells[columnIndex].textContent.trim();
+                    let bValue = b.cells[columnIndex].textContent.trim();
+                    
+                    // Tri spécifique selon le type de colonne
+                    if (currentSortColumn === 'id') {
+                        // Tri numérique pour ID
+                        return currentSortDirection === 'asc' 
+                            ? parseInt(aValue) - parseInt(bValue)
+                            : parseInt(bValue) - parseInt(aValue);
+                    }
+                    else if (currentSortColumn === 'date') {
+                        // Tri par date
+                        const dateA = aValue ? new Date(aValue) : new Date(0);
+                        const dateB = bValue ? new Date(bValue) : new Date(0);
+                        return currentSortDirection === 'asc' 
+                            ? dateA - dateB
+                            : dateB - dateA;
+                    }
+                    else {
+                        // Tri alphabétique pour les autres colonnes
+                        return currentSortDirection === 'asc'
+                            ? aValue.localeCompare(bValue)
+                            : bValue.localeCompare(aValue);
+                    }
+                });
+                
+                // Réorganiser le tableau en fonction du tri
+                rows.forEach(row => {
+                    tableBody.appendChild(row);
+                });
+                
+                // Si une ligne "Aucun résultat" existe, la garder en bas
+                const noResultsRow = tableBody.querySelector('.no-results');
+                if (noResultsRow) {
+                    tableBody.appendChild(noResultsRow);
+                }
+            }
+            
+            // Écouteur d'événement pour la recherche
+            searchInput.addEventListener('input', filterMatches);
+            
+            // Écouteur d'événement pour les boutons de filtre
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Mettre à jour le filtre actif
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    activeFilter = this.getAttribute('data-filter');
+                    
+                    // Appliquer le filtre
+                    filterMatches();
+                });
+            });
+            
+            // Écouteur d'événement pour le tri des colonnes
+            sortableHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const column = this.getAttribute('data-sort');
+                    console.log('Tri par colonne:', column);
+                    
+                    // Si on clique sur la même colonne, inverser la direction
+                    if (column === currentSortColumn) {
+                        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                        console.log('Inversion de direction:', currentSortDirection);
+                    } else {
+                        // Sinon, définir la nouvelle colonne et réinitialiser la direction
+                        currentSortColumn = column;
+                        currentSortDirection = 'asc';
+                        console.log('Nouveau tri:', currentSortColumn, currentSortDirection);
+                    }
+                    
+                    // Appliquer le tri
+                    sortTable();
+                });
+            });
+            
+            // Initialisation du filtre et du tri au chargement
+            console.log('Initialisation du tableau');
+            filterMatches();
+        });
+    </script>
 {% endblock %}

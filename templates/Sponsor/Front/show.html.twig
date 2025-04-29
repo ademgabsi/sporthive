@@ -2,6 +2,187 @@
 
 {% block title %}{{ sponsor.nom_Sp }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .sponsor_detail_section {
+            padding: 80px 0;
+            background-color: #0f172a;
+            min-height: calc(100vh - 200px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sponsor_detail_section::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0) 40%),
+                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0) 40%);
+            pointer-events: none;
+        }
+
+        .layout_padding {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2),
+                      0 0 15px rgba(99, 102, 241, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+            padding: 2rem;
+            border: none;
+            position: relative;
+        }
+
+        .card-header h2 {
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        .sponsor-info {
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .sponsor-info h4 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sponsor-info h4 i {
+            color: #818cf8;
+            font-size: 1.25rem;
+        }
+
+        .sponsor-info p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            line-height: 1.6;
+        }
+
+        .sponsor-info strong {
+            color: #fff;
+            font-weight: 500;
+            min-width: 120px;
+        }
+
+        .sponsor-info i {
+            color: #818cf8;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+            opacity: 0.9;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-secondary {
+            background: rgba(148, 163, 184, 0.1);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(148, 163, 184, 0.2);
+            border-color: rgba(148, 163, 184, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .text-center .btn {
+            min-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .sponsor_detail_section {
+                padding: 40px 0;
+            }
+
+            .card-header {
+                padding: 1.5rem;
+            }
+
+            .card-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .sponsor-info h4 {
+                font-size: 1.25rem;
+            }
+
+            .sponsor-info p {
+                font-size: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <!-- sponsor detail section -->
     <section class="sponsor_detail_section layout_padding">

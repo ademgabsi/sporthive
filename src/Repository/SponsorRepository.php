@@ -75,13 +75,31 @@ class SponsorRepository extends ServiceEntityRepository
         return $sponsors;
     }
 
-//    public function findOneBySomeField($value): ?Sponsor
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Récupère les sponsors qui ont sponsorisé le plus de matchs
+     * @return array Les sponsors avec le nombre de matchs sponsorisés et le montant total des contrats
+     */
+    public function findTopSponsors(int $limit = 5): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        
+        // Cette requête compte le nombre de matchs par sponsor et calcule le montant total des contrats
+        // Elle utilise GROUP BY sur nom_Sp pour regrouper les sponsors identiques
+        $sql = '
+            SELECT s.nom_Sp, s.type_Sp, 
+                   COUNT(DISTINCT s.idMatch) as match_count, 
+                   SUM(s.montantContrat) as montant_total
+            FROM sponsor s
+            WHERE s.idMatch IS NOT NULL
+            GROUP BY s.nom_Sp, s.type_Sp
+            ORDER BY match_count DESC
+            LIMIT :limit
+        ';
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue('limit', $limit, \PDO::PARAM_INT);
+        $resultSet = $stmt->executeQuery();
+        
+        return $resultSet->fetchAllAssociative();
+    }
 }

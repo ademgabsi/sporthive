@@ -5,8 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
 use App\Repository\SponsorRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SponsorRepository::class)]
 #[ORM\Table(name: 'sponsor')]
@@ -29,6 +29,13 @@ class Sponsor
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le nom du sponsor est requis')]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: 'Le nom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $nom_Sp = null;
 
     public function getNom_Sp(): ?string
@@ -55,6 +62,11 @@ class Sponsor
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le type de sponsor est requis')]
+    #[Assert\Choice(
+        choices: ['delice', 'secondaire', 'technique', 'équipementier'],
+        message: 'Le type de sponsor doit être l\'un des suivants: {{ value }}'
+    )]
     private ?string $type_Sp = null;
 
     public function getType_Sp(): ?string
@@ -81,6 +93,12 @@ class Sponsor
     }
 
     #[ORM\Column(name: 'montantContrat', type: 'integer', nullable: false)]
+    #[Assert\NotBlank(message: 'Le montant du contrat est requis')]
+    #[Assert\Positive(message: 'Le montant doit être un nombre positif')]
+    #[Assert\GreaterThan(
+        value: 0,
+        message: 'Le montant doit être supérieur à 0'
+    )]
     private ?int $montantContrat = null;
 
     public function getMontantContrat(): ?int
@@ -95,6 +113,11 @@ class Sponsor
     }
 
     #[ORM\Column(name: 'dateDebut', type: 'date', nullable: false)]
+    #[Assert\NotBlank(message: 'La date de début est requise')]
+    #[Assert\GreaterThan(
+        value: 'today',
+        message: 'La date de début doit être dans le futur'
+    )]
     private ?\DateTimeInterface $dateDebut = null;
 
     public function getDateDebut(): ?\DateTimeInterface
@@ -109,6 +132,15 @@ class Sponsor
     }
 
     #[ORM\Column(name: 'dateFin', type: 'date', nullable: false)]
+    #[Assert\NotBlank(message: 'La date de fin est requise')]
+    #[Assert\GreaterThan(
+        value: 'today',
+        message: 'La date de fin doit être dans le futur'
+    )]
+    #[Assert\Expression(
+        expression: 'this.getDateDebut() <= this.getDateFin()',
+        message: 'La date de fin doit être après la date de début'
+    )]
     private ?\DateTimeInterface $dateFin = null;
 
     public function getDateFin(): ?\DateTimeInterface

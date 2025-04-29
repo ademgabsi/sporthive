@@ -41,5 +41,38 @@
         </div>
     </div>
 
+    {% if gestion_match is defined and gestion_match.id is not null %}
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Code QR du match</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div id="qrcode" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+                    <p class="mt-2">Scannez ce code pour accéder aux détails du match</p>
+                    {{ form_widget(form.qrCode) }}
+                    
+                    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Générer le QR code
+                            var typeNumber = 4;
+                            var errorCorrectionLevel = 'L';
+                            var qr = qrcode(typeNumber, errorCorrectionLevel);
+                            var matchUrl = '{{ app.request.schemeAndHttpHost ~ path('app_gestion_match_show', {'id': gestion_match.id}) }}';
+                            qr.addData(matchUrl);
+                            qr.make();
+                            
+                            // Afficher le QR code
+                            document.getElementById('qrcode').innerHTML = qr.createImgTag(5);
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

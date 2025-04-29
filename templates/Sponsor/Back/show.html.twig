@@ -2,6 +2,203 @@
 
 {% block title %}Détails du sponsor{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .content-header {
+            padding: 15px 0.5rem;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0;
+        }
+
+        .card {
+            box-shadow: 0 0 15px rgba(0,0,0,0.1) !important;
+            border: none !important;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem !important;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 20px rgba(0,0,0,0.15) !important;
+        }
+
+        .card-header {
+            background-color: #fff !important;
+            border-bottom: 1px solid #eee !important;
+            padding: 1.5rem !important;
+        }
+
+        .card-header h3.card-title {
+            color: #3498db;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            text-transform: capitalize;
+        }
+
+        .card-body {
+            padding: 1.5rem !important;
+        }
+
+        .card-footer {
+            background-color: #f8f9fa !important;
+            border-top: 1px solid #eee !important;
+            padding: 1rem 1.5rem !important;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Table Styling */
+        .table {
+            margin-bottom: 0;
+            width: 100%;
+            background-color: #fff;
+        }
+
+        .table-bordered {
+            border: 1px solid #eee;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+            border: 1px solid #eee;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+            width: 200px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .table td {
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        /* Button Styling */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.5;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-secondary {
+            color: #fff;
+            background-color: #95a5a6;
+            border-color: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            border-color: #7f8c8d;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(127,140,141,.2);
+        }
+
+        .btn-warning {
+            color: #2c3e50;
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(255,193,7,.2);
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(220,53,69,.2);
+        }
+
+        /* Form styling */
+        form {
+            margin: 0;
+            display: inline-block;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .content-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .card-header h3.card-title {
+                font-size: 1.1rem;
+            }
+
+            .table th {
+                width: 120px;
+                font-size: 0.8rem;
+                padding: 0.75rem;
+            }
+
+            .table td {
+                font-size: 0.9rem;
+                padding: 0.75rem;
+            }
+
+            .card-footer {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            form {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="content-wrapper">
         <div class="content-header">
@@ -65,7 +262,7 @@
                         <a href="{{ path('app_sponsor_edit', {'id_Sp': sponsor.id_Sp}) }}" class="btn btn-warning">
                             <i class="fas fa-edit"></i> Modifier
                         </a>
-                        <form method="post" action="{{ path('app_sponsor_delete', {'id_Sp': sponsor.id_Sp}) }}" style="display: inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce sponsor ?');">
+                        <form method="post" action="{{ path('app_sponsor_delete', {'id_Sp': sponsor.id_Sp}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce sponsor ?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sponsor.id_Sp) }}">
                             <button class="btn btn-danger">
                                 <i class="fas fa-trash"></i> Supprimer

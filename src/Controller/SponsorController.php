@@ -19,6 +19,7 @@ class SponsorController extends AbstractController
     {
         return $this->render('Sponsor/Back/index.html.twig', [
             'sponsors' => $sponsorRepository->findAllSponsors(),
+            'topSponsors' => $sponsorRepository->findTopSponsors(5), // Récupérer les 5 meilleurs sponsors
         ]);
     }
 
