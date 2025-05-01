@@ -1,0 +1,913 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Gestion des utilisateurs - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+<style>
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+        20%, 40%, 60%, 80% { transform: translateX(2px); }
+    }
+    
+    /* Dashboard container */
+    .dashboard-container {
+        padding: 25px;
+        background-color: #f8f9fc;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+        margin-bottom: 30px;
+    }
+    
+    .dashboard-header {
+        margin-bottom: 30px;
+        border-bottom: 1px solid #eaecf4;
+        padding-bottom: 20px;
+    }
+    
+    .dashboard-title {
+        font-size: 1.8rem;
+        color: #2e3951;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+    
+    .dashboard-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+    
+    /* Table styles */
+    .data-table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        background-color: #fff;
+    }
+    
+    .data-table thead th {
+        background: linear-gradient(135deg, #4e73df, #3966d4);
+        color: white;
+        font-weight: 600;
+        padding: 15px;
+        text-align: left;
+        border: none;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .data-table tbody tr {
+        background-color: #fff;
+        animation: fadeIn 0.5s ease-out forwards;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #edf2f7;
+    }
+    
+    .data-table tbody tr:nth-child(even) {
+        background-color: #f9fafb;
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: #f0f7ff;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .data-table td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+    
+    /* Action buttons */
+    .action-cell {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: white;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .action-btn::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: scale(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .action-btn:hover::after {
+        transform: scale(1);
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .action-btn i {
+        font-size: 16px;
+    }
+    
+    /* Button colors */
+    .action-btn.view {
+        background: linear-gradient(135deg, #4e73df, #3966d4);
+    }
+    
+    .action-btn.primary {
+        background: linear-gradient(135deg, #2c7be5, #1a68d1);
+    }
+    
+    .action-btn.success {
+        background: linear-gradient(135deg, #2dce89, #24a46d);
+    }
+    
+    .action-btn.warning {
+        background: linear-gradient(135deg, #fb6340, #f5365c);
+    }
+    
+    .action-btn.danger {
+        background: linear-gradient(135deg, #f5365c, #e30b36);
+    }
+    
+    .action-btn.info {
+        background: linear-gradient(135deg, #11cdef, #0da5c0);
+    }
+    
+    /* Profile image */
+    .profile-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #edf2f7;
+        color: #a0aec0;
+        font-size: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .profile-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    /* Status badges */
+    .badge {
+        display: inline-block;
+        padding: 0.4em 0.8em;
+        font-size: 0.75em;
+        font-weight: 600;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 30px;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .badge-success {
+        background: linear-gradient(135deg, #2dce89, #24a46d);
+    }
+    
+    .badge-danger {
+        background: linear-gradient(135deg, #f5365c, #e30b36);
+    }
+    
+    .badge-info {
+        background: linear-gradient(135deg, #11cdef, #0da5c0);
+    }
+    
+    .badge-primary {
+        background: linear-gradient(135deg, #4e73df, #3966d4);
+    }
+    
+    .badge-warning {
+        background: linear-gradient(135deg, #fb6340, #f3831c);
+        color: #fff;
+    }
+    
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+    
+    .shake-animation {
+        animation: shake 2s infinite;
+    }
+    
+    /* Filters */
+    .search-filter {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .search-input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s ease;
+        background-color: #f8fafc;
+    }
+    
+    .search-input:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1);
+        background-color: white;
+    }
+    
+    .filter-dropdown {
+        padding: 12px 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 14px;
+        background-color: #f8fafc;
+        outline: none;
+        transition: all 0.3s ease;
+        min-width: 150px;
+    }
+    
+    .filter-dropdown:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1);
+        background-color: white;
+    }
+    
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+        gap: 8px;
+    }
+    
+    .page-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: 1px solid #e2e8f0;
+        background-color: white;
+        color: #4a5568;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .page-btn:hover {
+        background-color: #f7fafc;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .page-btn.active {
+        background: linear-gradient(135deg, #4e73df, #3966d4);
+        color: white;
+        border-color: transparent;
+    }
+    
+    /* SweetAlert2 customizations */
+    .swal2-popup {
+        border-radius: 15px !important;
+        padding: 2em !important;
+    }
+    
+    .swal2-title {
+        font-size: 1.5em !important;
+        font-weight: 600 !important;
+    }
+    
+    .swal2-html-container {
+        font-size: 1em !important;
+    }
+    
+    .swal2-confirm {
+        background: linear-gradient(135deg, #4e73df, #3966d4) !important;
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+        padding: 10px 24px !important;
+    }
+    
+    .swal2-cancel {
+        background: #f8f9fa !important;
+        color: #4a5568 !important;
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+        padding: 10px 24px !important;
+    }
+    
+    .swal2-input, .swal2-select {
+        border-radius: 8px !important;
+        border: 1px solid #e2e8f0 !important;
+        padding: 10px 15px !important;
+        margin-top: 15px !important;
+    }
+    
+    .swal2-input:focus, .swal2-select:focus {
+        border-color: #4e73df !important;
+        box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1) !important;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .search-filter {
+            flex-direction: column;
+        }
+        
+        .data-table {
+            font-size: 0.9rem;
+        }
+        
+        .action-btn {
+            width: 34px;
+            height: 34px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Gestion des utilisateurs</h1>
+        <p class="dashboard-subtitle">Administrez les comptes utilisateurs de la plateforme</p>
+    </div>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} mb-4" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="table-top">
+        <div class="search-filter">
+            <input type="text" class="search-input" id="userSearch" placeholder="Rechercher un utilisateur...">
+            <select class="filter-dropdown" id="roleFilter">
+                <option value="">Tous les rôles</option>
+                <option value="admin">Admin</option>
+                <option value="user">Utilisateur</option>
+                <option value="coach">Entraîneur</option>
+                <option value="referee">Arbitre</option>
+            </select>
+            <select class="filter-dropdown" id="statusFilter">
+                <option value="">Tous les statuts</option>
+                <option value="active">Actifs</option>
+                <option value="banned">Désactivés</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px">#</th>
+                    <th style="width: 80px">Photo</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Date d'inscription</th>
+                    <th>Statut</th>
+                    <th style="width: 150px">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for utilisateur in utilisateurs %}
+                <tr class="user-row" data-role="{{ utilisateur.role ? utilisateur.role.nom|lower : 'user' }}" data-status="{{ utilisateur.isActive ? 'active' : 'banned' }}">
+                    <td>{{ utilisateur.id }}</td>
+                    <td>
+                        {% if utilisateur.image %}
+                            <img src="{{ asset('uploads/users/' ~ utilisateur.image) }}" alt="{{ utilisateur.prenom }} {{ utilisateur.nom }}" class="profile-img">
+                        {% else %}
+                            <div class="profile-img">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ utilisateur.prenom }} {{ utilisateur.nom }}</strong>
+                        {% if utilisateur.numero_tel %}
+                            <div class="text-muted small">{{ utilisateur.numero_tel }}</div>
+                        {% endif %}
+                    </td>
+                    <td>{{ utilisateur.email }}</td>
+                    <td>
+                        <div class="role-badge">
+                            {% if utilisateur.role and utilisateur.role.nom|lower == 'admin' %}
+                                <span class="badge badge-danger">Administrateur</span>
+                            {% else %}
+                                <span class="badge badge-info">Utilisateur</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="text-muted">N/A</span>
+                    </td>
+                    <td>
+                        {% if utilisateur.isActive %}
+                            <span class="badge badge-success pulse-animation">Actif</span>
+                        {% else %}
+                            <span class="badge badge-danger shake-animation">Désactivé</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="action-cell">
+                            <button type="button" class="action-btn view" 
+                                    data-user-id="{{ utilisateur.id }}"
+                                    data-user-name="{{ utilisateur.prenom }} {{ utilisateur.nom }}"
+                                    data-user-email="{{ utilisateur.email }}"
+                                    data-user-phone="{{ utilisateur.numero_tel }}"
+                                    data-user-role="{{ utilisateur.role ? utilisateur.role.nom : 'Utilisateur' }}"
+                                    data-user-role-id="{{ utilisateur.role ? utilisateur.role.id : '' }}"
+                                    data-user-status="{{ utilisateur.isActive ? 'active' : 'banned' }}"
+                                    data-user-img="{{ utilisateur.image ? asset('uploads/users/' ~ utilisateur.image) : '' }}"
+                                    onclick="viewUser(this);" 
+                                    title="Voir les détails">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            
+                            <button type="button" class="action-btn {{ utilisateur.isActive ? 'warning' : 'success' }}" 
+                                    data-user-id="{{ utilisateur.id }}"
+                                    data-action="{{ utilisateur.isActive ? 'ban' : 'activate' }}"
+                                    data-user-name="{{ utilisateur.prenom }} {{ utilisateur.nom }}"
+                                    onclick="toggleUserStatus(this);" 
+                                    title="{{ utilisateur.isActive ? 'Désactiver' : 'Activer' }} l'utilisateur">
+                                <i class="fas {{ utilisateur.isActive ? 'fa-ban' : 'fa-check' }}"></i>
+                            </button>
+                            <button type="button" class="action-btn primary" 
+                                    data-user-id="{{ utilisateur.id }}"
+                                    data-user-name="{{ utilisateur.prenom }} {{ utilisateur.nom }}"
+                                    data-user-role-id="{{ utilisateur.role ? utilisateur.role.id : '' }}"
+                                    data-user-role="{{ utilisateur.role ? utilisateur.role.nom : 'Utilisateur' }}"
+                                    onclick="changeRole(this);" 
+                                    title="Changer le rôle">
+                                <i class="fas fa-user-tag"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                
+                {% if utilisateurs|length == 0 %}
+                <tr>
+                    <td colspan="8" class="text-center py-4">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <p>Aucun utilisateur trouvé</p>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+</div>
+
+<!-- Modals -->
+<div class="modal-backdrop" id="userViewModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Détails de l'utilisateur</h3>
+            <button type="button" class="modal-close" onclick="closeModal('userViewModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="userViewContent">
+            <!-- Content will be dynamically added here -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-btn cancel" onclick="closeModal('userViewModal')">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="roleChangeModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Changer le rôle</h3>
+            <button type="button" class="modal-close" onclick="closeModal('roleChangeModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Sélectionnez un nouveau rôle pour <span id="roleUserName" class="font-weight-bold">l'utilisateur</span>.</p>
+            <form id="roleChangeForm" method="post" action="">
+                <div class="form-group">
+                    <label for="roleSelect" class="form-label">Rôle</label>
+                    <select id="roleSelect" name="role" class="form-select">
+                        {% for role in roles|default([]) %}
+                            <option value="{{ role.id }}">{{ role.nom }}</option>
+                        {% else %}
+                            <option value="1">Utilisateur</option>
+                            <option value="2">Administrateur</option>
+                            <option value="3">Entraîneur</option>
+                            <option value="4">Arbitre</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="hidden" name="_token" id="roleCsrfToken">
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-btn cancel" onclick="closeModal('roleChangeModal')">Annuler</button>
+            <button type="button" class="modal-btn confirm" onclick="submitRoleChange()">Confirmer</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="confirmModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="confirmTitle">Confirmation</h3>
+            <button type="button" class="modal-close" onclick="closeModal('confirmModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="confirmMessage">Êtes-vous sûr de vouloir effectuer cette action ?</p>
+            <form id="confirmForm" method="post" action="">
+                <input type="hidden" name="_token" id="confirmCsrfToken">
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-btn cancel" onclick="closeModal('confirmModal')">Annuler</button>
+            <button type="button" class="modal-btn confirm" id="confirmButton">Confirmer</button>
+        </div>
+    </div>
+</div>
+
+{# CSRF Tokens pré-générés pour chaque utilisateur #}
+<div style="display: none;" id="csrf-tokens">
+    {% for utilisateur in utilisateurs %}
+        <span id="ban-token-{{ utilisateur.id }}" data-token="{{ csrf_token('ban' ~ utilisateur.id) }}"></span>
+        <span id="role-token-{{ utilisateur.id }}" data-token="{{ csrf_token('role' ~ utilisateur.id) }}"></span>
+        <span id="delete-token-{{ utilisateur.id }}" data-token="{{ csrf_token('delete' ~ utilisateur.id) }}"></span>
+    {% endfor %}
+</div>
+
+{# Infos des rôles disponibles pour JavaScript #}
+<div id="available-roles-data" class="d-none"
+     data-roles="{{ roles|default([])|json_encode() }}">
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Logging pour debug
+            console.log('Tokens CSRF disponibles:', document.getElementById('csrf-tokens'));
+            
+            // Filter functionality
+            document.getElementById('userSearch').addEventListener('input', filterUsers);
+            document.getElementById('roleFilter').addEventListener('change', filterUsers);
+            document.getElementById('statusFilter').addEventListener('change', filterUsers);
+            
+            function filterUsers() {
+                var searchValue = document.getElementById('userSearch').value.toLowerCase();
+                var roleValue = document.getElementById('roleFilter').value.toLowerCase();
+                var statusValue = document.getElementById('statusFilter').value.toLowerCase();
+                
+                document.querySelectorAll('.user-row').forEach(function(row) {
+                    var textContent = row.textContent.toLowerCase();
+                    var userRole = row.getAttribute('data-role') || '';
+                    var userStatus = row.getAttribute('data-status') || '';
+                    
+                    var roleMatch = !roleValue || userRole === roleValue;
+                    var statusMatch = !statusValue || userStatus === statusValue;
+                    var searchMatch = !searchValue || textContent.includes(searchValue);
+                    
+                    row.style.display = (roleMatch && statusMatch && searchMatch) ? '' : 'none';
+                });
+            }
+            
+            // Dismiss alerts
+            document.querySelectorAll('.alert .close').forEach(function(close) {
+                close.addEventListener('click', function() {
+                    this.parentElement.style.display = 'none';
+                });
+            });
+        });
+        
+        // Modal management
+        function openModal(modalId) {
+            console.log('Ouverture modale:', modalId);
+            var modalBackdrop = document.getElementById(modalId);
+            modalBackdrop.style.display = 'flex';
+            setTimeout(function() {
+                modalBackdrop.classList.add('active');
+            }, 10);
+            
+            // Ajouter une classe à body pour désactiver le scroll
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(modalId) {
+            console.log('Fermeture modale:', modalId);
+            var modalBackdrop = document.getElementById(modalId);
+            modalBackdrop.classList.remove('active');
+            setTimeout(function() {
+                modalBackdrop.style.display = 'none';
+            }, 300);
+            
+            // Réactiver le scroll
+            document.body.style.overflow = '';
+        }
+        
+        // User actions
+        function viewUser(button) {
+            console.log('Voir utilisateur:', button.dataset);
+            
+            // Récupération des données utilisateur
+            var userId = button.dataset.userId;
+            var userName = button.dataset.userName;
+            var userEmail = button.dataset.userEmail;
+            var userPhone = button.dataset.userPhone || 'Non renseigné';
+            var userRole = button.dataset.userRole;
+            var userRoleId = button.dataset.userRoleId;
+            var userStatus = button.dataset.userStatus;
+            var userImg = button.dataset.userImg;
+            
+            // Préparation de l'avatar
+            var userAvatar = '';
+            if (userImg) {
+                userAvatar = '<img src="' + userImg + '" alt="' + userName + '" class="img-fluid rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">';
+            } else {
+                userAvatar = '<div class="avatar-placeholder" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 50%;"><i class="fas fa-user fa-3x"></i></div>';
+            }
+            
+            // Badges pour le statut et le rôle
+            var statusBadge = userStatus === 'active' 
+                ? '<span class="badge badge-success pulse-animation">Actif</span>' 
+                : '<span class="badge badge-danger shake-animation">Désactivé</span>';
+                
+            var roleBadge = '';
+            if (userRole.toLowerCase() === 'admin') {
+                roleBadge = '<span class="badge badge-danger">Administrateur</span>';
+            } else {
+                roleBadge = '<span class="badge badge-info">Utilisateur</span>';
+            }
+            
+            // Contenu HTML pour SweetAlert
+            var content = '<div class="text-center mb-4">' +
+                '<div class="avatar-container mx-auto" style="width:120px;height:120px;border-radius:50%;overflow:hidden;margin:0 auto 15px;box-shadow:0 4px 10px rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;background:#f8f9fa;">' + 
+                userAvatar + 
+                '</div>' +
+                '<h4 class="mt-2 user-name">' + userName + '</h4>' +
+                statusBadge +
+                '</div>' +
+                '<div class="user-details" style="margin-top:20px;">' +
+                '<div class="detail-row d-flex" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #eee;">' +
+                '<div class="detail-label" style="width:30%;font-weight:600;">Email:</div>' +
+                '<div class="detail-value" style="width:70%;">' + userEmail + '</div>' +
+                '</div>' +
+                '<div class="detail-row d-flex" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #eee;">' +
+                '<div class="detail-label" style="width:30%;font-weight:600;">Téléphone:</div>' +
+                '<div class="detail-value" style="width:70%;">' + userPhone + '</div>' +
+                '</div>' +
+                '<div class="detail-row d-flex" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #eee;">' +
+                '<div class="detail-label" style="width:30%;font-weight:600;">Rôle:</div>' +
+                '<div class="detail-value" style="width:70%;">' + roleBadge + '</div>' +
+                '</div>' +
+                '<div class="detail-row d-flex" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #eee;">' +
+                '<div class="detail-label" style="width:30%;font-weight:600;">Statut:</div>' +
+                '<div class="detail-value" style="width:70%;">' + statusBadge + '</div>' +
+                '</div>' +
+                '</div>';
+            
+            // Afficher SweetAlert avec HTML personnalisé
+            Swal.fire({
+                title: 'Détails de l\'utilisateur',
+                html: content,
+                showConfirmButton: false,
+                showCloseButton: true,
+                customClass: {
+                    container: 'user-details-modal',
+                    popup: 'user-details-popup'
+                },
+                width: '600px'
+            });
+        }
+        
+        function toggleUserStatus(button) {
+            console.log('Toggle status utilisateur:', button.dataset);
+            
+            // Récupération des données utilisateur
+            var userId = button.dataset.userId;
+            var userName = button.dataset.userName;
+            var action = button.dataset.action; // 'ban' ou 'activate'
+            
+            var title = action === 'ban' ? 'Désactiver l\'utilisateur' : 'Activer l\'utilisateur';
+            var text = action === 'ban' 
+                ? 'Êtes-vous sûr de vouloir désactiver ' + userName + ' ? Cet utilisateur ne pourra plus se connecter.' 
+                : 'Êtes-vous sûr de vouloir réactiver ' + userName + ' ? Cet utilisateur pourra à nouveau se connecter.';
+            var icon = action === 'ban' ? 'warning' : 'info';
+            var confirmButtonText = action === 'ban' ? 'Oui, désactiver' : 'Oui, activer';
+            var confirmButtonColor = action === 'ban' ? '#f8bb86' : '#3fc3ee';
+            
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon,
+                showCancelButton: true,
+                confirmButtonColor: confirmButtonColor,
+                cancelButtonText: 'Annuler',
+                confirmButtonText: confirmButtonText,
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Récupérer le token CSRF depuis le conteneur
+                    var tokenElement = document.getElementById('ban-token-' + userId);
+                    console.log('Token element ban:', tokenElement);
+                    if (tokenElement) {
+                        var token = tokenElement.getAttribute('data-token');
+                        console.log('Token ban récupéré:', token);
+                        
+                        // Soumettre le formulaire
+                        var form = document.createElement('form');
+                        form.method = 'post';
+                        form.action = "{{ path('app_admin_user_ban', {'id': 'USERID'}) }}".replace('USERID', userId);
+                        form.innerHTML = '<input type="hidden" name="_token" value="' + token + '">';
+                        document.body.appendChild(form);
+                        form.submit();
+                    } else {
+                        console.error('Élément token ban introuvable pour ID:', userId);
+                        Swal.fire('Erreur', 'Une erreur est survenue lors du changement de statut.', 'error');
+                    }
+                }
+            });
+        }
+        
+        function deleteUser(button) {
+            console.log('Supprimer utilisateur:', button.dataset);
+            
+            // Récupération des données utilisateur
+            var userId = button.dataset.userId;
+            var userName = button.dataset.userName;
+            
+            Swal.fire({
+                title: 'Supprimer l\'utilisateur',
+                html: '<p>Êtes-vous sûr de vouloir <strong>supprimer définitivement</strong> l\'utilisateur:</p>' +
+                      '<p class="text-danger font-weight-bold">' + userName + '</p>' +
+                      '<p>Cette action est <strong>irréversible</strong>!</p>',
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonText: 'Annuler',
+                confirmButtonText: 'Oui, supprimer',
+                reverseButtons: true,
+                focusCancel: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Récupérer le token CSRF depuis le conteneur
+                    var tokenElement = document.getElementById('delete-token-' + userId);
+                    console.log('Token element delete:', tokenElement);
+                    if (tokenElement) {
+                        var token = tokenElement.getAttribute('data-token');
+                        console.log('Token delete récupéré:', token);
+                        
+                        // Soumettre le formulaire
+                        var form = document.createElement('form');
+                        form.method = 'post';
+                        form.action = "{{ path('app_admin_user_delete', {'id': 'USERID'}) }}".replace('USERID', userId);
+                        form.innerHTML = '<input type="hidden" name="_token" value="' + token + '">';
+                        document.body.appendChild(form);
+                        form.submit();
+                    } else {
+                        console.error('Élément token delete introuvable pour ID:', userId);
+                        Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression.', 'error');
+                    }
+                }
+            });
+        }
+        
+        function changeRole(button) {
+            console.log('Changer rôle utilisateur:', button.dataset);
+            
+            // Récupération des données utilisateur
+            var userId = button.dataset.userId;
+            var userName = button.dataset.userName;
+            var userRoleId = button.dataset.userRoleId;
+            var currentRole = button.dataset.userRole;
+            
+            // Récupération des rôles depuis l'élément caché
+            var rolesData = document.getElementById('available-roles-data');
+            var roleOptions = '';
+            
+            // Sélection simplifiée des deux rôles principaux : User et Admin, dans cet ordre
+            roleOptions += '<option value="1" ' + (currentRole.toLowerCase() !== 'admin' ? 'selected' : '') + '>Utilisateur</option>';
+            roleOptions += '<option value="2" ' + (currentRole.toLowerCase() === 'admin' ? 'selected' : '') + '>Administrateur</option>';
+            
+            Swal.fire({
+                title: 'Changer le rôle',
+                html: '<p>Sélectionnez un nouveau rôle pour <strong>' + userName + '</strong></p>' +
+                      '<div class="form-group">' +
+                      '<select id="swal-role-select" class="swal2-select form-control">' + 
+                      roleOptions +
+                      '</select></div>',
+                showCancelButton: true,
+                confirmButtonColor: '#3fc3ee',
+                cancelButtonText: 'Annuler',
+                confirmButtonText: 'Changer le rôle',
+                reverseButtons: true,
+                preConfirm: () => {
+                    return document.getElementById('swal-role-select').value;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var selectedRoleId = result.value;
+                    
+                    // Récupérer le token CSRF depuis le conteneur
+                    var tokenElement = document.getElementById('role-token-' + userId);
+                    console.log('Token element role:', tokenElement);
+                    if (tokenElement) {
+                        var token = tokenElement.getAttribute('data-token');
+                        console.log('Token role récupéré:', token);
+                        
+                        // Soumettre le formulaire
+                        var form = document.createElement('form');
+                        form.method = 'post';
+                        form.action = "{{ path('app_admin_user_change_role', {'id': 'USERID'}) }}".replace('USERID', userId);
+                        form.innerHTML = '<input type="hidden" name="_token" value="' + token + '">' +
+                                        '<input type="hidden" name="role" value="' + selectedRoleId + '">';
+                        document.body.appendChild(form);
+                        form.submit();
+                    } else {
+                        console.error('Élément token role introuvable pour ID:', userId);
+                        Swal.fire('Erreur', 'Une erreur est survenue lors du changement de rôle.', 'error');
+                    }
+                }
+            });
+        }
+        
+        function submitRoleChange() {
+            console.log('Soumission formulaire changement rôle');
+            document.getElementById('roleChangeForm').submit();
+        }
+    </script>
+{% endblock %}

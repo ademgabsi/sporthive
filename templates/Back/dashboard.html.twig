@@ -1,0 +1,307 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Tableau de bord - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Tableau de bord</h1>
+        <p class="dashboard-subtitle">Bienvenue dans votre espace d'administration</p>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-title">Utilisateurs</div>
+                <div class="stat-icon red">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <div class="stat-value" id="userCount">-</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> Voir tous les utilisateurs
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-title">Événements</div>
+                <div class="stat-icon blue">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+            </div>
+            <div class="stat-value" id="eventCount">-</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> Depuis le mois dernier
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-title">Réservations</div>
+                <div class="stat-icon green">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+            </div>
+            <div class="stat-value" id="bookingCount">-</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> Depuis le mois dernier
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-title">Revenus</div>
+                <div class="stat-icon orange">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+            <div class="stat-value" id="revenueValue">-</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> Depuis le mois dernier
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title">Nombre d'utilisateurs</div>
+                <div class="chart-actions">
+                    <button class="chart-action"><i class="fas fa-sync-alt"></i></button>
+                    <button class="chart-action"><i class="fas fa-ellipsis-v"></i></button>
+                </div>
+            </div>
+            <div class="chart-body">
+                <canvas id="usersChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title">Distribution</div>
+                <div class="chart-actions">
+                    <button class="chart-action"><i class="fas fa-sync-alt"></i></button>
+                    <button class="chart-action"><i class="fas fa-ellipsis-v"></i></button>
+                </div>
+            </div>
+            <div class="chart-body">
+                <canvas id="distributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="recent-container">
+        <div class="recent-card">
+            <div class="recent-header">
+                <div class="recent-title">Utilisateurs récents</div>
+                <a href="{{ path('app_admin_users') }}" class="chart-action"><i class="fas fa-external-link-alt"></i></a>
+            </div>
+            <div class="recent-body" id="recentUsers">
+                <div class="text-center p-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Chargement...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recent-card">
+            <div class="recent-header">
+                <div class="recent-title">Activités récentes</div>
+                <button class="chart-action"><i class="fas fa-external-link-alt"></i></button>
+            </div>
+            <div class="recent-body">
+                <div class="recent-item">
+                    <div class="recent-icon" style="background-color: var(--success);">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="recent-details">
+                        <div class="recent-info">
+                            <div class="recent-name">Réservation confirmée</div>
+                            <div class="recent-date">Il y a 2 heures</div>
+                        </div>
+                        <div class="recent-description">Nouvel utilisateur a confirmé sa réservation</div>
+                    </div>
+                </div>
+                
+                <div class="recent-item">
+                    <div class="recent-icon" style="background-color: var(--primary);">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="recent-details">
+                        <div class="recent-info">
+                            <div class="recent-name">Nouveau compte</div>
+                            <div class="recent-date">Il y a 5 heures</div>
+                        </div>
+                        <div class="recent-description">Un nouvel utilisateur s'est inscrit</div>
+                    </div>
+                </div>
+                
+                <div class="recent-item">
+                    <div class="recent-icon" style="background-color: var(--warning);">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="recent-details">
+                        <div class="recent-info">
+                            <div class="recent-name">Alerte système</div>
+                            <div class="recent-date">Il y a 1 jour</div>
+                        </div>
+                        <div class="recent-description">Une mise à jour du système est disponible</div>
+                    </div>
+                </div>
+                
+                <div class="recent-item">
+                    <div class="recent-icon" style="background-color: var(--danger);">
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <div class="recent-details">
+                        <div class="recent-info">
+                            <div class="recent-name">Réservation annulée</div>
+                            <div class="recent-date">Il y a 2 jours</div>
+                        </div>
+                        <div class="recent-description">Un utilisateur a annulé sa réservation</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulez les données pour le compteur utilisateurs
+            document.getElementById('userCount').innerText = '{{ app.session.get("userCount") ?? "1,254" }}';
+            document.getElementById('eventCount').innerText = '45';
+            document.getElementById('bookingCount').innerText = '329';
+            document.getElementById('revenueValue').innerText = '12,628 €';
+            
+            // Chart.js - Graphique utilisateurs
+            const usersCtx = document.getElementById('usersChart').getContext('2d');
+            new Chart(usersCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
+                    datasets: [{
+                        label: 'Utilisateurs actifs',
+                        data: [320, 420, 510, 590, 640, 720, 800, 890, 940, 1050, 1150, 1250],
+                        borderColor: '#ff4f5a',
+                        backgroundColor: 'rgba(255, 79, 90, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Chart.js - Graphique de distribution
+            const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+            new Chart(distributionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Admin', 'Utilisateurs', 'Entraîneurs', 'Arbitres'],
+                    datasets: [{
+                        data: [15, 65, 10, 10],
+                        backgroundColor: ['#ff4f5a', '#17a2b8', '#28a745', '#ffc107'],
+                        borderColor: 'white',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Simuler le chargement des utilisateurs récents
+            setTimeout(function() {
+                const recentUsersHTML = `
+                    <div class="recent-item">
+                        <div class="recent-icon" style="background-color: var(--primary);">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="recent-details">
+                            <div class="recent-info">
+                                <div class="recent-name">Jean Dupont</div>
+                                <div class="recent-date">Il y a 1 heure</div>
+                            </div>
+                            <div class="recent-description">jean.dupont@example.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-item">
+                        <div class="recent-icon" style="background-color: var(--primary);">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="recent-details">
+                            <div class="recent-info">
+                                <div class="recent-name">Marie Martin</div>
+                                <div class="recent-date">Il y a 3 heures</div>
+                            </div>
+                            <div class="recent-description">marie.martin@example.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-item">
+                        <div class="recent-icon" style="background-color: var(--primary);">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="recent-details">
+                            <div class="recent-info">
+                                <div class="recent-name">Pierre Dubois</div>
+                                <div class="recent-date">Il y a 7 heures</div>
+                            </div>
+                            <div class="recent-description">pierre.dubois@example.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-item">
+                        <div class="recent-icon" style="background-color: var(--primary);">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="recent-details">
+                            <div class="recent-info">
+                                <div class="recent-name">Sophie Bernard</div>
+                                <div class="recent-date">Il y a 1 jour</div>
+                            </div>
+                            <div class="recent-description">sophie.bernard@example.com</div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('recentUsers').innerHTML = recentUsersHTML;
+            }, 1000);
+        });
+    </script>
+{% endblock %}

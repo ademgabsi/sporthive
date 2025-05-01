@@ -1,0 +1,217 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .profile-card {
+            transform: translateY(0);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+        }
+        .info-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .info-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+        }
+        .info-card:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background-color: #dc3545;
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        .info-card:hover:after {
+            transform: scaleY(1);
+        }
+        .btn-action {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-action:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        .btn-action:hover:after {
+            width: 200%;
+            height: 200%;
+        }
+        .profile-img {
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+        .profile-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+        }
+        .badge-role {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section class="heathy_section layout_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="card profile-card shadow-lg border-0">
+                    <div class="card-header bg-danger text-white text-center py-4">
+                        <h3 class="mb-0 font-weight-bold"><i class="fa fa-user-circle mr-2"></i> Mon Profil</h3>
+                    </div>
+                    <div class="card-body p-5" style="background-color: #f8f9fa;">
+                        {% for flash_message in app.flashes('success') %}
+                            <div class="alert alert-success alert-dismissible fade show">
+                                {{ flash_message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-4 wow fadeIn" data-wow-delay="0.4s">
+                                {% if user.image %}
+                                    <img src="{{ asset('uploads/users/' ~ user.image) }}" alt="Profile Image" class="img-fluid rounded-circle profile-img shadow" style="width: 150px; height: 150px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{{ asset('img/default-avatar.png') }}" alt="Default Profile" class="img-fluid rounded-circle profile-img shadow" style="width: 150px; height: 150px; object-fit: cover;">
+                                {% endif %}
+                                <div class="mt-3">
+                                    <h5 class="text-dark font-weight-bold">{{ user.prenom }} {{ user.nom }}</h5>
+                                    <span class="badge badge-role mt-2">{{ user.role ? user.role.nom|capitalize : 'Utilisateur' }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-8 wow fadeIn" data-wow-delay="0.5s">
+                                <div class="info-card p-3 mb-3 bg-white rounded shadow-sm">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <h6 class="text-secondary"><i class="fa fa-user mr-2"></i> Nom</h6>
+                                            <p class="text-dark font-weight-bold">{{ user.nom }}</p>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <h6 class="text-secondary"><i class="fa fa-user mr-2"></i> Prénom</h6>
+                                            <p class="text-dark font-weight-bold">{{ user.prenom }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-card p-3 mb-3 bg-white rounded shadow-sm">
+                                    <h6 class="text-secondary"><i class="fa fa-envelope mr-2"></i> Email</h6>
+                                    <p class="text-dark font-weight-bold">{{ user.email }}</p>
+                                </div>
+                                
+                                <div class="info-card p-3 mb-3 bg-white rounded shadow-sm">
+                                    <h6 class="text-secondary"><i class="fa fa-phone mr-2"></i> Téléphone</h6>
+                                    <p class="text-dark font-weight-bold">{{ user.numero_tel }}</p>
+                                </div>
+                                
+                                <div class="info-card p-3 mb-3 bg-white rounded shadow-sm">
+                                    <h6 class="text-secondary"><i class="fa fa-home mr-2"></i> Adresse</h6>
+                                    <p class="text-dark font-weight-bold">{{ user.adresse ?: 'Non renseignée' }}</p>
+                                </div>
+                                
+                                <div class="info-card p-3 mb-3 bg-white rounded shadow-sm">
+                                    <h6 class="text-secondary"><i class="fa fa-calendar mr-2"></i> Date de Naissance</h6>
+                                    <p class="text-dark font-weight-bold">{{ user.date_naissance ? user.date_naissance|date('d/m/Y') : 'Non renseignée' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-4">
+                            <a href="{{ path('app_profile_edit') }}" class="btn btn-danger btn-lg btn-action wow pulse" data-wow-delay="0.7s">
+                                <i class="fa fa-edit mr-2"></i> Modifier mon profil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <!-- WOW.js for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize WOW.js
+            new WOW().init();
+            
+            // Add ripple effect to buttons
+            const buttons = document.querySelectorAll('.btn-action');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const rect = button.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const circle = document.createElement('span');
+                    circle.style.position = 'absolute';
+                    circle.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                    circle.style.borderRadius = '50%';
+                    circle.style.width = '1px';
+                    circle.style.height = '1px';
+                    circle.style.top = y + 'px';
+                    circle.style.left = x + 'px';
+                    circle.style.transform = 'scale(0)';
+                    circle.style.animation = 'ripple 0.6s linear';
+                    
+                    button.appendChild(circle);
+                    
+                    setTimeout(() => {
+                        circle.remove();
+                    }, 600);
+                });
+            });
+            
+            // Add this style for ripple effect
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(100);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+{% endblock %}

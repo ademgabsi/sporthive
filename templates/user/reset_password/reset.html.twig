@@ -1,0 +1,488 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialisation du mot de passe - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        .card-reset {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card-reset:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .reset-icon {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            transition: all 0.5s ease;
+        }
+        
+        .reset-icon:hover {
+            transform: rotateY(180deg);
+            background-color: rgba(220, 53, 69, 0.2);
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #dc3545;
+            z-index: 10;
+        }
+        
+        .password-toggle:hover {
+            color: #bd2130;
+        }
+        
+        .password-strength {
+            height: 5px;
+            margin-top: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-weak {
+            width: 30%;
+            background-color: #dc3545;
+        }
+        
+        .strength-medium {
+            width: 60%;
+            background-color: #ffc107;
+        }
+        
+        .strength-strong {
+            width: 100%;
+            background-color: #dc3545;
+        }
+        
+        .btn-reset {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-weight: 600;
+            letter-spacing: 1px;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .btn-reset:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        .btn-reset:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s;
+        }
+        
+        .btn-reset:hover:before {
+            left: 100%;
+        }
+        
+        .cancel-link {
+            transition: all 0.3s ease;
+            display: inline-block;
+            color: #dc3545;
+        }
+        
+        .cancel-link:hover {
+            transform: translateX(5px);
+            color: #bd2130 !important;
+            text-decoration: none;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 30px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+        
+        .fadeInUp {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        /* Amélioration du label */
+        .form-label {
+            font-weight: 600;
+            color: #dc3545;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Amélioration des inputs */
+        .form-control:focus {
+            border-color: rgba(220, 53, 69, 0.5);
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        
+        /* Style pour les liens */
+        .text-danger {
+            color: #dc3545 !important;
+        }
+        
+        .font-weight-bold {
+            font-weight: 700 !important;
+        }
+        
+        /* Amélioration des inputs */
+        .input-group-text {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        
+        /* Style pour les liens secondaires */
+        .btn-outline-secondary {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .btn-outline-secondary:hover {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        /* Style pour tous les liens */
+        a {
+            color: #dc3545;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #bd2130;
+            text-decoration: underline;
+        }
+        
+        /* Surcharge de tous les styles bleus par défaut */
+        .text-primary {
+            color: #dc3545 !important;
+        }
+        
+        .btn-primary {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+        }
+        
+        .btn-primary:hover {
+            background-color: #c82333 !important;
+            border-color: #bd2130 !important;
+        }
+        
+        /* Surcharge des liens visités */
+        a:visited {
+            color: #dc3545;
+        }
+    </style>
+{% endblock %}
+
+{% block header %}
+    <header class="header_section">
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg custom_nav-container">
+                <a class="navbar-brand" href="{{ path('app_home') }}">
+                    <span>SPORTHIVE</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+{% endblock %}
+
+{% block body %}
+<section class="heathy_section layout_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 fadeInUp">
+                <div class="card card-reset shadow-lg border-0">
+                    <div class="card-header bg-danger text-white text-center py-4">
+                        <h3 class="mb-0 font-weight-bold">Nouveau mot de passe</h3>
+                    </div>
+                    <div class="card-body p-5" style="background-color: #f8f9fa;">
+                        <div class="text-center mb-4">
+                            <div class="reset-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <h4 class="font-weight-bold mb-3">Créer un nouveau mot de passe</h4>
+                            <p class="text-muted">
+                                Veuillez choisir un nouveau mot de passe fort pour sécuriser votre compte.
+                            </p>
+                        </div>
+                        
+                        {% for flash_error in app.flashes('danger') %}
+                            <div class="alert alert-danger shake mb-4" role="alert">{{ flash_error }}</div>
+                        {% endfor %}
+                        
+                        <form method="post" id="reset-form">
+                            <input type="hidden" name="token" value="{{ token }}">
+                            
+                            <div class="form-group mb-4">
+                                <label for="password" class="form-label fw-bold"><i class="fas fa-lock text-danger me-2"></i> Nouveau mot de passe</label>
+                                <div class="input-group password-container">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    </div>
+                                    <input type="password" name="password" id="password" class="form-control" required minlength="8" placeholder="Créez un nouveau mot de passe">
+                                    <span class="password-toggle" id="password-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
+                                <div class="password-strength" id="password-strength"></div>
+                                <small class="form-text text-muted password-feedback mt-2" id="password-feedback">Utilisez au moins 8 caractères</small>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label for="confirm_password" class="form-label fw-bold"><i class="fas fa-lock text-danger me-2"></i> Confirmer le mot de passe</label>
+                                <div class="input-group password-container">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    </div>
+                                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" required minlength="8" placeholder="Confirmez votre mot de passe">
+                                    <span class="password-toggle" id="confirm-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
+                                <small class="form-text text-muted match-feedback mt-2" id="match-feedback"></small>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mb-4">
+                                <button type="submit" class="btn btn-danger btn-lg btn-block btn-reset" id="submit-button">
+                                    <i class="fas fa-check-circle mr-2"></i> Réinitialiser mon mot de passe
+                                </button>
+                                <a href="{{ path('app_login') }}" class="btn btn-outline-danger">
+                                    <i class="fas fa-arrow-left mr-2"></i> Retour à la connexion
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted">
+                        Vous vous souvenez de votre mot de passe ? <a href="{{ path('app_login') }}" class="text-danger font-weight-bold">Se connecter</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const resetForm = document.getElementById('reset-form');
+            const passwordInput = document.getElementById('password');
+            const confirmInput = document.getElementById('confirm_password');
+            const passwordToggle = document.getElementById('password-toggle');
+            const confirmToggle = document.getElementById('confirm-toggle');
+            const passwordStrength = document.getElementById('password-strength');
+            const passwordFeedback = document.getElementById('password-feedback');
+            const matchFeedback = document.getElementById('match-feedback');
+            const submitButton = document.getElementById('submit-button');
+            
+            // Fonction pour basculer la visibilité du mot de passe
+            function togglePasswordVisibility(inputField, toggleIcon) {
+                if (inputField.type === "password") {
+                    inputField.type = "text";
+                    toggleIcon.querySelector('i').classList.remove('fa-eye');
+                    toggleIcon.querySelector('i').classList.add('fa-eye-slash');
+                } else {
+                    inputField.type = "password";
+                    toggleIcon.querySelector('i').classList.remove('fa-eye-slash');
+                    toggleIcon.querySelector('i').classList.add('fa-eye');
+                }
+            }
+            
+            // Écouteur pour le toggle de visibilité
+            if (passwordToggle) {
+                passwordToggle.addEventListener('click', function() {
+                    togglePasswordVisibility(passwordInput, this);
+                });
+            }
+            
+            if (confirmToggle) {
+                confirmToggle.addEventListener('click', function() {
+                    togglePasswordVisibility(confirmInput, this);
+                });
+            }
+            
+            // Évaluation de la force du mot de passe
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    const value = this.value;
+                    let strength = 0;
+                    
+                    if (value.length >= 8) strength += 1;
+                    if (value.match(/[A-Z]/)) strength += 1;
+                    if (value.match(/[0-9]/)) strength += 1;
+                    if (value.match(/[^A-Za-z0-9]/)) strength += 1;
+                    
+                    // Mise à jour de l'indicateur de force
+                    passwordStrength.className = 'password-strength';
+                    
+                    if (value.length === 0) {
+                        passwordStrength.style.width = '0';
+                        passwordFeedback.textContent = "Utilisez au moins 8 caractères";
+                    } else if (strength < 2) {
+                        passwordStrength.classList.add('strength-weak');
+                        passwordFeedback.textContent = "Mot de passe faible";
+                    } else if (strength < 4) {
+                        passwordStrength.classList.add('strength-medium');
+                        passwordFeedback.textContent = "Mot de passe moyen";
+                    } else {
+                        passwordStrength.classList.add('strength-strong');
+                        passwordFeedback.textContent = "Mot de passe fort";
+                    }
+                    
+                    // Vérifier la correspondance avec la confirmation
+                    if (confirmInput.value.length > 0) {
+                        checkPasswordMatch();
+                    }
+                });
+            }
+            
+            // Vérification de la correspondance des mots de passe
+            function checkPasswordMatch() {
+                if (passwordInput.value === confirmInput.value) {
+                    matchFeedback.textContent = "Les mots de passe correspondent";
+                    matchFeedback.style.color = "#dc3545";
+                    return true;
+                } else {
+                    matchFeedback.textContent = "Les mots de passe ne correspondent pas";
+                    matchFeedback.style.color = "#dc3545";
+                    return false;
+                }
+            }
+            
+            if (confirmInput) {
+                confirmInput.addEventListener('input', checkPasswordMatch);
+            }
+            
+            // Validation du formulaire
+            if (resetForm) {
+                resetForm.addEventListener('submit', function(e) {
+                    // Vérifier si les champs sont remplis
+                    if (passwordInput.value.trim() === '' || confirmInput.value.trim() === '') {
+                        e.preventDefault();
+                        
+                        Swal.fire({
+                            title: 'Erreur',
+                            text: 'Veuillez remplir tous les champs.',
+                            icon: 'error',
+                            confirmButtonColor: '#dc3545'
+                        });
+                        
+                        return false;
+                    }
+                    
+                    // Vérifier si le mot de passe est assez fort (au moins 8 caractères)
+                    if (passwordInput.value.length < 8) {
+                        e.preventDefault();
+                        
+                        Swal.fire({
+                            title: 'Erreur',
+                            text: 'Le mot de passe doit contenir au moins 8 caractères.',
+                            icon: 'error',
+                            confirmButtonColor: '#dc3545'
+                        });
+                        
+                        return false;
+                    }
+                    
+                    // Vérifier si les mots de passe correspondent
+                    if (!checkPasswordMatch()) {
+                        e.preventDefault();
+                        
+                        Swal.fire({
+                            title: 'Erreur',
+                            text: 'Les mots de passe ne correspondent pas.',
+                            icon: 'error',
+                            confirmButtonColor: '#dc3545'
+                        });
+                        
+                        return false;
+                    }
+                    
+                    // Animation lors de l'envoi du formulaire
+                    Swal.fire({
+                        title: 'Traitement en cours...',
+                        text: 'Nous mettons à jour votre mot de passe.',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: function() {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Le formulaire sera soumis normalement
+                });
+            }
+        });
+    </script>
+{% endblock %}

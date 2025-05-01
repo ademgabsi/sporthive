@@ -1,0 +1,355 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification à deux facteurs - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        .card-otp {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card-otp:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .security-icon {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            transition: all 0.5s ease;
+        }
+        
+        .security-icon:hover {
+            transform: rotateY(180deg);
+            background-color: rgba(220, 53, 69, 0.2);
+        }
+        
+        .otp-input {
+            letter-spacing: 16px;
+            font-size: 24px;
+            padding-left: 20px;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .otp-input:focus {
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+            transform: scale(1.01);
+        }
+        
+        .timer-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timer-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(#dc3545 0% var(--progress), #e9ecef var(--progress) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .timer-circle::before {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            background-color: white;
+            border-radius: 50%;
+        }
+        
+        .timer-text {
+            position: relative;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #dc3545;
+            z-index: 2;
+        }
+        
+        .btn-verify {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .btn-verify:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s;
+        }
+        
+        .btn-verify:hover:before {
+            left: 100%;
+        }
+        
+        .digit-animation .digit {
+            display: inline-block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .cancel-link {
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .cancel-link:hover {
+            transform: translateX(5px);
+            color: #bd2130 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block header %}
+    <header class="header_section">
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg custom_nav-container">
+                <a class="navbar-brand" href="{{ path('app_home') }}">
+                    <span>SPORTHIVE</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+{% endblock %}
+
+{% block body %}
+<section class="heathy_section layout_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="card card-otp shadow-lg border-0">
+                    <div class="card-header bg-danger text-white text-center py-4">
+                        <h3 class="mb-0 font-weight-bold">Authentification à deux facteurs</h3>
+                    </div>
+                    <div class="card-body p-5" style="background-color: #f8f9fa;">
+                        {% if error %}
+                            <div class="alert alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+                        
+                        {% for flash_message in app.flashes('success') %}
+                            <div class="alert alert-success">
+                                {{ flash_message }}
+                            </div>
+                        {% endfor %}
+                        
+                        <div class="text-center mb-4">
+                            <div class="security-icon wow bounceIn" data-wow-delay="0.5s">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h4 class="font-weight-bold mb-3 wow fadeInUp" data-wow-delay="0.7s">Vérification supplémentaire requise</h4>
+                            <p class="text-muted wow fadeInUp" data-wow-delay="0.9s">
+                                Pour finaliser votre connexion, veuillez saisir le code à 6 chiffres généré par votre application Google Authenticator.
+                            </p>
+                        </div>
+                        
+                        <div class="timer-container wow fadeIn" data-wow-delay="1.1s" id="timer-container">
+                            <div class="timer-circle">
+                                <span class="timer-text" id="countdown">30</span>
+                            </div>
+                        </div>
+                        <p class="text-center text-muted small mb-4 wow fadeIn" data-wow-delay="1.2s">
+                            Secondes restantes avant l'expiration du code
+                        </p>
+                        
+                        <form method="post" action="{{ path('app_login_verify_otp') }}" id="otp-form">
+                            <div class="form-group mb-4 wow fadeInUp" data-wow-delay="1.3s">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-secondary text-white"><i class="fas fa-key"></i></span>
+                                    </div>
+                                    <input type="text" name="code" id="otp-input" class="form-control otp-input" 
+                                           maxlength="6" pattern="[0-9]{6}" inputmode="numeric" 
+                                           autocomplete="one-time-code" required autofocus>
+                                </div>
+                                
+                                <div class="digit-animation text-center mt-3" id="digit-helper">
+                                    <span class="text-muted">Saisissez le code à 6 chiffres</span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid mb-4 wow fadeInUp" data-wow-delay="1.5s">
+                                <button type="submit" class="btn btn-danger btn-lg btn-block btn-verify pulse">
+                                    <i class="fas fa-unlock-alt mr-2"></i> Vérifier et se connecter
+                                </button>
+                            </div>
+                            
+                            <div class="text-center mt-4 wow fadeInUp" data-wow-delay="1.6s">
+                                <a href="{{ path('app_logout') }}" class="text-danger cancel-link">
+                                    <i class="fas fa-sign-out-alt mr-1"></i> Annuler et se déconnecter
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    
+    <!-- Stockage des données Twig dans des attributs data d'un élément caché -->
+    <div id="twigData" 
+         data-has-error="{% if error is defined and error %}true{% else %}false{% endif %}"
+         data-error-message="{% if error is defined and error %}{{ error|e('html_attr') }}{% endif %}"
+         style="display:none;"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Récupération des données Twig
+            var twigData = document.getElementById('twigData');
+            var hasError = twigData.getAttribute('data-has-error') === 'true';
+            var errorMessage = twigData.getAttribute('data-error-message');
+            
+            // Initialiser les animations
+            new WOW().init();
+            
+            // Gestion des erreurs avec SweetAlert2
+            if (hasError) {
+                Swal.fire({
+                    title: 'Code incorrect',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'Réessayer'
+                });
+            }
+            
+            // Timer pour le compte à rebours
+            var countdown = document.getElementById('countdown');
+            var timerCircle = document.querySelector('.timer-circle');
+            
+            if (countdown && timerCircle) {
+                var timeLeft = 30;
+                
+                function updateTimer() {
+                    if (timeLeft <= 0) {
+                        timeLeft = 30;
+                    }
+                    countdown.textContent = timeLeft;
+                    
+                    // Mettre à jour le gradient du cercle de progression
+                    var progress = (timeLeft / 30) * 100;
+                    timerCircle.style.setProperty('--progress', progress + '%');
+                    
+                    timeLeft--;
+                }
+                
+                // Mise à jour initiale
+                updateTimer();
+                
+                // Mettre à jour toutes les secondes
+                setInterval(updateTimer, 1000);
+            }
+            
+            // Gestion de l'input OTP
+            var otpInput = document.getElementById('otp-input');
+            var otpForm = document.getElementById('otp-form');
+            var digitHelper = document.getElementById('digit-helper');
+            
+            if (otpInput && otpForm && digitHelper) {
+                otpInput.addEventListener('input', function() {
+                    // Nettoyer l'entrée (uniquement des chiffres)
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Afficher les chiffres saisis avec animation
+                    if (this.value.length > 0) {
+                        var html = '';
+                        for (var i = 0; i < this.value.length; i++) {
+                            html += '<span class="digit" style="animation-delay: ' + (i * 0.1) + 's">' + this.value[i] + '</span>';
+                        }
+                        for (var j = this.value.length; j < 6; j++) {
+                            html += '<span class="text-muted">•</span>';
+                        }
+                        digitHelper.innerHTML = html;
+                    } else {
+                        digitHelper.innerHTML = '<span class="text-muted">Saisissez le code à 6 chiffres</span>';
+                    }
+                    
+                    // Auto-submit quand 6 chiffres sont entrés
+                    if (this.value.length === 6) {
+                        setTimeout(function() {
+                            Swal.fire({
+                                title: 'Vérification...',
+                                text: 'Nous vérifions votre code',
+                                icon: 'info',
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                willOpen: function() {
+                                    Swal.showLoading();
+                                    setTimeout(function() {
+                                        otpForm.submit();
+                                    }, 1000);
+                                }
+                            });
+                        }, 300);
+                    }
+                });
+                
+                // Focus automatique sur l'input
+                otpInput.focus();
+            }
+        });
+    </script>
+{% endblock %}

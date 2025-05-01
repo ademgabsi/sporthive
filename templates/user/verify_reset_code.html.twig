@@ -1,0 +1,273 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification du code - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        .card-reset {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        .card-reset:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .reset-icon {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            transition: all 0.5s ease;
+        }
+        
+        .reset-icon:hover {
+            transform: rotateY(180deg);
+            background-color: rgba(220, 53, 69, 0.2);
+        }
+        
+        .btn-reset {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-weight: 600;
+            letter-spacing: 1px;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .btn-reset:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        .btn-reset:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s;
+        }
+        
+        .btn-reset:hover:before {
+            left: 100%;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 30px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+        
+        .fadeInUp {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        /* Style pour les champs de code */
+        .code-input {
+            letter-spacing: 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: #dc3545;
+        }
+        
+        /* Styles pour tous les éléments */
+        .form-label {
+            font-weight: 600;
+            color: #212529; /* Noir */
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control:focus {
+            border-color: rgba(220, 53, 69, 0.5);
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        
+        a {
+            color: #dc3545;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #bd2130;
+            text-decoration: underline;
+        }
+        
+        .text-danger {
+            color: #dc3545 !important;
+        }
+        
+        /* Text color override */
+        p, .text-center, .card-body, label, small {
+            color: #212529 !important; /* Texte noir */
+        }
+        
+        small.form-text {
+            color: #6c757d !important; /* Texte gris pour les petits textes d'aide */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section class="heathy_section layout_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow card-reset">
+                    <div class="card-header bg-danger text-white text-center">
+                        <h3 class="mb-0">Vérification du code</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="reset-icon mb-4">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        
+                        <p class="text-center mb-4 text-dark">Veuillez entrer le code à 6 chiffres que nous avons envoyé à votre adresse email.</p>
+                        
+                        <form method="post" id="verify-form">
+                            <input type="hidden" name="token" value="{{ token }}">
+                            
+                            <div class="mb-4">
+                                <label for="reset_code" class="form-label text-center w-100">
+                                    <i class="fas fa-lock text-danger me-2"></i> Code de vérification
+                                </label>
+                                <input type="text" 
+                                       id="reset_code" 
+                                       name="reset_code" 
+                                       class="form-control code-input" 
+                                       placeholder="------" 
+                                       maxlength="6" 
+                                       autocomplete="one-time-code"
+                                       inputmode="numeric"
+                                       pattern="[0-9]{6}"
+                                       required>
+                                <small class="form-text text-muted text-center d-block mt-2">
+                                    Le code est valable pendant 1 heure
+                                </small>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mb-4">
+                                <button type="submit" class="btn btn-danger btn-lg btn-block btn-reset">
+                                    <i class="fas fa-check-circle me-2"></i> Vérifier le code
+                                </button>
+                                <a href="{{ path('app_forgot_password') }}" class="btn btn-outline-danger">
+                                    <i class="fas fa-redo me-2"></i> Demander un nouveau code
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    
+    {# Stocker les messages flash dans des attributs data sur un div caché #}
+    <div id="flash-messages" style="display:none;" 
+        data-success='{% if app.flashes('success') is defined %}{{ app.flashes('success')|json_encode|e('html_attr') }}{% else %}[]{% endif %}'
+        data-error='{% if app.flashes('danger') is defined %}{{ app.flashes('danger')|json_encode|e('html_attr') }}{% else %}[]{% endif %}'
+        data-warning='{% if app.flashes('warning') is defined %}{{ app.flashes('warning')|json_encode|e('html_attr') }}{% else %}[]{% endif %}'>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Récupération des messages flash
+            const flashContainer = document.getElementById('flash-messages');
+            
+            if (flashContainer) {
+                try {
+                    const successMessages = JSON.parse(flashContainer.getAttribute('data-success') || '[]');
+                    successMessages.forEach(function(message) {
+                        Swal.fire({
+                            title: 'Succès!',
+                            text: message,
+                            icon: 'success',
+                            confirmButtonColor: '#dc3545'
+                        });
+                    });
+                    
+                    const errorMessages = JSON.parse(flashContainer.getAttribute('data-error') || '[]');
+                    errorMessages.forEach(function(message) {
+                        Swal.fire({
+                            title: 'Erreur!',
+                            text: message,
+                            icon: 'error',
+                            confirmButtonColor: '#dc3545'
+                        });
+                    });
+                    
+                    const warningMessages = JSON.parse(flashContainer.getAttribute('data-warning') || '[]');
+                    warningMessages.forEach(function(message) {
+                        Swal.fire({
+                            title: 'Attention!',
+                            text: message,
+                            icon: 'warning',
+                            confirmButtonColor: '#dc3545'
+                        });
+                    });
+                } catch (e) {
+                    console.error('Erreur parsing flash messages:', e);
+                }
+            }
+            
+            // Gestion de l'input du code
+            const codeInput = document.getElementById('reset_code');
+            
+            if (codeInput) {
+                // Forcer les chiffres seulement
+                codeInput.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Soumettre automatiquement quand 6 chiffres sont entrés
+                    if (this.value.length === 6) {
+                        setTimeout(function() {
+                            document.getElementById('verify-form').submit();
+                        }, 500);
+                    }
+                });
+                
+                // Focus automatique
+                codeInput.focus();
+            }
+        });
+    </script>
+{% endblock %}
