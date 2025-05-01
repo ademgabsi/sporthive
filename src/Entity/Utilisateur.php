@@ -5,12 +5,14 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 use App\Repository\UtilisateurRepository;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\Table(name: 'utilisateurs')]
-class Utilisateur
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -98,6 +100,48 @@ class Utilisateur
         return $this;
     }
 
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private ?string $resetToken = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $resetTokenExpiresAt = null;
+
+    #[ORM\Column(type: 'string', length: 6, nullable: true)]
+    private ?string $resetCode = null;
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+        return $this;
+    }
+
+    public function getResetTokenExpiresAt(): ?\DateTimeInterface
+    {
+        return $this->resetTokenExpiresAt;
+    }
+
+    public function setResetTokenExpiresAt(?\DateTimeInterface $resetTokenExpiresAt): self
+    {
+        $this->resetTokenExpiresAt = $resetTokenExpiresAt;
+        return $this;
+    }
+
+    public function getResetCode(): ?string
+    {
+        return $this->resetCode;
+    }
+
+    public function setResetCode(?string $resetCode): self
+    {
+        $this->resetCode = $resetCode;
+        return $this;
+    }
+
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $date_naissance = null;
 
@@ -107,6 +151,18 @@ class Utilisateur
     }
 
     public function setDate_naissance(?\DateTimeInterface $date_naissance): self
+    {
+        $this->date_naissance = $date_naissance;
+        return $this;
+    }
+    
+    // CamelCase accessors for better Symfony form compatibility
+    public function getDateNaissance(): ?\DateTimeInterface
+    {
+        return $this->date_naissance;
+    }
+
+    public function setDateNaissance(?\DateTimeInterface $date_naissance): self
     {
         $this->date_naissance = $date_naissance;
         return $this;
@@ -125,6 +181,18 @@ class Utilisateur
         $this->numero_tel = $numero_tel;
         return $this;
     }
+    
+    // CamelCase accessors for better Symfony form compatibility
+    public function getNumeroTel(): ?string
+    {
+        return $this->numero_tel;
+    }
+
+    public function setNumeroTel(string $numero_tel): self
+    {
+        $this->numero_tel = $numero_tel;
+        return $this;
+    }
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $image = null;
@@ -137,6 +205,48 @@ class Utilisateur
     public function setImage(?string $image): self
     {
         $this->image = $image;
+        return $this;
+    }
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isActive = true;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $googleAuthSecret;
+
+    #[ORM\Column(type: 'boolean')]
+    private $isTwoFactorEnabled = false;
+
+    public function getIsActive(): bool
+    {
+        return $this->isActive;
+    }
+    
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+        return $this;
+    }
+
+    public function getGoogleAuthSecret(): ?string
+    {
+        return $this->googleAuthSecret;
+    }
+
+    public function setGoogleAuthSecret(?string $googleAuthSecret): self
+    {
+        $this->googleAuthSecret = $googleAuthSecret;
+        return $this;
+    }
+
+    public function getIsTwoFactorEnabled(): bool
+    {
+        return $this->isTwoFactorEnabled;
+    }
+
+    public function setIsTwoFactorEnabled(bool $isTwoFactorEnabled): self
+    {
+        $this->isTwoFactorEnabled = $isTwoFactorEnabled;
         return $this;
     }
 
@@ -323,4 +433,44 @@ class Utilisateur
         return $this;
     }
 
+    /**
+     * The public representation of the user
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = ['ROLE_USER'];
+        
+        // Add role based on the relationship
+        if ($this->role && $this->role->getNom() === 'admin') {
+            $roles[] = 'ROLE_ADMIN';
+        }
+        
+        return array_unique($roles);
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->mot_de_passe;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+    }
 }

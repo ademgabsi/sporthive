@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Diagnostic d'envoi d'emails{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .diagnostic-section {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .success-box {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .error-box {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        pre {
+            background-color: #212529;
+            color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.85em;
+        }
+        
+        .variable {
+            font-family: monospace;
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section class="heathy_section layout_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow">
+                    <div class="card-header bg-danger text-white">
+                        <h3 class="mb-0 text-center">Diagnostic d'envoi d'emails</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="diagnostic-section">
+                            <h4>Informations de configuration</h4>
+                            <p><strong>DSN Mailer:</strong> <span class="variable">{{ diagnosticInfo.dsn }}</span></p>
+                            <p><strong>Email de test:</strong> <span class="variable">{{ diagnosticInfo.test_email }}</span></p>
+                        </div>
+                        
+                        <div class="diagnostic-section">
+                            <h4>Test avec Symfony Mailer</h4>
+                            {% if success %}
+                                <div class="success-box">
+                                    <strong>✅ Succès !</strong> L'email a été envoyé avec succès via Symfony Mailer.
+                                </div>
+                            {% else %}
+                                <div class="error-box">
+                                    <strong>❌ Échec !</strong> L'email n'a pas pu être envoyé via Symfony Mailer.
+                                    
+                                    {% if errorDetails %}
+                                        <h5 class="mt-3">Détails de l'erreur:</h5>
+                                        <p><strong>Message:</strong> {{ errorDetails.message }}</p>
+                                        <p><strong>Code:</strong> {{ errorDetails.code }}</p>
+                                        
+                                        {% if errorDetails.debug is defined and errorDetails.debug %}
+                                            <h6>Informations de débogage:</h6>
+                                            <pre>{{ errorDetails.debug }}</pre>
+                                        {% endif %}
+                                        
+                                        <details>
+                                            <summary>Trace complète</summary>
+                                            <pre>{{ errorDetails.trace }}</pre>
+                                        </details>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="diagnostic-section">
+                            <h4>Test alternatif avec SwiftMailer</h4>
+                            {% if altSuccess %}
+                                <div class="success-box">
+                                    <strong>✅ Succès !</strong> L'email a été envoyé avec succès via SwiftMailer.
+                                </div>
+                            {% else %}
+                                <div class="error-box">
+                                    <strong>❌ Échec !</strong> L'email n'a pas pu être envoyé via SwiftMailer.
+                                    
+                                    {% if altError %}
+                                        <h5 class="mt-3">Détails de l'erreur:</h5>
+                                        <p><strong>Message:</strong> {{ altError.message }}</p>
+                                        <p><strong>Code:</strong> {{ altError.code }}</p>
+                                        
+                                        <details>
+                                            <summary>Trace complète</summary>
+                                            <pre>{{ altError.trace }}</pre>
+                                        </details>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="diagnostic-section">
+                            <h4>Solutions recommandées</h4>
+                            <ul>
+                                <li>Vérifiez que le serveur SMTP de Hostinger est configuré correctement (smtp.hostinger.com)</li>
+                                <li>Confirmez que les identifiants sont valides (nom d'utilisateur/mot de passe)</li>
+                                <li>Assurez-vous que le port 465 est ouvert et autorisé</li>
+                                <li>Vérifiez les paramètres SSL/TLS dans votre configuration</li>
+                                <li>Contactez le support Hostinger pour confirmer que l'envoi d'emails est autorisé pour votre compte</li>
+                            </ul>
+                            
+                            <div class="mt-4">
+                                <h5>En attendant, solution temporaire:</h5>
+                                <p>Utilisez la page de visualisation du code pour continuer vos tests:</p>
+                                <a href="{{ path('app_debug_view_reset_code', {'email': diagnosticInfo.test_email}) }}" class="btn btn-primary">
+                                    Voir les codes de réinitialisation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

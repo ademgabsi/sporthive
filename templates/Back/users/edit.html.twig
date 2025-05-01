@@ -1,0 +1,185 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Modifier l'utilisateur - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Modifier l'utilisateur</h1>
+        <p class="dashboard-subtitle">Modification du profil de {{ utilisateur.prenom }} {{ utilisateur.nom }}</p>
+    </div>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} mb-4" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="card card-body">
+        <form method="post" action="{{ path('app_admin_user_edit', {'id': utilisateur.id}) }}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="prenom">Prénom</label>
+                        <input type="text" id="prenom" name="prenom" class="form-control" value="{{ utilisateur.prenom }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="nom">Nom</label>
+                        <input type="text" id="nom" name="nom" class="form-control" value="{{ utilisateur.nom }}" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" value="{{ utilisateur.email }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="telephone">Téléphone</label>
+                        <input type="text" id="telephone" name="telephone" class="form-control" value="{{ utilisateur.numeroTel }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="role">Rôle</label>
+                        <select id="role" name="role" class="form-control">
+                            {% for role in roles %}
+                                <option value="{{ role.id }}" {% if utilisateur.role and utilisateur.role.id == role.id %}selected{% endif %}>
+                                    {{ role.nom }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="d-block">Statut</label>
+                        <div class="custom-control custom-switch mt-2">
+                            <input type="checkbox" class="custom-control-input" id="isActive" name="isActive" {% if utilisateur.isActive %}checked{% endif %}>
+                            <label class="custom-control-label" for="isActive">
+                                <span class="badge {% if utilisateur.isActive %}badge-success pulse-animation{% else %}badge-danger shake-animation{% endif %}">
+                                    {{ utilisateur.isActive ? 'Actif' : 'Désactivé' }}
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if utilisateur.image %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Photo de profil actuelle</label>
+                        <div class="profile-img-container">
+                            <img src="{{ asset('uploads/users/' ~ utilisateur.image) }}" alt="{{ utilisateur.prenom }} {{ utilisateur.nom }}" class="img-fluid rounded" style="max-height: 150px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-actions mt-4">
+                <a href="{{ path('app_admin_users') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left mr-1"></i> Retour à la liste
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save mr-1"></i> Enregistrer les modifications
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .profile-img-container {
+        padding: 10px;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        display: inline-block;
+    }
+    
+    .custom-switch .custom-control-label::before {
+        width: 2.5rem;
+    }
+    
+    .custom-switch .custom-control-label::after {
+        left: calc(-2.5rem + 2px);
+    }
+    
+    .custom-control-input:checked ~ .custom-control-label::before {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    
+    /* Animations pour les badges */
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+    
+    .shake-animation {
+        animation: shake 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+        20%, 40%, 60%, 80% { transform: translateX(2px); }
+    }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mise à jour du statut en temps réel
+        document.getElementById('isActive').addEventListener('change', function() {
+            var statusBadge = this.parentNode.querySelector('.badge');
+            if (this.checked) {
+                statusBadge.textContent = 'Actif';
+                statusBadge.classList.remove('badge-danger', 'shake-animation');
+                statusBadge.classList.add('badge-success', 'pulse-animation');
+            } else {
+                statusBadge.textContent = 'Désactivé';
+                statusBadge.classList.remove('badge-success', 'pulse-animation');
+                statusBadge.classList.add('badge-danger', 'shake-animation');
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,598 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sécurisation du compte - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        .step-container {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #dc3545;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-right: 1.5rem;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .step-container:hover .step-number {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #343a40;
+        }
+        
+        .step-description {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        .qr-code-container {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            max-width: 250px;
+            transition: all 0.3s ease;
+        }
+        
+        .qr-code-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .secret-key {
+            background-color: #f8f9fa;
+            border: 1px dashed #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            letter-spacing: 2px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 1rem auto;
+            max-width: 80%;
+            color: #495057;
+        }
+        
+        .secret-key:hover {
+            background-color: #e9ecef;
+        }
+        
+        .secret-key:after {
+            content: "Cliquer pour copier";
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        
+        .secret-key:hover:after {
+            opacity: 1;
+        }
+        
+        .otp-input {
+            letter-spacing: 16px;
+            font-size: 24px;
+            padding-left: 20px;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .otp-input:focus {
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+            transform: scale(1.01);
+        }
+        
+        .timer-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .timer-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(#dc3545 0% var(--progress), #e9ecef var(--progress) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .timer-circle::before {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            background-color: white;
+            border-radius: 50%;
+        }
+        
+        .timer-text {
+            position: relative;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #dc3545;
+            z-index: 2;
+        }
+        
+        .btn-verify {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-verify:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s;
+        }
+        
+        .btn-verify:hover:before {
+            left: 100%;
+        }
+        
+        .progress-steps {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar-steps {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #dc3545;
+            border-radius: 10px;
+            width: 66.67%;
+            transition: width 0.5s ease;
+        }
+        
+        .app-badge {
+            transition: all 0.3s ease;
+        }
+        
+        .app-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Nouveau style QR code */
+        .qr-container {
+            margin: 30px 0;
+        }
+        
+        .qr-code-wrapper {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            transition: all 0.4s ease;
+        }
+        
+        .qr-code-wrapper:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+        
+        .qr-code-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .qr-code-container svg {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .qr-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: #dc3545;
+            z-index: 2;
+        }
+        
+        .top-left {
+            top: 5px;
+            left: 5px;
+            border-top: 3px solid;
+            border-left: 3px solid;
+            border-radius: 8px 0 0 0;
+        }
+        
+        .top-right {
+            top: 5px;
+            right: 5px;
+            border-top: 3px solid;
+            border-right: 3px solid;
+            border-radius: 0 8px 0 0;
+        }
+        
+        .bottom-left {
+            bottom: 5px;
+            left: 5px;
+            border-bottom: 3px solid;
+            border-left: 3px solid;
+            border-radius: 0 0 0 8px;
+        }
+        
+        .bottom-right {
+            bottom: 5px;
+            right: 5px;
+            border-bottom: 3px solid;
+            border-right: 3px solid;
+            border-radius: 0 0 8px 0;
+        }
+        
+        .secret-key-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .secret-key-container:hover {
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+        }
+        
+        .secret-key-input {
+            font-family: monospace;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        @media (max-width: 767.98px) {
+            .qr-container .col-md-6:first-child {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block header %}
+    <header class="header_section">
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg custom_nav-container">
+                <a class="navbar-brand" href="{{ path('app_home') }}">
+                    <span>SPORTHIVE</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+{% endblock %}
+
+{% block body %}
+<section class="heathy_section layout_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
+                    <div class="card-header bg-danger text-white text-center py-4">
+                        <h3 class="mb-0 font-weight-bold">Configuration de l'authentification à deux facteurs</h3>
+                    </div>
+                    <div class="card-body p-5" style="background-color: #f8f9fa;">
+                        
+                        <div class="text-center mb-4">
+                            <div class="progress-steps">
+                                <div class="progress-bar-steps"></div>
+                            </div>
+                            <div class="d-flex justify-content-between text-muted mb-4">
+                                <span>Informations</span>
+                                <span class="font-weight-bold text-danger">Sécurité 2FA</span>
+                                <span>Confirmation</span>
+                            </div>
+                            <h5 class="text-secondary mb-3">Protection de votre compte</h5>
+                            <p class="text-muted">Pour renforcer la sécurité de votre compte, nous utilisons l'authentification à deux facteurs. Suivez simplement les étapes ci-dessous.</p>
+                        </div>
+
+                        <div class="qr-container mb-5">
+                            <div class="row align-items-center justify-content-center">
+                                <div class="col-md-6 text-center wow fadeInLeft" data-wow-delay="1.1s">
+                                    <div class="qr-code-wrapper">
+                                        <div class="qr-code-container">
+                                            {% if qrCode is not null %}
+                                                {% if qrCode starts with '<div' %}
+                                                    {{ qrCode|raw }}
+                                                {% else %}
+                                                    <div style="width: 200px; height: 200px; margin: 0 auto;">{{ qrCode|raw }}</div>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="qr-corner top-left"></div>
+                                        <div class="qr-corner top-right"></div>
+                                        <div class="qr-corner bottom-left"></div>
+                                        <div class="qr-corner bottom-right"></div>
+                                    </div>
+                                    <p class="mt-3 text-muted small">Scannez ce code QR avec l'application</p>
+                                </div>
+                                <div class="col-md-6 wow fadeInRight" data-wow-delay="1.3s">
+                                    <div class="secret-key-container">
+                                        <h5 class="mb-2"><i class="fas fa-key text-danger me-2"></i> Votre clé secrète</h5>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control secret-key-input" value="{{ secret }}" id="secret-key" readonly>
+                                            <button class="btn btn-outline-danger" type="button" id="copy-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Copier la clé">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <p class="text-muted small">Si vous ne pouvez pas scanner le QR code, entrez cette clé manuellement dans votre application</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form method="post" action="{{ path('app_register_verify_otp') }}" id="otp-form">
+                            <div class="timer-container wow fadeIn" data-wow-delay="1.5s" id="timer-container">
+                                <div class="timer-circle">
+                                    <span class="timer-text" id="countdown">30</span>
+                                </div>
+                            </div>
+                            <p class="text-center text-muted small mb-4 wow fadeIn" data-wow-delay="1.6s">
+                                Secondes restantes avant l'expiration du code
+                            </p>
+                        
+                            <div class="form-group mb-4 wow fadeInUp" data-wow-delay="1.7s">
+                                <label for="otp-input" class="form-label fw-bold"><i class="fas fa-lock text-danger me-2 "></i> Entrez le code de vérification</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-danger text-white"><i class="fas fa-key"></i></span>
+                                    </div>
+                                    <input type="text" name="code" id="otp-input" class="form-control otp-input" 
+                                           maxlength="6" pattern="[0-9]{6}" inputmode="numeric" 
+                                           autocomplete="one-time-code" required autofocus>
+                                </div>
+                                
+                                <div class="digit-animation text-center mt-3" id="digit-helper">
+                                    <span class="text-muted">Entrez le code à 6 chiffres généré par l'application</span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mb-4 wow fadeInUp" data-wow-delay="1.9s">
+                                <button type="submit" class="btn btn-danger btn-lg btn-block btn-verify pulse">
+                                    <i class="fas fa-user-check mr-2"></i> Vérifier et créer mon compte
+                                </button>
+                                <a href="{{ path('app_register') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left mr-2"></i> Retourner au formulaire
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    
+    <!-- Stockage des données Twig dans des attributs data d'un élément caché -->
+    <div id="twigData" 
+         data-has-error="{% if error is defined and error %}true{% else %}false{% endif %}"
+         data-error-message="{% if error is defined and error %}{{ error|e('html_attr') }}{% endif %}"
+         style="display:none;"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Récupération des données Twig
+            var twigData = document.getElementById('twigData');
+            var hasError = twigData.getAttribute('data-has-error') === 'true';
+            var errorMessage = twigData.getAttribute('data-error-message');
+            
+            // Initialiser les animations
+            new WOW().init();
+            
+            // Gestion des erreurs avec SweetAlert2
+            if (hasError) {
+                Swal.fire({
+                    title: 'Erreur !',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'Réessayer'
+                });
+            }
+            
+            // Fix QR code SVG centering and size
+            var qrSvg = document.querySelector('.qr-code-container svg');
+            if (qrSvg) {
+                qrSvg.setAttribute('width', '180');
+                qrSvg.setAttribute('height', '180');
+                qrSvg.style.display = 'block';
+                qrSvg.style.margin = '0 auto';
+            }
+            
+            // Copier la clé secrète au clic
+            var secretKey = document.getElementById('secret-key');
+            var copyBtn = document.getElementById('copy-btn');
+            
+            if (copyBtn && secretKey) {
+                copyBtn.addEventListener('click', function() {
+                    var text = secretKey.value;
+                    navigator.clipboard.writeText(text).then(function() {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Clé copiée !',
+                            text: 'La clé secrète a été copiée dans le presse-papier',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }).catch(function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur',
+                            text: 'Impossible de copier la clé. Veuillez la sélectionner et copier manuellement.',
+                            confirmButtonColor: '#dc3545'
+                        });
+                    });
+                });
+            }
+            
+            // Gestion de l'input OTP
+            var otpInput = document.getElementById('otp-input');
+            var otpForm = document.getElementById('otp-form');
+            var digitHelper = document.getElementById('digit-helper');
+            
+            if (otpInput && otpForm && digitHelper) {
+                otpInput.addEventListener('input', function() {
+                    // Nettoyer l'entrée (uniquement des chiffres)
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Afficher les chiffres saisis avec animation
+                    if (this.value.length > 0) {
+                        var html = '';
+                        for (var i = 0; i < this.value.length; i++) {
+                            html += '<span class="digit" style="animation-delay: ' + (i * 0.1) + 's">' + this.value[i] + '</span>';
+                        }
+                        for (var j = this.value.length; j < 6; j++) {
+                            html += '<span class="text-muted">•</span>';
+                        }
+                        digitHelper.innerHTML = html;
+                    } else {
+                        digitHelper.innerHTML = '<span class="text-muted">Entrez le code à 6 chiffres généré par l\'application</span>';
+                    }
+                    
+                    // Auto-submit quand 6 chiffres sont entrés
+                    if (this.value.length === 6) {
+                        setTimeout(function() {
+                            Swal.fire({
+                                title: 'Vérification...',
+                                text: 'Nous vérifions votre code',
+                                icon: 'info',
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                willOpen: function() {
+                                    Swal.showLoading();
+                                    setTimeout(function() {
+                                        otpForm.submit();
+                                    }, 1000);
+                                }
+                            });
+                        }, 300);
+                    }
+                });
+                
+                // Compteur de temps
+                var countdown = document.getElementById('countdown');
+                var timerCircle = document.querySelector('.timer-circle');
+                
+                if (countdown && timerCircle) {
+                    var timeLeft = 30;
+                    
+                    function updateTimer() {
+                        if (timeLeft <= 0) {
+                            timeLeft = 30;
+                        }
+                        countdown.textContent = timeLeft;
+                        
+                        // Mettre à jour le gradient du cercle de progression
+                        var progress = (timeLeft / 30) * 100;
+                        timerCircle.style.setProperty('--progress', progress + '%');
+                        
+                        timeLeft--;
+                    }
+                    
+                    // Mise à jour initiale
+                    updateTimer();
+                    
+                    // Mettre à jour toutes les secondes
+                    setInterval(updateTimer, 1000);
+                }
+                
+                // Focus automatique sur l'input
+                otpInput.focus();
+            }
+        });
+    </script>
+{% endblock %}

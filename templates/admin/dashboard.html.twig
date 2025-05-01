@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration - {{ parent() }}{% endblock %}
+
+{% block header %}
+    <header class="header_section">
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg custom_nav-container">
+                <a class="navbar-brand" href="{{ path('admin_dashboard') }}">
+                    <span>SPORTHIVE ADMIN</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+                        <ul class="navbar-nav">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ path('admin_dashboard') }}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_home') }}">
+                                    Site Public
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+{% endblock %}
+
+{% block body %}
+<section class="us_section layout_padding">
+    <div class="container">
+        <div class="heading_container">
+            <h2>Tableau de Bord Administration</h2>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="card border-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Gestion des Utilisateurs</h5>
+                        <p class="card-text">Gérez les comptes utilisateurs, les rôles et les permissions.</p>
+                        <a href="#" class="btn btn-primary">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card border-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Gestion des Terrains</h5>
+                        <p class="card-text">Ajoutez, modifiez ou supprimez des terrains sportifs.</p>
+                        <a href="#" class="btn btn-success">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card border-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Gestion des Compétitions</h5>
+                        <p class="card-text">Gérez les tournois, les matchs et les calendriers.</p>
+                        <a href="#" class="btn btn-info">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card border-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Gestion des Équipes</h5>
+                        <p class="card-text">Suivez et gérez les équipes enregistrées sur la plateforme.</p>
+                        <a href="#" class="btn btn-warning">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card border-danger">
+                    <div class="card-body">
+                        <h5 class="card-title">Gestion des Assurances</h5>
+                        <p class="card-text">Gérez les contrats d'assurance et les réclamations.</p>
+                        <a href="#" class="btn btn-danger">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card border-secondary">
+                    <div class="card-body">
+                        <h5 class="card-title">Statistiques</h5>
+                        <p class="card-text">Consultez les statistiques d'utilisation de la plateforme.</p>
+                        <a href="#" class="btn btn-secondary">Accéder</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

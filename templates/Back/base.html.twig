@@ -892,11 +892,45 @@
 	</div>
 
 	{% block javascripts %}
+		<!-- SweetAlert2 -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		
 		<script>
 			document.getElementById('toggleSidebar').addEventListener('click', function () {
-document.querySelector('.sidebar').classList.toggle('collapsed');
-document.querySelector('.main-content').classList.toggle('expanded');
-});
+				document.querySelector('.sidebar').classList.toggle('collapsed');
+				document.querySelector('.main-content').classList.toggle('expanded');
+			});
+			
+			// Fonction de confirmation de déconnexion avec SweetAlert2
+			function confirmLogout() {
+				Swal.fire({
+					title: 'Déconnexion',
+					text: 'Êtes-vous sûr de vouloir vous déconnecter ?',
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonColor: '#ff4f5a',
+					cancelButtonColor: '#6c757d',
+					confirmButtonText: 'Oui, me déconnecter',
+					cancelButtonText: 'Annuler',
+					reverseButtons: true,
+					customClass: {
+						confirmButton: 'btn btn-danger',
+						cancelButton: 'btn btn-secondary'
+					}
+				}).then((result) => {
+					if (result.isConfirmed) {
+						Swal.fire({
+							title: 'Au revoir !',
+							text: 'Vous avez été déconnecté avec succès.',
+							icon: 'success',
+							timer: 1500,
+							showConfirmButton: false
+						}).then(() => {
+							window.location.href = "{{ path('app_logout') }}";
+						});
+					}
+				});
+			}
 		</script>
 	{% endblock %}
 </body></html>
