@@ -13,11 +13,94 @@
             <i class="fas fa-bell"></i>
             <span class="notification-count">3</span>
         </button>
-        <div class="user-profile">
+        <div class="user-profile dropdown-toggle" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <div class="profile-img">
-                <i class="fas fa-user"></i>
+                {% if app.user and app.user.image %}
+                    <img src="{{ asset('uploads/users/' ~ app.user.image) }}" alt="{{ app.user.prenom }}" class="img-fluid">
+                {% else %}
+                    <i class="fas fa-user"></i>
+                {% endif %}
             </div>
-            <div class="profile-name">Admin</div>
+            <div class="profile-name">
+                {% if app.user %}
+                    {{ app.user.prenom }} {{ app.user.nom }}
+                {% else %}
+                    Admin
+                {% endif %}
+            </div>
+            <i class="fas fa-chevron-down ml-2" style="font-size: 12px; color: #555;"></i>
+        </div>
+        <div class="dropdown-menu dropdown-menu-right user-dropdown" aria-labelledby="userDropdown">
+            <a class="dropdown-item" href="#" onclick="confirmLogout(); return false;">
+                <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
+            </a>
         </div>
     </div>
 </div>
+
+<style>
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 45px;
+    min-width: 180px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 8px 0;
+    z-index: 1000;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: #343a40;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: var(--primary);
+}
+
+.user-profile {
+    cursor: pointer;
+    position: relative;
+    padding: 5px 10px;
+    border-radius: 50px;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.user-profile:hover {
+    background-color: #f8f9fa;
+}
+
+.show > .dropdown-menu {
+    display: block;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userDropdown = document.getElementById('userDropdown');
+    const dropdownMenu = document.querySelector('.user-dropdown');
+    
+    userDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.remove('show');
+        }
+    });
+});
+</script>

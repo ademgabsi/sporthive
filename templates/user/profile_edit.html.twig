@@ -1,0 +1,390 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            margin: 10px 0;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            background-color: #f8f9fa;
+        }
+        .file-upload:hover {
+            border-color: #dc3545;
+            background-color: #fff9f9;
+        }
+        .file-upload input[type="file"] {
+            position: absolute;
+            font-size: 100px;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+        }
+        .upload-icon {
+            font-size: 2rem;
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+        .input-group-text {
+            min-width: 45px;
+            justify-content: center;
+        }
+        .form-control:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        .profile-form-card {
+            transform: translateY(0);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .profile-form-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+        }
+        .input-group {
+            transition: all 0.3s ease;
+        }
+        .input-group:focus-within {
+            transform: translateX(5px);
+        }
+        .btn-action {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-action:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        .btn-action:hover:after {
+            width: 200%;
+            height: 200%;
+        }
+        .profile-img-preview {
+            position: relative;
+            display: inline-block;
+        }
+        .profile-img-edit-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #dc3545;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .profile-img-preview:hover .profile-img-edit-icon {
+            opacity: 1;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section class="heathy_section layout_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="card profile-form-card shadow-lg border-0">
+                    <div class="card-header bg-danger text-white text-center py-4">
+                        <h3 class="mb-0 font-weight-bold"><i class="fa fa-user-edit mr-2"></i> Modifier mon profil</h3>
+                    </div>
+                    <div class="card-body p-md-5" style="background-color: #f8f9fa;">
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        <div class="text-center mb-4 wow fadeIn" data-wow-delay="0.4s">
+                            <div class="profile-img-preview">
+                                {% if user.image %}
+                                    <img src="{{ asset('uploads/users/' ~ user.image) }}" alt="Profile Image" class="img-fluid rounded-circle profile-img shadow" style="width: 150px; height: 150px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{{ asset('img/default-avatar.png') }}" alt="Default Profile" class="img-fluid rounded-circle profile-img shadow" style="width: 150px; height: 150px; object-fit: cover;">
+                                {% endif %}
+                                <div class="profile-img-edit-icon" id="triggerFileUpload">
+                                    <i class="fa fa-camera"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{ form_start(profileForm, {'attr': {'class': 'wow fadeIn needs-validation', 'data-wow-delay': '0.5s', 'novalidate': 'novalidate'}}) }}
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="text-dark font-weight-bold">{{ form_label(profileForm.nom) }}</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-danger text-white"><i class="fa fa-user"></i></span>
+                                        </div>
+                                        {{ form_widget(profileForm.nom, {'attr': {'class': 'form-control', 'placeholder': 'Votre nom'}}) }}
+                                    </div>
+                                    <div class="form-error text-danger">
+                                        {{ form_errors(profileForm.nom) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="text-dark font-weight-bold">{{ form_label(profileForm.prenom) }}</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-danger text-white"><i class="fa fa-user"></i></span>
+                                        </div>
+                                        {{ form_widget(profileForm.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Votre prénom'}}) }}
+                                    </div>
+                                    <div class="form-error text-danger">
+                                        {{ form_errors(profileForm.prenom) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="text-dark font-weight-bold">{{ form_label(profileForm.email) }}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-danger text-white"><i class="fa fa-envelope"></i></span>
+                                    </div>
+                                    {{ form_widget(profileForm.email, {'attr': {'class': 'form-control', 'placeholder': 'votreemail@exemple.com'}}) }}
+                                </div>
+                                <div class="form-error text-danger">
+                                    {{ form_errors(profileForm.email) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="text-dark font-weight-bold">{{ form_label(profileForm.numero_tel) }}</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-danger text-white"><i class="fa fa-phone"></i></span>
+                                        </div>
+                                        {{ form_widget(profileForm.numero_tel, {'attr': {'class': 'form-control', 'placeholder': 'Votre numéro de téléphone'}}) }}
+                                    </div>
+                                    <div class="form-error text-danger">
+                                        {{ form_errors(profileForm.numero_tel) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="text-dark font-weight-bold">{{ form_label(profileForm.date_naissance) }}</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-danger text-white"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                        {{ form_widget(profileForm.date_naissance, {'attr': {'class': 'form-control'}}) }}
+                                    </div>
+                                    <div class="form-error text-danger">
+                                        {{ form_errors(profileForm.date_naissance) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="text-dark font-weight-bold">{{ form_label(profileForm.adresse) }}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-danger text-white"><i class="fa fa-home"></i></span>
+                                    </div>
+                                    {{ form_widget(profileForm.adresse, {'attr': {'class': 'form-control', 'placeholder': 'Votre adresse complète'}}) }}
+                                </div>
+                                <div class="form-error text-danger">
+                                    {{ form_errors(profileForm.adresse) }}
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="file-upload wow fadeInUp" data-wow-delay="0.6s" id="fileUploadArea">
+                                    <div class="upload-icon">
+                                        <i class="fa fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <h5 class="mb-2">Téléchargez votre photo de profil</h5>
+                                    <p class="text-muted">Glissez et déposez votre image ici ou cliquez pour parcourir</p>
+                                    <div class="small text-muted">Formats acceptés: JPG, PNG. Taille max: 5MB</div>
+                                    {{ form_widget(profileForm.profileImage, {'attr': {'class': 'profile-image-input'}}) }}
+                                </div>
+                                <div class="form-error text-danger">
+                                    {{ form_errors(profileForm.profileImage) }}
+                                </div>
+                            </div>
+
+                            <div class="row mt-5">
+                                <div class="col-md-6 mb-3">
+                                    <a href="{{ path('app_profile') }}" class="btn btn-secondary btn-block btn-lg btn-action wow fadeInLeft" data-wow-delay="0.7s">
+                                        <i class="fa fa-arrow-left mr-2"></i> Retour
+                                    </a>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <button type="submit" class="btn btn-danger btn-block btn-lg btn-action wow fadeInRight" data-wow-delay="0.7s">
+                                        <i class="fa fa-save mr-2"></i> Enregistrer
+                                    </button>
+                                </div>
+                            </div>
+                        {{ form_end(profileForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <!-- WOW.js for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize WOW.js
+            new WOW().init();
+            
+            // Handle file upload UI
+            const fileInput = document.querySelector('.profile-image-input');
+            const fileUploadArea = document.getElementById('fileUploadArea');
+            const triggerFileUpload = document.getElementById('triggerFileUpload');
+            
+            // Trigger file dialog when clicking on the camera icon
+            if (triggerFileUpload) {
+                triggerFileUpload.addEventListener('click', function() {
+                    fileInput.click();
+                });
+            }
+            
+            // Update UI when file is selected
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    if (fileInput.files.length > 0) {
+                        const fileName = fileInput.files[0].name;
+                        fileUploadArea.classList.add('border-success');
+                        fileUploadArea.innerHTML = `
+                            <div class="upload-icon text-success">
+                                <i class="fa fa-check-circle"></i>
+                            </div>
+                            <h5 class="mb-2 text-success">Fichier sélectionné</h5>
+                            <p>${fileName}</p>
+                            <div class="small text-muted">Cliquez ici pour changer de fichier</div>
+                        `;
+                        // Re-attach the file input
+                        fileUploadArea.appendChild(fileInput);
+                    }
+                });
+            }
+            
+            // Handle drag and drop
+            if (fileUploadArea) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    fileUploadArea.addEventListener(eventName, preventDefaults, false);
+                });
+                
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    fileUploadArea.addEventListener(eventName, highlight, false);
+                });
+                
+                ['dragleave', 'drop'].forEach(eventName => {
+                    fileUploadArea.addEventListener(eventName, unhighlight, false);
+                });
+                
+                function highlight() {
+                    fileUploadArea.classList.add('border-danger');
+                    fileUploadArea.style.backgroundColor = '#fff9f9';
+                }
+                
+                function unhighlight() {
+                    fileUploadArea.classList.remove('border-danger');
+                    fileUploadArea.style.backgroundColor = '#f8f9fa';
+                }
+                
+                fileUploadArea.addEventListener('drop', handleDrop, false);
+                
+                function handleDrop(e) {
+                    if (e.dataTransfer.files.length) {
+                        fileInput.files = e.dataTransfer.files;
+                        // Trigger change event manually
+                        const event = new Event('change', { bubbles: true });
+                        fileInput.dispatchEvent(event);
+                    }
+                }
+            }
+            
+            // Form validation with visual feedback
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                }, false);
+            });
+            
+            // Add ripple effect to buttons
+            const buttons = document.querySelectorAll('.btn-action');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const rect = button.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const circle = document.createElement('span');
+                    circle.style.position = 'absolute';
+                    circle.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                    circle.style.borderRadius = '50%';
+                    circle.style.width = '1px';
+                    circle.style.height = '1px';
+                    circle.style.top = y + 'px';
+                    circle.style.left = x + 'px';
+                    circle.style.transform = 'scale(0)';
+                    circle.style.animation = 'ripple 0.6s linear';
+                    
+                    button.appendChild(circle);
+                    
+                    setTimeout(() => {
+                        circle.remove();
+                    }, 600);
+                });
+            });
+            
+            // Add this style for ripple effect
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(100);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+{% endblock %}

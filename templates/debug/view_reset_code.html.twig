@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Visualisation du code de réinitialisation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .code-box {
+            font-size: 24px;
+            background-color: #f8f9fa;
+            border: 1px solid #dc3545;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            letter-spacing: 3px;
+            font-weight: bold;
+            color: #dc3545;
+            margin: 20px 0;
+        }
+        
+        .alert-dev {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .token-info {
+            font-size: 12px;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section class="heathy_section layout_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-danger text-white">
+                        <h3 class="mb-0 text-center">Visualisation du code de réinitialisation (DEBUG)</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert-dev">
+                            <strong>⚠️ Mode développement uniquement !</strong>
+                            <p>Cette page est destinée uniquement au développement et aux tests. Ne pas utiliser en production.</p>
+                        </div>
+                        
+                        <h4>Informations pour l'email : {{ email }}</h4>
+                        
+                        <div class="code-box">
+                            {{ resetCode }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Expire le :</strong> {{ expiresAt }}</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <a href="{{ path('app_verify_reset_code', {'token': resetToken}) }}" class="btn btn-danger">
+                                    Aller à la page de vérification
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <details>
+                            <summary>Token de réinitialisation (technique)</summary>
+                            <div class="token-info mt-2">
+                                {{ resetToken }}
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

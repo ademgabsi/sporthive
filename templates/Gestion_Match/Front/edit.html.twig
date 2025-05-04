@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit GestionMatch{% endblock %}
+
+{% block body %}
+    <h1>Edit GestionMatch</h1>
+
+    {{ include('gestion_match/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_gestion_match_index') }}">back to list</a>
+
+    {{ include('gestion_match/_delete_form.html.twig') }}
+{% endblock %}

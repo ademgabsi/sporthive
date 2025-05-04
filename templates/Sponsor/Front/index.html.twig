@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Sponsors{% endblock %}
+
+{% block body %}
+    <!-- sponsor section -->
+    <section class="sponsor_section layout_padding">
+        <div class="container">
+            <div class="heading_container">
+                <h2>Nos Sponsors</h2>
+                <p>Découvrez les partenaires qui soutiennent nos événements</p>
+            </div>
+            <div class="row">
+                {% for sponsor in sponsors %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ sponsor.nom_Sp }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ sponsor.type_Sp }}</h6>
+                                <div class="sponsor-details mt-3">
+                                    <p><i class="far fa-calendar-alt"></i> Du {{ sponsor.dateDebut ? sponsor.dateDebut|date('d/m/Y') : '' }} au {{ sponsor.dateFin ? sponsor.dateFin|date('d/m/Y') : '' }}</p>
+                                    {% if sponsor.gestionMatch %}
+                                        <p><i class="fas fa-futbol"></i> Match associé: {{ sponsor.gestionMatch.nom }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="{{ path('app_sponsor_front_show', {'id_Sp': sponsor.id_Sp}) }}" class="btn btn-primary">
+                                        En savoir plus
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info">
+                            Aucun sponsor n'est disponible pour le moment.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- end sponsor section -->
+{% endblock %}

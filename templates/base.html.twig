@@ -30,6 +30,8 @@
 		<!-- fonts style -->
 		<link
 		href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
+		<!-- Font Awesome icons -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 		<!-- Custom styles for this template -->
 		<link
 		href="{{ asset('css/style.css') }}" rel="stylesheet"/>
@@ -57,17 +59,17 @@
 								<div class="collapse navbar-collapse" id="navbarSupportedContent">
 									<div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
 										<ul class="navbar-nav">
-											<li class="nav-item active">
-												<a class="nav-link" href="{{ path('app_home') }}">Home
+											<li class="nav-item {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}">
+												<a class="nav-link" href="{{ path('app_home') }}">Accueil
 													<span class="sr-only">(current)</span>
 												</a>
 											</li>
-											<li class="nav-item">
+											<li class="nav-item {% if app.request.attributes.get('_route') starts with 'app_assurance' %}active{% endif %}">
 												<a class="nav-link" href="{{ path('app_assurance_index') }}">
 													Assurance
 												</a>
 											</li>
-											<li class="nav-item">
+											<li class="nav-item {% if app.request.attributes.get('_route') starts with 'app_reclamation' %}active{% endif %}">
 												<a class="nav-link" href="{{ path('app_reclamation_index') }}">
 													Reclamation
 												</a>
@@ -81,9 +83,13 @@
 												<a class="nav-link" href="#">
 													Competition</a>
 											</li>
-											<li class="nav-item">
-												<a class="nav-link" href="#">
+											<li class="nav-item {% if app.request.attributes.get('_route') starts with 'app_match_front' %}active{% endif %}">
+												<a class="nav-link" href="{{ path('app_match_front_index') }}">
 													Match</a>
+											</li>
+											<li class="nav-item {% if app.request.attributes.get('_route') starts with 'app_sponsor_front' %}active{% endif %}">
+												<a class="nav-link" href="{{ path('app_sponsor_front_index') }}">
+													Sponsor</a>
 											</li>
 											<li class="nav-item">
 												<a class="nav-link" href="#">
@@ -91,13 +97,46 @@
 											</li>
 											<li class="nav-item">
 												<a class="nav-link" href="#">
-													Contact Us</a>
+													Contact</a>
 											</li>
 										</ul>
-										<div class="user_option">
+										<div class="user_option d-flex align-items-center">
 											<form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
 												<button class="btn my-2 my-sm-0 nav_search-btn" type="submit"></button>
 											</form>
+											{% if app.user %}
+												<div class="dropdown">
+													<button class="btn btn-outline-light dropdown-toggle ml-2" type="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+														<i class="fa fa-user mr-1"></i> {{ app.user.prenom }}
+													</button>
+													<div class="dropdown-menu dropdown-menu-right bg-white" aria-labelledby="userDropdown">
+														<a class="dropdown-item text-dark" href="{{ path('app_profile') }}">
+															<i class="fa fa-user-circle mr-2"></i> Mon profil
+														</a>
+														{% if is_granted('ROLE_ADMIN') %}
+															<a class="dropdown-item text-dark" href="{{ path('app_admin_dashboard') }}">
+																<i class="fa fa-cogs mr-2"></i> Administration
+															</a>
+														{% endif %}
+														<div class="dropdown-divider"></div>
+														<a class="dropdown-item text-dark" href="{{ path('app_logout') }}">
+															<i class="fa fa-sign-out-alt mr-2"></i> Déconnexion
+														</a>
+													</div>
+												</div>
+											{% else %}
+												<div class="ml-3">
+													{% if app.request.attributes.get('_route') == 'app_login' %}
+														<a href="{{ path('app_register') }}" class="btn btn-danger">
+															<i class="fa fa-user-plus mr-1"></i> Inscription
+														</a>
+													{% else %}
+														<a href="{{ path('app_login') }}" class="btn btn-danger">
+															<i class="fa fa-sign-in-alt mr-1"></i> Connexion
+														</a>
+													{% endif %}
+												</div>
+											{% endif %}
 										</div>
 									</div>
 								</div>
@@ -303,9 +342,29 @@
 				<!-- footer section -->
 			{% endblock %}
 
-			<script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
-			<script src="{{ asset('js/bootstrap.js') }}"></script>
-
-			{% block js %}{% endblock %}
+			{% block javascripts %}
+				<!-- jQuery -->
+				<script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
+				<!-- bootstrap js -->
+				<script src="{{ asset('js/bootstrap.js') }}"></script>
+				<!-- custom js -->
+				<script src="{{ asset('js/custom.js') }}"></script>
+				<!-- Google Map -->
+				<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
+				<!-- End Google Map -->
+			{% endblock %}
+			<!--Start of Tawk.to Script-->
+			<script type="text/javascript">
+			var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+			(function(){
+			var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+			s1.async=true;
+			s1.src='https://embed.tawk.to/681096cfe616e1190d99e4e6/1iq0cq6lq';
+			s1.charset='UTF-8';
+			s1.setAttribute('crossorigin','*');
+			s0.parentNode.insertBefore(s1,s0);
+			})();
+			</script>
+			<!--End of Tawk.to Script-->
 		</body>
 	</html>

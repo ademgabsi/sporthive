@@ -35,11 +35,23 @@ class Sponsor
     {
         return $this->nom_Sp;
     }
+    
+    // Alias for form compatibility
+    public function getNom(): ?string
+    {
+        return $this->nom_Sp;
+    }
 
     public function setNom_Sp(string $nom_Sp): self
     {
         $this->nom_Sp = $nom_Sp;
         return $this;
+    }
+    
+    // Alias for form compatibility
+    public function setNom(string $nom): self
+    {
+        return $this->setNom_Sp($nom);
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
@@ -49,14 +61,26 @@ class Sponsor
     {
         return $this->type_Sp;
     }
+    
+    // Alias for form compatibility
+    public function getType(): ?string
+    {
+        return $this->type_Sp;
+    }
 
     public function setType_Sp(string $type_Sp): self
     {
         $this->type_Sp = $type_Sp;
         return $this;
     }
+    
+    // Alias for form compatibility
+    public function setType(string $type): self
+    {
+        return $this->setType_Sp($type);
+    }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'montantContrat', type: 'integer', nullable: false)]
     private ?int $montantContrat = null;
 
     public function getMontantContrat(): ?int
@@ -70,7 +94,7 @@ class Sponsor
         return $this;
     }
 
-    #[ORM\Column(type: 'date', nullable: false)]
+    #[ORM\Column(name: 'dateDebut', type: 'date', nullable: false)]
     private ?\DateTimeInterface $dateDebut = null;
 
     public function getDateDebut(): ?\DateTimeInterface
@@ -84,7 +108,7 @@ class Sponsor
         return $this;
     }
 
-    #[ORM\Column(type: 'date', nullable: false)]
+    #[ORM\Column(name: 'dateFin', type: 'date', nullable: false)]
     private ?\DateTimeInterface $dateFin = null;
 
     public function getDateFin(): ?\DateTimeInterface
