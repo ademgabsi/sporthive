@@ -21,5 +21,11 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # Add configuration for SmsService with dependency injection from environment variables
+    App\Service\SmsService:
+        arguments:
+            $sid: '%env(TWILIO_SID)%'
+            $authToken: '%env(TWILIO_AUTH_TOKEN)%'
+            $twilioNumber: '%env(TWILIO_PHONE_NUMBER)%'
+
+    # Any other services you may need can be added below

@@ -11,7 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 #[Route('/terrain')]
 final class TerrainController extends AbstractController
 {
@@ -223,24 +224,6 @@ public function Frontdelete(Request $request, Terrain $terrain, EntityManagerInt
     return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// src/Controller/TerrainController.php
 
 }

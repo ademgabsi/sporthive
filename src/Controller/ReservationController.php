@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 use App\Repository\TerrainRepository;
+use App\Service\SmsService; // N'OUBLIE PAS CE use EN HAUT
+
 
 use App\Entity\Reservation;
 use App\Form\ReservationType;
@@ -32,13 +34,15 @@ final class ReservationController extends AbstractController
     }
 
     #[Route('/new/{id_Terrain}', name: 'app_reservation_new', methods: ['GET', 'POST'])]
-    public function new(
-        Request $request, 
-        EntityManagerInterface $entityManager, 
-        TerrainRepository $terrainRepository,
-        ReservationRepository $reservationRepository,
-        int $id_Terrain
-    ): Response
+public function new(
+    Request $request, 
+    EntityManagerInterface $entityManager, 
+    TerrainRepository $terrainRepository,
+    ReservationRepository $reservationRepository,
+    SmsService $smsService, // <<< AJOUTE MOI ÇA ICI
+    int $id_Terrain
+): Response
+
     {
         // Récupérer le terrain
         $terrain = $terrainRepository->find($id_Terrain);
@@ -68,7 +72,9 @@ final class ReservationController extends AbstractController
             } else {
                 $entityManager->persist($reservation);
                 $entityManager->flush();
-    
+               // après $entityManager->flush();
+$smsService->sendReservationSms($reservation);
+
                 $this->addFlash('success', 'Réservation ajoutée avec succès.');
     
                 return $this->redirectToRoute('app_reservation_index');

@@ -26,8 +26,12 @@
                             <div class="detail-label">Durée</div>
                             <div class="detail-value">{{ reservation.Duree }} minutes</div>
                         </div>
-                    </div>
+                        <div class="qr-code-section text-center mt-4">
+   
+</div>
 
+                    </div>
+                     
                     <div class="card-footer">
                         <a href="{{ path('app_reservation_index') }}" class="btn-back">Retour à la liste</a>
                         <a href="{{ path('app_reservation_edit', {'ID_Reservation': reservation.ID_Reservation}) }}" class="btn-edit">Modifier</a>

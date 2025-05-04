@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Terrains - SPORTHIVE{% endblock %}
+
+{% block body %}
+<section class="terrain_section layout_padding">
+    <div class="container">
+        <div class="heading_container">
+            <h2>Mes Terrains</h2>
+        </div>
+
+        <div class="row">
+            {% for terrain in terrains %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="terrain-card">
+                        {# Add your terrain card content here similar to the main list #}
+                        {# Consider adding ownership-specific controls like edit/delete #}
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>Aucun terrain enregistré</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{{ path('app_terrain_newfront') }}" class="btn-mes-reservations">
+                Ajouter un nouveau terrain
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -18,6 +18,8 @@
                         </div>
                         <div class="card-body">
                             <ul class="reservation-details">
+                                <li><span class="detail-label">Terrain:</span> <span class="detail-value">{{ reservation.terrain.nom }}</span></li>
+
                                 <li><span class="detail-label">Date et Heure:</span> <span class="detail-value">{{ reservation.DateHeure ? reservation.DateHeure|date('Y-m-d H:i') : 'N/A' }}</span></li>
                                 <li><span class="detail-label">Durée:</span> <span class="detail-value">{{ reservation.Duree }} heures</span></li>
                             </ul>
@@ -25,6 +27,7 @@
                         <div class="card-footer">
                             <a href="{{ path('app_reservation_show', {'ID_Reservation': reservation.ID_Reservation}) }}" class="btn-view">Voir</a>
                             <a href="{{ path('app_reservation_edit', {'ID_Reservation': reservation.ID_Reservation}) }}" class="btn btn-outline-warning btn-sm ms-2">Modifier</a>
+                        
                         </div>
                     </div>
                 </div>

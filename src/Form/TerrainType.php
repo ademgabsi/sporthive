@@ -50,12 +50,7 @@ class TerrainType extends AbstractType
                 'mapped' => false,
                 'required' => false,
             ])
-            ->add('utilisateur', EntityType::class, [
-                'class' => Utilisateur::class,
-                'label' => 'Propriétaire',
-                'choice_label' => 'id',
-                'required' => true,
-            ]);
+           ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
