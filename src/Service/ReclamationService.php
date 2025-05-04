@@ -19,9 +19,10 @@ class ReclamationService
     private $logger;
     
     // Identifiants Twilio directement dans le service
-    private $twilioSid = 'AC853faa2692acffbd99c7d9b2602fc5f5';
-    private $twilioToken = '9b1cf0aa27709a4b45837d7232bc0c91';
-    private $twilioFrom = '+16203171255';
+    private $twilioSid = 'AC430cb248a12bc16686ff7467d632578c';
+    private $twilioToken = '0c332b1a35b10f12e8e3bb0d6d6eb2f0'; // Token d'authentification
+    private $twilioFrom = '+19804094461';
+    private $twilioMessagingServiceSid = 'MGa37ba5a8f1ba6ab48af8dec1667e56c3';
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -173,10 +174,18 @@ class ReclamationService
                 'auth_basic' => [$this->twilioSid, $this->twilioToken],
                 'body' => [
                     'To' => $formattedPhoneNumber,
-                    'From' => $this->twilioFrom,
+                    'MessagingServiceSid' => $this->twilioMessagingServiceSid,
                     'Body' => $message
                 ]
             ]);
+            
+            // Afficher les détails de la réponse pour le débogage
+            if ($this->logger) {
+                $this->logger->debug('Réponse Twilio brute', [
+                    'status_code' => $response->getStatusCode(),
+                    'content' => $response->getContent(false)
+                ]);
+            }
             
             $data = $response->toArray();
             
