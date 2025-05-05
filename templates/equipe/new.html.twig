@@ -1,0 +1,34 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Nouvelle équipe{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/back.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="back-content">
+    {% for message in app.flashes('success') %}
+        <div class="back-alert back-alert-success">
+            <i class="fas fa-check-circle"></i>
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="back-header">
+        <h1 class="back-title"><i class="fas fa-plus"></i>Nouvelle équipe</h1>
+        <div class="back-flex back-gap-3">
+            <a href="{{ path('app_equipe_index') }}" class="back-btn back-btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <div class="back-card">
+        <div class="back-card-body">
+            {{ include('equipe/_form.html.twig') }}
+        </div>
+    </div>
+</div>
+{% endblock %}

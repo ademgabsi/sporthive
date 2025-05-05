@@ -1,0 +1,86 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Détails du joueur{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/back.css') }}">
+{% endblock %}
+
+{% block body %}
+<br> <br> <br>
+<div class="back-content">
+    <div class="back-card">
+        <div class="back-card-header">
+            <h4 class="back-card-title">Détails du Joueur</h4>
+            <div class="back-flex back-gap-2">
+                <a href="{{ path('app_joueur_index') }}" class="back-btn back-btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+                <a href="{{ path('app_joueur_edit', {'id': joueur.id}) }}" class="back-btn back-btn-warning">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                {{ include('joueur/_delete_form.html.twig') }}
+            </div>
+        </div>
+        <div class="back-card-body">
+            <div class="back-flex">
+                <div class="back-flex back-items-center back-justify-between" style="width: 300px;">
+                    {% if joueur.photo %}
+                        <img src="{{ asset('uploads/photos/' ~ joueur.photo) }}" 
+                             alt="Photo de {{ joueur.nom }}" 
+                             class="back-img-profile back-mb-3"
+                             style="width: 250px; height: 250px;">
+                    {% else %}
+                        <div class="back-img no-photo back-bg-light back-flex back-items-center back-justify-between back-mb-3"
+                             style="width: 250px; height: 250px;">
+                            <i class="fas fa-user back-text-secondary" style="font-size: 5rem;"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div style="flex: 1;">
+                    <div class="back-table-responsive">
+                        <table class="back-table">
+                            <tbody>
+                                <tr>
+                                    <th class="back-bg-light">ID</th>
+                                    <td>{{ joueur.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="back-bg-light">Nom</th>
+                                    <td>{{ joueur.nom }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="back-bg-light">Date de naissance</th>
+                                    <td>
+                                        {{ joueur.dateNaissance ? joueur.dateNaissance|date('d/m/Y') : 'Non renseignée' }}
+                                        {% if joueur.dateNaissance %}
+                                            <small class="back-text-secondary">({{ 'now'|date('Y') - joueur.dateNaissance|date('Y') }} ans)</small>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="back-bg-light">Nom du fichier photo</th>
+                                    <td>{{ joueur.photo ?? 'Aucune photo' }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="back-bg-light">Équipe</th>
+                                    <td>
+                                        {% if joueur.equipe %}
+                                            <a href="{{ path('app_equipe_show', {'id': joueur.equipe.id}) }}" class="back-text-primary">
+                                                {{ joueur.equipe.nom }}
+                                            </a>
+                                        {% else %}
+                                            <span class="back-text-secondary">Aucune équipe</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

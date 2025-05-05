@@ -3,9 +3,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
 use App\Repository\EquipeRepository;
 
 #[ORM\Entity(repositoryClass: EquipeRepository::class)]
@@ -29,6 +29,13 @@ class Equipe
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le nom de l'équipe est obligatoire.")]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: "Le nom de l'équipe doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom de l'équipe ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $nom = null;
 
     public function getNom(): ?string
@@ -43,6 +50,7 @@ class Equipe
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "La ville est obligatoire.")]
     private ?string $ville = null;
 
     public function getVille(): ?string
@@ -57,20 +65,23 @@ class Equipe
     }
 
     #[ORM\Column(type: 'date', nullable: false)]
+    #[Assert\NotBlank(message: "L'année de fondation est obligatoire.")]
+    #[Assert\LessThan("today", message: "L'année de fondation doit être dans le passé.")]
     private ?\DateTimeInterface $annee_fondation = null;
 
-    public function getAnnee_fondation(): ?\DateTimeInterface
+    public function getAnneeFondation(): ?\DateTimeInterface
     {
         return $this->annee_fondation;
     }
 
-    public function setAnnee_fondation(\DateTimeInterface $annee_fondation): self
+    public function setAnneeFondation(\DateTimeInterface $anneeFondation): self
     {
-        $this->annee_fondation = $annee_fondation;
+        $this->annee_fondation = $anneeFondation;
         return $this;
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le nom du stade est obligatoire.")]
     private ?string $stade = null;
 
     public function getStade(): ?string
@@ -99,7 +110,7 @@ class Equipe
     }
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'equipes')]
-    #[ORM\JoinColumn(name: 'id_user', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'id_user', referencedColumnName: 'id', nullable: true)]
     private ?Utilisateur $utilisateur = null;
 
     public function getUtilisateur(): ?Utilisateur
@@ -121,24 +132,28 @@ class Equipe
      */
     public function getJoueurs(): Collection
     {
-        if (!$this->joueurs instanceof Collection) {
-            $this->joueurs = new ArrayCollection();
-        }
         return $this->joueurs;
     }
 
     public function addJoueur(Joueur $joueur): self
     {
-        if (!$this->getJoueurs()->contains($joueur)) {
-            $this->getJoueurs()->add($joueur);
+        if (!$this->joueurs->contains($joueur)) {
+            $this->joueurs[] = $joueur;
         }
+
         return $this;
     }
 
     public function removeJoueur(Joueur $joueur): self
     {
-        $this->getJoueurs()->removeElement($joueur);
+        $this->joueurs->removeElement($joueur);
+
         return $this;
     }
 
+    // Constructeur pour initialiser la collection
+    public function __construct()
+    {
+        $this->joueurs = new ArrayCollection();
+    }
 }

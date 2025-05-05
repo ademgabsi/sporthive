@@ -1,0 +1,28 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Modifier l'équipe{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/back.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="back-content">
+    <div class="back-header">
+        <h1 class="back-title"><i class="fas fa-edit"></i>Modifier l'équipe</h1>
+        <div class="back-flex back-gap-3">
+            <a href="{{ path('app_equipe_index') }}" class="back-btn back-btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <div class="back-card">
+        <div class="back-card-body">
+            {{ include('equipe/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+            {{ include('equipe/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
+{% endblock %}

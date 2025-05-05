@@ -17,10 +17,7 @@
 		</div>
 		<div class="nav-section">
 			<div class="nav-section-title">GESTION</div>
-			<a href="#" class="nav-link">
-				<i class="fas fa-users"></i>
-				<span>Équipes</span>
-			</a>
+			
 			<a href="#" class="nav-link">
 				<i class="fas fa-trophy"></i>
 				<span>Compétitions</span>
@@ -48,6 +45,14 @@
 			<a href="{{ path('app_admin_reclamation_index') }}" class="nav-link {{ app.request.get('_route') == 'app_admin_reclamation_index' ? 'active' : '' }}">
 				<i class="fas fa-file-alt"></i>
 				<span>Réclamations</span>
+			</a>
+			<a href="{{path('app_equipe_index')}}" class="nav-link">
+				<i class="fas fa-users"></i>
+				<span>Équipes</span>
+			</a>
+			<a href="{{path('app_joueur_index')}}" class="nav-link">
+				<i class="fas fa-futbol"></i>
+				<span>Joueurs</span>
 			</a>
 		</div>
 		<div class="nav-section">

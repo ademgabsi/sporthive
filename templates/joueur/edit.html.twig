@@ -1,0 +1,29 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Modifier le joueur{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/back.css') }}">
+{% endblock %}
+
+{% block body %}
+<br> <br> <br>
+<div class="back-content">
+    <div class="back-card">
+        <div class="back-card-header">
+            <h4 class="back-card-title">Modifier le joueur</h4>
+            <div class="back-flex back-gap-2">
+                <a href="{{ path('app_joueur_index') }}" class="back-btn back-btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+        <div class="back-card-body">
+            {{ include('joueur/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+
+            {{ include('joueur/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
+{% endblock %}

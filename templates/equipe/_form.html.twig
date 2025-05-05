@@ -1,0 +1,59 @@
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'class': 'back-form'}}) }}
+
+{{ form_errors(form) }} {# <--- très important ! #}
+
+    <div class="back-form-group">
+        {{ form_label(form.nom, null, {'label_attr': {'class': 'back-form-label'}}) }}
+        {{ form_widget(form.nom, {'attr': {'class': 'back-form-input'}}) }}
+        <div class="back-form-error">
+            {{ form_errors(form.nom) }}
+        </div>
+    </div>
+
+    <div class="back-form-group">
+        {{ form_label(form.ville, null, {'label_attr': {'class': 'back-form-label'}}) }}
+        {{ form_widget(form.ville, {'attr': {'class': 'back-form-input'}}) }}
+        <div class="back-form-error">
+            {{ form_errors(form.ville) }}
+        </div>
+    </div>
+
+    <div class="back-form-group">
+        {{ form_label(form.annee_fondation, null, {'label_attr': {'class': 'back-form-label'}}) }}
+        {{ form_widget(form.annee_fondation, {'attr': {'class': 'back-form-input'}}) }}
+        <div class="back-form-error">
+            {{ form_errors(form.annee_fondation) }}
+        </div>
+    </div>
+
+    <div class="back-form-group">
+        {{ form_label(form.stade, null, {'label_attr': {'class': 'back-form-label'}}) }}
+        {{ form_widget(form.stade, {'attr': {'class': 'back-form-input'}}) }}
+        <div class="back-form-error">
+            {{ form_errors(form.stade) }}
+        </div>
+    </div>
+
+    <div class="back-form-group">
+        {{ form_label(form.logo, null, {'label_attr': {'class': 'back-form-label'}}) }}
+        {{ form_widget(form.logo, {'attr': {'class': 'back-form-input'}}) }}
+        <div class="back-form-error">
+            {{ form_errors(form.logo) }}
+        </div>
+    </div>
+
+    <div class="back-form-group">
+        {{ form_label(form.utilisateur, null, {'label_attr': {'class': 'back-form-label'}}) }}
+        {{ form_widget(form.utilisateur, {'attr': {'class': 'back-form-select'}}) }}
+        <div class="back-form-error">
+            {{ form_errors(form.utilisateur) }}
+        </div>
+    </div>
+
+    <div class="back-flex back-justify-end back-mt-4">
+        <button type="submit" class="back-btn back-btn-primary">
+            <i class="fas fa-save"></i> {{ button_label|default('Enregistrer') }}
+        </button>
+    </div>
+
+{{ form_end(form) }}

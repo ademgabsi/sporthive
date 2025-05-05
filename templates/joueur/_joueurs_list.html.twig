@@ -1,0 +1,65 @@
+{% if error is defined %}
+    <tr>
+        <td colspan="6" class="back-flex back-items-center back-justify-between back-text-danger">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span class="error-message">{{ error }}</span>
+        </td>
+    </tr>
+{% elseif joueurs|length == 0 %}
+    <tr>
+        <td colspan="6" class="back-flex back-items-center back-justify-between back-text-secondary">
+            <i class="fas fa-search me-2"></i>
+            {% if search is defined and search %}
+                Aucun joueur trouvé pour "{{ search }}"
+            {% else %}
+                Aucun joueur trouvé
+            {% endif %}
+        </td>
+    </tr>
+{% else %}
+    {% for joueur in joueurs %}
+        <tr>
+            <td>{{ joueur.id }}</td>
+            <td class="back-flex back-items-center back-justify-center">
+                {% if joueur.photo %}
+                    <img src="{{ asset('uploads/photos/' ~ joueur.photo) }}" 
+                         alt="Photo de {{ joueur.nom }}" 
+                         class="back-img-profile"
+                         style="width: 60px; height: 60px;">
+                {% else %}
+                    <div class="back-img no-photo back-bg-light back-flex back-items-center back-justify-between"
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-user back-text-secondary"></i>
+                    </div>
+                {% endif %}
+            </td>
+            <td>{{ joueur.nom }}</td>
+            <td>{{ joueur.dateNaissance ? joueur.dateNaissance|date('d/m/Y') : 'N/A' }}</td>
+            <td>
+                {% if joueur.dateNaissance %}
+                    {{ 'now'|date('Y') - joueur.dateNaissance|date('Y') }} ans
+                {% endif %}
+            </td>
+            <td>
+                <div class="back-flex back-gap-2">
+                    <a href="{{ path('app_joueur_show', {'id': joueur.id}) }}" 
+                       class="back-btn back-btn-info" 
+                       title="Voir">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="{{ path('app_joueur_edit', {'id': joueur.id}) }}" 
+                       class="back-btn back-btn-warning" 
+                       title="Modifier">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form method="post" action="{{ path('app_joueur_delete', {'id': joueur.id}) }}" class="back-flex">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ joueur.id) }}">
+                        <button class="back-btn back-btn-danger" title="Supprimer">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endif %} 

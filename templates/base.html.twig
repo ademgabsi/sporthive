@@ -31,12 +31,16 @@
 		<link
 		href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
 		<!-- Font Awesome icons -->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+		<link
+		rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 		<!-- Custom styles for this template -->
 		<link
 		href="{{ asset('css/style.css') }}" rel="stylesheet"/>
 		<!-- responsive style -->
-		<link href="{{ asset('css/responsive.css') }}" rel="stylesheet"/> {% block css %}{% endblock %}
+		<link href="{{ asset('css/responsive.css') }}" rel="stylesheet"/>
+		<!-- chatbot style -->
+		<link href="{{ asset('css/chatbot.css') }}" rel="stylesheet"/>
+		{% block css %}{% endblock %}
 		</head>
 
 		<body>
@@ -74,10 +78,12 @@
 													Reclamation
 												</a>
 											</li>
-											
+
 											<li class="nav-item">
-												<a class="nav-link" href="#">
-													Equipe</a>
+												<a class="nav-link" href="{{path('index_front')}}">Equipes</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="{{path('index_front_joueur')}}">Joueurs</a>
 											</li>
 											<li class="nav-item">
 												<a class="nav-link" href="#">
@@ -107,20 +113,24 @@
 											{% if app.user %}
 												<div class="dropdown">
 													<button class="btn btn-outline-light dropdown-toggle ml-2" type="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-user mr-1"></i> {{ app.user.prenom }}
+														<i class="fa fa-user mr-1"></i>
+														{{ app.user.prenom }}
 													</button>
 													<div class="dropdown-menu dropdown-menu-right bg-white" aria-labelledby="userDropdown">
 														<a class="dropdown-item text-dark" href="{{ path('app_profile') }}">
-															<i class="fa fa-user-circle mr-2"></i> Mon profil
+															<i class="fa fa-user-circle mr-2"></i>
+															Mon profil
 														</a>
 														{% if is_granted('ROLE_ADMIN') %}
 															<a class="dropdown-item text-dark" href="{{ path('app_admin_dashboard') }}">
-																<i class="fa fa-cogs mr-2"></i> Administration
+																<i class="fa fa-cogs mr-2"></i>
+																Administration
 															</a>
 														{% endif %}
 														<div class="dropdown-divider"></div>
 														<a class="dropdown-item text-dark" href="{{ path('app_logout') }}">
-															<i class="fa fa-sign-out-alt mr-2"></i> Déconnexion
+															<i class="fa fa-sign-out-alt mr-2"></i>
+															Déconnexion
 														</a>
 													</div>
 												</div>
@@ -128,11 +138,13 @@
 												<div class="ml-3">
 													{% if app.request.attributes.get('_route') == 'app_login' %}
 														<a href="{{ path('app_register') }}" class="btn btn-danger">
-															<i class="fa fa-user-plus mr-1"></i> Inscription
+															<i class="fa fa-user-plus mr-1"></i>
+															Inscription
 														</a>
 													{% else %}
 														<a href="{{ path('app_login') }}" class="btn btn-danger">
-															<i class="fa fa-sign-in-alt mr-1"></i> Connexion
+															<i class="fa fa-sign-in-alt mr-1"></i>
+															Connexion
 														</a>
 													{% endif %}
 												</div>
@@ -353,18 +365,118 @@
 				<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
 				<!-- End Google Map -->
 			{% endblock %}
-			<!--Start of Tawk.to Script-->
-			<script type="text/javascript">
-			var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-			(function(){
-			var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-			s1.async=true;
-			s1.src='https://embed.tawk.to/681096cfe616e1190d99e4e6/1iq0cq6lq';
-			s1.charset='UTF-8';
-			s1.setAttribute('crossorigin','*');
-			s0.parentNode.insertBefore(s1,s0);
-			})();
-			</script>
-			<!--End of Tawk.to Script-->
+
+			<!-- Chat Bot -->
+			<div class="chat-wrapper">
+				<button id="chat-button" title="Ouvrir le chat">
+					<i class="fas fa-comments"></i>
+				</button>
+				<div id="chat-container">
+					<div id="chat-header">
+						<i class="fas fa-robot mr-2"></i>
+						Assistant SPORTHIVE
+					</div>
+					<div id="chat-box"></div>
+					<div id="chat-input">
+						<input type="text" id="user-message" placeholder="Posez votre question..." autocomplete="off">
+						<button id="send-btn">
+							<i class="fas fa-paper-plane"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			{% block js %}
+				<script>
+					let lastEquipeId = null;
+
+$(document).ready(function () { // On récupère l'ID actuel le plus élevé
+$.get("{{ path('check_latest_equipe') }}", function (data) {
+lastEquipeId = data.id;
+});
+
+// Vérification toutes les 5 secondes
+setInterval(function () {
+$.get("{{ path('check_latest_equipe') }}", function (data) {
+if (data.id > lastEquipeId) {
+showNotification("Nouvelle équipe ajoutée : " + data.nom);
+lastEquipeId = data.id;
+}
+});
+}, 5000);
+});
+
+function showNotification(message) {
+let notif = $('<div></div>', {
+text: message,
+css: {
+position: 'fixed',
+top: '20px',
+right: '20px',
+background: '#17a2b8',
+color: '#fff',
+padding: '15px 25px',
+'border-radius': '8px',
+'box-shadow': '0 4px 10px rgba(0,0,0,0.2)',
+'z-index': 9999,
+'font-weight': 'bold'
+}
+}).hide().fadeIn();
+
+$('body').append(notif);
+
+setTimeout(function () {
+notif.fadeOut(function () {
+$(this).remove();
+});
+}, 6000);
+}
+				</script>
+
+				<script>
+					$(document).ready(function () {
+$("#chat-button").click(function () {
+$("#chat-container").fadeToggle();
+});
+
+$("#send-btn").click(function () {
+sendMessage();
+});
+
+$("#user-message").keypress(function (e) {
+if (e.which == 13) {
+sendMessage();
+}
+});
+
+function sendMessage() {
+var userMessage = $("#user-message").val().trim();
+if (userMessage === "") 
+return;
+
+
+$("#chat-box").append('<div class="message user-message">' + userMessage + '</div>');
+$("#user-message").val("");
+$("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+
+$.ajax({
+url: "{{ path('chatbot_gemini') }}",
+type: "POST",
+data: {
+message: userMessage
+},
+dataType: "json",
+success: function (response) {
+$("#chat-box").append('<div class="message bot-message">' + response.bot + '</div>');
+$("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+},
+error: function () {
+$("#chat-box").append('<div class="message bot-message">Erreur de connexion au chatbot.</div>');
+}
+});
+}
+});
+				</script>
+			{% endblock %}
 		</body>
 	</html>

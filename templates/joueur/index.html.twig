@@ -1,0 +1,158 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Liste des joueurs{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/back.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="back-content">
+        <div class="back-header">
+            <h1 class="back-title"><i class="fas fa-users"></i>Gestion des joueurs</h1>
+            <div class="back-flex back-items-center back-gap-3">
+                <div class="back-form-group" style="width: 300px;">
+                    <input type="text" id="searchInput" class="back-form-control" placeholder="Rechercher un joueur...">
+                    <button class="back-btn back-btn-secondary" type="button" id="clearSearch">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <a href="{{ path('app_joueur_new') }}" class="back-btn back-btn-primary">
+                    <i class="fas fa-plus"></i> Nouveau joueur
+                </a>
+                <a href="{{ path('app_joueur_export_pdf') }}" class="back-btn back-btn-success">
+                    <i class="fas fa-file-pdf"></i> Exporter en PDF
+                </a>
+            </div>
+        </div>
+
+        <div class="back-card">
+            <div class="back-card-header">
+                <h6 class="back-card-title">Tous les joueurs</h6>
+            </div>
+            <div class="back-card-body">
+                <div class="back-table-responsive">
+                    <table class="back-table" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Photo</th>
+                                <th>Nom</th>
+                                <th>Date de naissance</th>
+                                <th>Âge</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="joueursTableBody">
+                            {% include 'joueur/_joueurs_list.html.twig' with {'joueurs': joueurs} %}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="searchLoading" class="back-flex back-items-center back-justify-between back-mt-3 d-none">
+                    <div class="spinner-border back-text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                </div>
+                <div id="searchError" class="back-alert back-alert-danger d-none" role="alert">
+                    Une erreur est survenue lors de la recherche. Veuillez réessayer.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .back-content {
+            min-width: 1200px;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .back-card {
+            min-width: 1000px;
+            max-width: 100%;
+        }
+        .back-table-responsive {
+            overflow-x: auto;
+            min-height: 0.01%;
+        }
+        .back-img.no-photo {
+            border: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+        .back-btn + .back-btn {
+            margin-left: 0.5rem;
+        }
+        .back-table th {
+            white-space: nowrap;
+        }
+        .back-img {
+            transition: transform 0.3s;
+        }
+        .back-img:hover {
+            transform: scale(1.1);
+        }
+        #searchLoading {
+            margin: 20px 0;
+        }
+        #searchError {
+            margin-top: 10px;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const clearButton = document.getElementById('clearSearch');
+            const joueursTableBody = document.getElementById('joueursTableBody');
+            const searchLoading = document.getElementById('searchLoading');
+            const searchError = document.getElementById('searchError');
+            let timeout;
+            let isSearching = false;
+
+            async function search() {
+                if (isSearching) return;
+                
+                const searchTerm = searchInput.value.trim();
+                const url = '{{ path("app_joueur_search") }}?search=' + encodeURIComponent(searchTerm);
+                
+                try {
+                    isSearching = true;
+                    searchLoading.classList.remove('d-none');
+                    searchError.classList.add('d-none');
+                    
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error('Erreur réseau');
+                    }
+                    
+                    const html = await response.text();
+                    joueursTableBody.innerHTML = html;
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    searchError.classList.remove('d-none');
+                } finally {
+                    isSearching = false;
+                    searchLoading.classList.add('d-none');
+                }
+            }
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(search, 300);
+            });
+
+            clearButton.addEventListener('click', function() {
+                searchInput.value = '';
+                search();
+            });
+
+            // Gestion de la touche Entrée
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(timeout);
+                    search();
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Liste des équipes{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/back.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="back-content">
+    <div class="back-header">
+        <h1 class="back-title"><i class="fas fa-users"></i>Gestion des équipes</h1>
+        <div class="back-flex back-gap-3">
+            <a href="{{ path('app_equipe_new') }}" class="back-btn back-btn-primary">
+                <i class="fas fa-plus"></i> Nouvelle équipe
+            </a>
+            <a href="{{ path('app_equipe_export_pdf') }}" class="back-btn back-btn-success">
+                <i class="fas fa-file-pdf"></i> Exporter en PDF
+            </a>
+        </div>
+    </div>
+
+    <div class="back-card">
+        <div class="back-card-header">
+            <div class="back-flex back-justify-between back-items-center">
+                <div class="back-card-title">
+                    <i class="fas fa-table"></i>
+                    Liste complète des équipes
+                </div>
+                <div class="back-flex back-gap-2" style="width: 300px;">
+                    <input type="text" 
+                           id="searchInput" 
+                           class="back-form-input" 
+                           placeholder="Rechercher par nom ou ville..." 
+                           aria-label="Rechercher">
+                    <button class="back-btn back-btn-secondary" type="button" id="clearSearch">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="back-card-body">
+            <div class="back-table-responsive">
+                <table class="back-table" id="equipesTable">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Logo</th>
+                            <th>Nom</th>
+                            <th>Ville</th>
+                            <th>Année</th>
+                            <th>Âge</th>
+                            <th>Stade</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipesTableBody">
+                        {% include 'equipe/_equipes_list.html.twig' with {'equipes': pagination} %}
+                    </tbody>
+                </table>
+    <div class="d-flex justify-content-center mt-4">
+    {{ knp_pagination_render(pagination) }}
+</div>
+
+<style>
+    .pagination {
+        display: flex;
+        padding-left: 0;
+        list-style: none;
+        background: #fff;
+        border-radius: 50px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 10px 20px;
+    }
+
+    .page-item {
+        margin: 0 6px;
+    }
+
+    .page-link {
+        border: none;
+        border-radius: 30px;
+        padding: 10px 18px;
+        background: linear-gradient(145deg, #f0f0f0, #ffffff);
+        color: #007bff;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .page-link:hover {
+        background: #007bff;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 4px 4px 12px rgba(0,123,255,0.3);
+    }
+
+    .page-item.active .page-link {
+        background: #007bff;
+        color: #fff;
+        font-weight: bold;
+        box-shadow: 4px 4px 12px rgba(0,123,255,0.4);
+    }
+
+    .page-link:focus {
+        outline: none;
+        box-shadow: none;
+    }
+</style>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .no-logo {
+        border: 1px dashed #dee2e6;
+    }
+    .table th {
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+    .btn-group .btn {
+        margin-right: 5px;
+    }
+    .img-thumbnail {
+        transition: transform 0.2s;
+    }
+    .img-thumbnail:hover {
+        transform: scale(1.1);
+    }
+    .card {
+        border-radius: 0.5rem;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(33, 40, 50, 0.15);
+    }
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1rem 1.5rem;
+    }
+    .input-group {
+        width: 300px;
+    }
+    .input-group .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    .input-group .btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+    #searchInput {
+        border-right: none;
+    }
+    #clearSearch {
+        border-left: none;
+    }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
+    const equipesTableBody = document.getElementById('equipesTableBody');
+    let searchTimeout;
+
+    function performSearch() {
+        const searchTerm = searchInput.value.trim();
+        const url = `{{ path('app_equipe_search') }}?search=${encodeURIComponent(searchTerm)}`;
+
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                equipesTableBody.innerHTML = html;
+                // Réinitialiser les tooltips si nécessaire
+                if (typeof $.fn.tooltip === 'function') {
+                    $('[title]').tooltip();
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la recherche:', error);
+            });
+    }
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(performSearch, 300);
+    });
+
+    clearSearch.addEventListener('click', function() {
+        searchInput.value = '';
+        performSearch();
+    });
+
+    // Recherche initiale si un terme est présent dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get('search');
+    if (searchParam) {
+        searchInput.value = searchParam;
+        performSearch();
+    }
+});
+</script>
+{% endblock %}

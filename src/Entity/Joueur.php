@@ -3,9 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\JoueurRepository;
 
 #[ORM\Entity(repositoryClass: JoueurRepository::class)]
@@ -29,6 +27,13 @@ class Joueur
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire.")]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $nom = null;
 
     public function getNom(): ?string
@@ -41,23 +46,25 @@ class Joueur
         $this->nom = $nom;
         return $this;
     }
-
     #[ORM\Column(type: 'date', nullable: false)]
-    private ?\DateTimeInterface $date_naissance = null;
+    #[Assert\NotBlank(message: "La date de naissance est obligatoire.")]
+    #[Assert\LessThan("today", message: "La date de naissance doit être dans le passé.")]
+    private ?\DateTimeInterface $dateNaissance = null; // Changé en camelCase
 
-    public function getDate_naissance(): ?\DateTimeInterface
+    public function getDateNaissance(): ?\DateTimeInterface
     {
-        return $this->date_naissance;
+        return $this->dateNaissance;
     }
-
-    public function setDate_naissance(\DateTimeInterface $date_naissance): self
+    
+    public function setDateNaissance(\DateTimeInterface $dateNaissance): self
     {
-        $this->date_naissance = $date_naissance;
+        $this->dateNaissance = $dateNaissance;
         return $this;
     }
-
+    
     #[ORM\ManyToOne(targetEntity: Equipe::class, inversedBy: 'joueurs')]
     #[ORM\JoinColumn(name: 'equipe', referencedColumnName: 'id')]
+    #[Assert\NotNull(message: "L'équipe est obligatoire.")]
     private ?Equipe $equipe = null;
 
     public function getEquipe(): ?Equipe
@@ -72,7 +79,7 @@ class Joueur
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $photo = null;
+    private ?string $photo ;
 
     public function getPhoto(): ?string
     {
