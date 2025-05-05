@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 use App\Repository\ReclamationRepository;
 use App\Entity\Assurance;
+use App\Entity\Utilisateur;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Constraints as CustomAssert;
 
@@ -42,22 +43,22 @@ class Reclamation
     )]
     private ?string $Etat = null;
 
-    #[ORM\Column(name: 'montant_reclame', type: Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'Montant_reclame', type: Types::INTEGER, nullable: true)]
     #[Assert\NotNull(message: 'Le montant réclamé ne peut pas être vide')]
     #[Assert\Type(type: 'integer', message: 'Le montant réclamé doit être un nombre entier')]
     #[Assert\GreaterThan(
         value: 0,
         message: 'Le montant réclamé doit être supérieur à {{ compared_value }}',
     )]
-    private ?int $Montantreclame = null;
+    private ?int $Montant_reclame = null;
 
-    #[ORM\Column(name: 'montant_rembourse', type: Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'Montant_rembourse', type: Types::INTEGER, nullable: true)]
     #[Assert\Type(type: 'integer', message: 'Le montant remboursé doit être un nombre entier')]
     #[Assert\GreaterThanOrEqual(
         value: 0,
         message: 'Le montant remboursé doit être supérieur ou égal à {{ compared_value }}',
     )]
-    private ?int $Montantrembourse = null;
+    private ?int $Montant_rembourse = null;
 
     #[ORM\Column(name: 'Documents', type: Types::STRING, length: 255, nullable: true)]
     #[Assert\Length(
@@ -67,14 +68,29 @@ class Reclamation
     private ?string $Documents = null;
 
     #[ORM\ManyToOne(targetEntity: Assurance::class, inversedBy: 'reclamations')]
-    #[ORM\JoinColumn(name: 'ID_contrat', referencedColumnName: 'ID_contrat', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'contrat', referencedColumnName: 'ID_contrat', nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotNull(message: 'Veuillez sélectionner un contrat d\'assurance')]
     private ?Assurance $assurance = null;
 
-    // Getters and Setters
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    #[Assert\NotNull(message: 'Veuillez sélectionner un utilisateur')]
+    private ?Utilisateur $utilisateur = null;
+
+    public function getId(): ?int
+    {
+        return $this->ID_reclamation;
+    }
+
     public function getID_reclamation(): ?int
     {
         return $this->ID_reclamation;
+    }
+
+    public function setID_reclamation(int $ID_reclamation): self
+    {
+        $this->ID_reclamation = $ID_reclamation;
+        return $this;
     }
 
     public function getDate(): ?\DateTimeInterface
@@ -110,25 +126,25 @@ class Reclamation
         return $this;
     }
 
-    public function getMontantreclame(): ?int
+    public function getMontantReclame(): ?int
     {
-        return $this->Montantreclame;
+        return $this->Montant_reclame;
     }
 
-    public function setMontantreclame(?int $Montantreclame): self
+    public function setMontantReclame(?int $Montant_reclame): self
     {
-        $this->Montantreclame = $Montantreclame;
+        $this->Montant_reclame = $Montant_reclame;
         return $this;
     }
 
-    public function getMontantrembourse(): ?int
+    public function getMontantRembourse(): ?int
     {
-        return $this->Montantrembourse;
+        return $this->Montant_rembourse;
     }
 
-    public function setMontantrembourse(?int $Montantrembourse): self
+    public function setMontantRembourse(?int $Montant_rembourse): self
     {
-        $this->Montantrembourse = $Montantrembourse;
+        $this->Montant_rembourse = $Montant_rembourse;
         return $this;
     }
 
@@ -151,6 +167,17 @@ class Reclamation
     public function setAssurance(?Assurance $assurance): self
     {
         $this->assurance = $assurance;
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): self
+    {
+        $this->utilisateur = $utilisateur;
         return $this;
     }
 }

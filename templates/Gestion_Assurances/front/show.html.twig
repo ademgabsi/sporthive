@@ -41,6 +41,17 @@
                         </div>
 
                         <div class="detail-row">
+                            <div class="detail-label">Statut de paiement</div>
+                            <div class="detail-value">
+                                {% if assurance.getIsPaid() %}
+                                    <span class="badge badge-success">Payée</span>
+                                {% else %}
+                                    <span class="badge badge-warning">Non payée</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
                             <div class="detail-label">Conditions</div>
                             <div class="detail-value conditions-text">{{ assurance.getConditions() }}</div>
                         </div>
@@ -48,7 +59,7 @@
 
                     <div class="card-footer">
                         <a href="{{ path('app_assurance_index', {'page': app.request.query.get('page')}) }}" class="btn-back">Retour à la liste</a>
-                        {% if assurance.getStatut() != 'Actif' %}
+                        {% if app.user and assurance.getStatut() != 'Actif' %}
                             <a href="{{ path('app_payment_form', {'id': assurance.id}) }}" class="btn-pay">Payer l'assurance</a>
                         {% endif %}
                     </div>

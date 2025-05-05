@@ -10,19 +10,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[Route('/reclamation')]
+#[IsGranted('ROLE_USER')]  // Requiert que l'utilisateur soit connecté pour toutes les routes
 class ReclamationController extends AbstractController
 {
     #[Route('/', name: 'app_reclamation_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+        
+        // Récupérer uniquement les réclamations de l'utilisateur connecté
         $reclamations = $entityManager
             ->getRepository(Reclamation::class)
-            ->findAll();
+            ->findBy(['utilisateur' => $user]);
 
         return $this->render('Gestion_Reclamation/Front/index.html.twig', [
             'reclamations' => $reclamations,
@@ -33,6 +40,10 @@ class ReclamationController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, ReclamationService $reclamationService): Response
     {
         $reclamation = new Reclamation();
+        // Définir l'utilisateur connecté
+        $user = $this->getUser();
+        $reclamation->setUtilisateur($user);
+        
         $form = $this->createForm(ReclamationType::class, $reclamation);
         $form->handleRequest($request);
 
@@ -91,6 +102,11 @@ class ReclamationController extends AbstractController
     #[Route('/{ID_reclamation}', name: 'app_reclamation_show', methods: ['GET'])]
     public function show(Reclamation $reclamation): Response
     {
+        // Vérifier que l'utilisateur est le propriétaire de la réclamation
+        if ($reclamation->getUtilisateur() !== $this->getUser()) {
+            throw new AccessDeniedException('Vous n\'êtes pas autorisé à voir cette réclamation.');
+        }
+
         return $this->render('Gestion_Reclamation/Front/show.html.twig', [
             'reclamation' => $reclamation,
         ]);
@@ -99,6 +115,11 @@ class ReclamationController extends AbstractController
     #[Route('/{ID_reclamation}/edit', name: 'app_reclamation_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Reclamation $reclamation, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
+        // Vérifier que l'utilisateur est le propriétaire de la réclamation
+        if ($reclamation->getUtilisateur() !== $this->getUser()) {
+            throw new AccessDeniedException('Vous n\'êtes pas autorisé à modifier cette réclamation.');
+        }
+
         $form = $this->createForm(ReclamationType::class, $reclamation);
         $form->handleRequest($request);
 
@@ -154,6 +175,11 @@ class ReclamationController extends AbstractController
     #[Route('/{ID_reclamation}', name: 'app_reclamation_delete', methods: ['POST'])]
     public function delete(Request $request, Reclamation $reclamation, EntityManagerInterface $entityManager): Response
     {
+        // Vérifier que l'utilisateur est le propriétaire de la réclamation
+        if ($reclamation->getUtilisateur() !== $this->getUser()) {
+            throw new AccessDeniedException('Vous n\'êtes pas autorisé à supprimer cette réclamation.');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$reclamation->getID_reclamation(), $request->request->get('_token'))) {
             $entityManager->remove($reclamation);
             $entityManager->flush();

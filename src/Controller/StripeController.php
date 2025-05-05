@@ -68,8 +68,22 @@ class StripeController extends AbstractController
     #[Route('/paiement/success/{id}', name: 'app_stripe_success')]
     public function success(Assurance $assurance): Response
     {
-        // Mettre à jour le statut de l'assurance
-        $assurance->setStatut('Active');
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+        
+        // Lier l'utilisateur à l'assurance
+        $assurance->setUtilisateur($user);
+        
+        // Marquer l'assurance comme payée
+        $assurance->setIsPaid(true);
+        
+        // Si l'assurance est payée, la mettre en statut Active
+        if ($assurance->getIsPaid()) {
+            $assurance->setStatut('Active');
+        } else {
+            $assurance->setStatut('En attente');
+        }
+        
         $this->entityManager->flush();
 
         $this->addFlash('success', 'Paiement réussi ! Votre assurance est maintenant active.');
@@ -82,6 +96,12 @@ class StripeController extends AbstractController
     #[Route('/paiement/cancel/{id}', name: 'app_stripe_cancel')]
     public function cancel(Assurance $assurance): Response
     {
+        // S'assurer que l'assurance reste en attente si non payée
+        if (!$assurance->getIsPaid()) {
+            $assurance->setStatut('En attente');
+            $this->entityManager->flush();
+        }
+        
         $this->addFlash('warning', 'Le paiement a été annulé.');
         
         return $this->render('paiement/cancel.html.twig', [

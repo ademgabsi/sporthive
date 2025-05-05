@@ -1,319 +1,317 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nos Assurances - SPORTHIVE
+{% block title %}Nos Assurances - SPORTHIVE{% endblock %}
+
+{% block css %}
+<style>
+    .assurance_section {
+        padding-top: 120px;
+        padding-bottom: 80px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .heading_container {
+        text-align: center;
+        margin-bottom: 45px;
+    }
+
+    .heading_container h2 {
+        font-weight: 700;
+        color: #2c3e50;
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .heading_container h2:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #ff4f5a, #ff8c00);
+        border-radius: 2px;
+    }
+
+    .heading_container p {
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+
+    .section-title {
+        color: #2c3e50;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 30px;
+        position: relative;
+        padding-left: 15px;
+        border-left: 5px solid #ff4f5a;
+    }
+
+    .assurance-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        height: 100%;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .assurance-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .assurance-card h3 {
+        color: #2c3e50;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-right: 80px;
+    }
+
+    .assurance-card p {
+        color: #6c757d;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .assurance-card .duration,
+    .assurance-card .status,
+    .assurance-card .date {
+        color: #495057;
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .assurance-card .duration:before,
+    .assurance-card .status:before,
+    .assurance-card .date:before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background-color: #ff4f5a;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .subscribed-badge {
+        position: absolute;
+        top: 20px;
+        right: -35px;
+        background: linear-gradient(90deg, #28a745, #20c997);
+        color: white;
+        padding: 8px 40px;
+        font-size: 0.85rem;
+        transform: rotate(45deg);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-subscribe,
+    .btn-claim {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-subscribe {
+        background: linear-gradient(90deg, #ff4f5a, #ff8c00);
+        border: none;
+        color: white;
+    }
+
+    .btn-subscribe:hover {
+        background: linear-gradient(90deg, #ff8c00, #ff4f5a);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 79, 90, 0.2);
+    }
+
+    .btn-subscribe:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+    }
+
+    .btn-claim {
+        background: linear-gradient(90deg, #ffc107, #ff9800);
+        border: none;
+        color: white;
+    }
+
+    .btn-claim:hover {
+        background: linear-gradient(90deg, #ff9800, #ffc107);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 152, 0, 0.2);
+    }
+
+    .login-message {
+        text-align: center;
+        padding: 50px 30px;
+        background: white;
+        border-radius: 15px;
+        margin: 30px 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .login-message h3 {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .login-message p {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+
+    .login-message .btn {
+        padding: 12px 35px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #ff4f5a, #ff8c00);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .login-message .btn:hover {
+        background: linear-gradient(90deg, #ff8c00, #ff4f5a);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 79, 90, 0.2);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .assurance-card {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .row > div:nth-child(1) .assurance-card { animation-delay: 0.1s; }
+    .row > div:nth-child(2) .assurance-card { animation-delay: 0.2s; }
+    .row > div:nth-child(3) .assurance-card { animation-delay: 0.3s; }
+    .row > div:nth-child(4) .assurance-card { animation-delay: 0.4s; }
+    .row > div:nth-child(5) .assurance-card { animation-delay: 0.5s; }
+    .row > div:nth-child(6) .assurance-card { animation-delay: 0.6s; }
+</style>
 {% endblock %}
 
 {% block body %}
-	<section class="assurance_section layout_padding">
-		<div class="container">
-			<div class="heading_container">
-				<h2>Nos Assurances Sportives</h2>
-				<p class="mt-3">Découvrez toutes nos offres d'assurance pour protéger votre pratique sportive</p>
-			</div>
+    <section class="assurance_section layout_padding">
+        <div class="container">
+            <div class="heading_container">
+                <h2>Nos Assurances Sportives</h2>
+                <p class="mt-3">Découvrez toutes nos offres d'assurance pour protéger votre pratique sportive</p>
+            </div>
 
-			<div class="row mt-5">
-				<div class="col-12">
-					<div class="search-filter mb-4">
-						<input type="text" id="assuranceSearch" class="form-control" placeholder="Rechercher une assurance...">
-					</div>
-				</div>
-			</div>
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endfor %}
 
-			<div class="row">
-				{% for assurance in assurances %}
-					<div class="col-lg-4 col-md-6 mb-4">
-						<div class="assurance-card">
-							<div class="card-header">
-								<h5>Contrat #{{ assurance.ID_contrat }}</h5>
-								<span class="badge {% if assurance.Statut == 'Actif' %}badge-success{% else %}badge-warning{% endif %}">
-									{{ assurance.Statut }}
-								</span>
-							</div>
-							<div class="card-body">
-								<ul class="assurance-details">
-									<li>
-										<span class="detail-label">Type:</span>
-										<span class="detail-value">{{ assurance.typeDeCouverture }}</span>
-									</li>
-									<li>
-										<span class="detail-label">Durée:</span>
-										<span class="detail-value">{{ assurance.Duree }}
-											mois</span>
-									</li>
-									<li>
-										<span class="detail-label">Date de début:</span>
-										<span class="detail-value">{{ assurance.dateDebut|date('d/m/Y') }}</span>
-									</li>
-								</ul>
-								<div class="assurance-conditions">
-									<p>{{ assurance.Conditions|length > 100 ? assurance.Conditions|slice(0, 100) ~ '...' : assurance.Conditions }}</p>
-								</div>
-							</div>
-							<div class="card-footer">
-								<a href="{{ path('app_assurance_show', {'ID_contrat': assurance.ID_contrat}) }}" class="btn-view">Détails</a>
-								<a href="{{ path('app_reclamation_new', {'ID_contrat': assurance.ID_contrat}) }}" class="btn-claim ms-2">Réclamer</a>
-							</div>
-						</div>
-					</div>
-				{% else %}
-					<div class="col-12 text-center">
-						<div class="no-records">
-							<img src="{{ asset('img/empty.png') }}" alt="Aucune assurance" class="mb-3">
-							<p>Aucune assurance n'est disponible pour le moment</p>
-						</div>
-					</div>
-				{% endfor %}
-			</div>
+            {% if app.user %}
+                {% if souscriptions is not empty %}
+                    <h3 class="section-title mb-4">Mes Assurances Souscrites</h3>
+                    <div class="row mb-5">
+                        {% for souscription in souscriptions %}
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="assurance-card">
+                                    <span class="subscribed-badge">Souscrite</span>
+                                    <h3>{{ souscription.assurance.typeDeCouverture }}</h3>
+                                    <p>{{ souscription.assurance.Conditions }}</p>
+                                    <div class="duration">
+                                        <i class="fas fa-clock mr-2"></i>
+                                        Durée: {{ souscription.assurance.Duree }} mois
+                                    </div>
+                                    <div class="status">
+                                        <i class="fas fa-circle mr-2"></i>
+                                        Statut: {{ souscription.assurance.Statut }}
+                                    </div>
+                                    <div class="date text-muted mt-3">
+                                        <i class="fas fa-calendar-alt mr-2"></i>
+                                        Souscrite le {{ souscription.dateInscription|date('Y-m-d') }}
+                                    </div>
+                                    {% if souscription.assurance.Statut == 'Active' %}
+                                        <a href="{{ path('app_reclamation_new', {'ID_contrat': souscription.assurance.ID_contrat}) }}" 
+                                           class="btn btn-claim mt-3">
+                                            <i class="fas fa-file-medical mr-2"></i>
+                                            Faire une réclamation
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
-		</div>
-	</section>
-{% endblock %}
+                <h3 class="section-title mb-4">Toutes les Assurances Disponibles</h3>
+                <div class="row">
+                    {% for assurance in assurances %}
+                        {% set isSubscribed = false %}
+                        {% for souscription in souscriptions %}
+                            {% if souscription.assurance.ID_contrat == assurance.ID_contrat %}
+                                {% set isSubscribed = true %}
+                            {% endif %}
+                        {% endfor %}
 
-{% block css %}
-	<style>
-		.assurance_section {
-			padding-top: 120px;
-			padding-bottom: 80px;
-			background-color: #f8f9fa;
-		}
-
-		.heading_container {
-			text-align: center;
-			margin-bottom: 45px;
-		}
-
-		.heading_container h2 {
-			font-weight: bold;
-			color: #252525;
-			position: relative;
-			padding-bottom: 10px;
-		}
-
-		.heading_container h2:after {
-			content: "";
-			position: absolute;
-			bottom: 0;
-			left: 50%;
-			transform: translateX(-50%);
-			width: 60px;
-			height: 3px;
-			background-color: #ff4f5a;
-		}
-
-		.search-filter {
-			max-width: 500px;
-			margin: 0 auto;
-		}
-
-		.assurance-card {
-			background-color: white;
-			border-radius: 15px;
-			overflow: hidden;
-			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-			transition: transform 0.3s ease, box-shadow 0.3s ease;
-			height: 100%;
-			display: flex;
-			flex-direction: column;
-		}
-
-		.assurance-card:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-		}
-
-		.card-header {
-			background-color: #ff4f5a;
-			color: white;
-			padding: 15px 20px;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-
-		.card-header h5 {
-			margin: 0;
-			font-weight: 600;
-		}
-
-		.badge {
-			padding: 5px 10px;
-			border-radius: 50px;
-			font-size: 12px;
-			font-weight: normal;
-		}
-
-		.badge-success {
-			background-color: #28a745;
-		}
-
-		.badge-warning {
-			background-color: #ffc107;
-			color: #212529;
-		}
-
-		.card-body {
-			padding: 20px;
-			flex-grow: 1;
-		}
-
-		.assurance-details {
-			list-style: none;
-			padding: 0;
-			margin: 0 0 15px;
-		}
-
-		.assurance-details li {
-			padding: 8px 0;
-			border-bottom: 1px dashed #eaeaea;
-			display: flex;
-		}
-
-		.detail-label {
-			font-weight: 600;
-			min-width: 120px;
-			color: #495057;
-		}
-
-		.detail-value {
-			color: #212529;
-		}
-
-		.assurance-conditions {
-			background-color: #f8f9fa;
-			padding: 10px;
-			border-radius: 5px;
-			font-size: 14px;
-			margin-top: 15px;
-		}
-
-		.card-footer {
-			padding: 15px 20px;
-			background-color: #f8f9fa;
-			display: flex;
-			justify-content: space-between;
-		}
-
-		.btn-view,
-		.btn-edit {
-			padding: 8px 15px;
-			border-radius: 5px;
-			text-decoration: none;
-			font-weight: 500;
-			font-size: 14px;
-			transition: all 0.3s ease;
-		}
-
-		.btn-view {
-			background-color: #17a2b8;
-			color: white;
-		}
-
-		.btn-view:hover {
-			background-color: #138496;
-		}
-
-		.btn-edit {
-			background-color: #6c757d;
-			color: white;
-		}
-
-		.btn-edit:hover {
-			background-color: #5a6268;
-		}
-
-		.btn-claim {
-			background-color: #ff4f5a;
-			color: white;
-		}
-
-		.btn-claim:hover {
-			background-color: #ff3541;
-		}
-
-		.no-records {
-			padding: 40px 0;
-		}
-
-		.no-records img {
-			max-width: 150px;
-			opacity: 0.5;
-		}
-
-		.no-records p {
-			font-size: 18px;
-			color: #6c757d;
-		}
-
-		.create-btn {
-			display: inline-block;
-			background-color: #ff4f5a;
-			color: white;
-			padding: 12px 30px;
-			border-radius: 50px;
-			text-decoration: none;
-			font-weight: 600;
-			transition: all 0.3s ease;
-			margin-top: 20px;
-		}
-
-		.create-btn:hover {
-			background-color: #ff3541;
-			transform: translateY(-2px);
-		}
-
-		.plus-icon {
-			display: inline-block;
-			width: 16px;
-			height: 16px;
-			position: relative;
-			margin-right: 5px;
-		}
-
-		.plus-icon:before,
-		.plus-icon:after {
-			content: "";
-			position: absolute;
-			background-color: white;
-		}
-
-		.plus-icon:before {
-			width: 16px;
-			height: 2px;
-			top: 7px;
-			left: 0;
-		}
-
-		.plus-icon:after {
-			width: 2px;
-			height: 16px;
-			top: 0;
-			left: 7px;
-		}
-	</style>
-{% endblock %}
-
-{% block js %}
-	<script>
-		document.addEventListener('DOMContentLoaded', function () { // Fonction de recherche
-const searchInput = document.getElementById('assuranceSearch');
-
-if (searchInput) {
-searchInput.addEventListener('keyup', function () {
-const value = this.value.toLowerCase();
-const cards = document.querySelectorAll('.assurance-card');
-
-cards.forEach(card => {
-const cardText = card.textContent.toLowerCase();
-const columnElement = card.closest('.col-lg-4');
-
-if (cardText.includes(value)) {
-columnElement.style.display = '';
-} else {
-columnElement.style.display = 'none';
-}
-});
-});
-}
-});
-	</script>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="assurance-card">
+                                <h3>{{ assurance.typeDeCouverture }}</h3>
+                                <p>{{ assurance.Conditions }}</p>
+                                <div class="duration">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    Durée: {{ assurance.Duree }} mois
+                                </div>
+                                <div class="date">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    Date de début: {{ assurance.dateDebut }}
+                                </div>
+                                
+                                {% if not isSubscribed %}
+                                    <form action="{{ path('app_assurance_subscribe', {'ID_contrat': assurance.ID_contrat}) }}" method="post">
+                                        <button type="submit" class="btn-subscribe">
+                                            <i class="fas fa-shield-alt mr-2"></i>
+                                            Souscrire
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <button class="btn-subscribe" disabled>
+                                        <i class="fas fa-check mr-2"></i>
+                                        Déjà Souscrite
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="login-message">
+                    <h3>Connectez-vous pour voir nos assurances</h3>
+                    <p class="mb-4">Vous devez être connecté pour découvrir et souscrire à nos offres d'assurance.</p>
+                    <a href="{{ path('app_login') }}" class="btn">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Se connecter
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}

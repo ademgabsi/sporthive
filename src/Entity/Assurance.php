@@ -49,7 +49,7 @@ class Assurance
         choices: ['Active', 'En attente', 'Expirée'],
         message: 'Choisissez un statut valide',
     )]
-    private ?string $Statut = null;
+    private ?string $Statut = 'En attente';
 
     #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank(message: 'Les conditions ne peuvent pas être vides')]
@@ -59,6 +59,9 @@ class Assurance
     )]
     private ?string $Conditions = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isPaid = false;
+
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'assurances')]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     #[Assert\NotNull(message: 'Veuillez sélectionner un utilisateur')]
@@ -67,10 +70,16 @@ class Assurance
     #[ORM\OneToMany(targetEntity: Reclamation::class, mappedBy: 'assurance', cascade: ['persist', 'remove'])]
     private Collection $reclamations;
 
-   public function getId(): ?int
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     */
+    private $createdBy;
+
+    public function getId(): ?int
     {
         return $this->ID_contrat;
-    } 
+    }
     public function __construct()
     {
         $this->reclamations = new ArrayCollection();
@@ -142,6 +151,19 @@ class Assurance
         return $this;
     }
 
+    public function getIsPaid(): bool
+    {
+        return $this->isPaid;
+    }
+
+    public function setIsPaid(bool $isPaid): self
+    {
+        $this->isPaid = $isPaid;
+        // Mettre à jour automatiquement le statut en fonction du paiement
+        $this->setStatut($isPaid ? 'Active' : 'En attente');
+        return $this;
+    }
+
     public function getUtilisateur(): ?Utilisateur
     {
         return $this->utilisateur;
@@ -178,6 +200,17 @@ class Assurance
                 $reclamation->setAssurance(null);
             }
         }
+        return $this;
+    }
+
+    public function getCreatedBy(): ?Utilisateur
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?Utilisateur $createdBy): self
+    {
+        $this->createdBy = $createdBy;
         return $this;
     }
 }

@@ -119,9 +119,8 @@ class ReclamationService
             $this->entityManager->flush();
 
             // Envoyer un SMS si un numéro de téléphone est disponible
-            $user = $reclamation->getUser();
-            if ($user && $user->getTelephone()) {
-                $this->sendSms($reclamation, $user->getTelephone());
+            if ($reclamation->getUtilisateur() && $reclamation->getUtilisateur()->getNumeroTel()) {
+                $this->sendSms($reclamation, $reclamation->getUtilisateur()->getNumeroTel());
             }
 
             return null;

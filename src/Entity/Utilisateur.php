@@ -100,13 +100,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    #[ORM\Column(name: 'reset_token', type: 'string', length: 100, nullable: true)]
     private ?string $resetToken = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'reset_token_expires_at', type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $resetTokenExpiresAt = null;
 
-    #[ORM\Column(type: 'string', length: 6, nullable: true)]
+    #[ORM\Column(name: 'reset_code', type: 'string', length: 6, nullable: true)]
     private ?string $resetCode = null;
 
     public function getResetToken(): ?string
@@ -208,13 +208,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(name: 'is_active', type: 'boolean')]
     private bool $isActive = true;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'google_auth_secret', type: 'string', length: 255, nullable: true)]
     private $googleAuthSecret;
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(name: 'is_two_factor_enabled', type: 'boolean')]
     private $isTwoFactorEnabled = false;
 
     public function getIsActive(): bool
@@ -265,7 +265,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Assurance::class, mappedBy: 'utilisateur')]
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Assurance::class)]
     private Collection $assurances;
 
     /**
@@ -293,7 +293,40 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Competition::class, mappedBy: 'utilisateur')]
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: AssuranceUtilisateur::class)]
+    private Collection $assurancesSouscrites;
+
+    public function __construct()
+    {
+        $this->assurancesSouscrites = new ArrayCollection();
+        $this->roles = ['ROLE_USER'];
+    }
+
+    public function getAssurancesSouscrites(): Collection
+    {
+        return $this->assurancesSouscrites;
+    }
+
+    public function addAssuranceSouscrite(AssuranceUtilisateur $assuranceUtilisateur): self
+    {
+        if (!$this->assurancesSouscrites->contains($assuranceUtilisateur)) {
+            $this->assurancesSouscrites[] = $assuranceUtilisateur;
+            $assuranceUtilisateur->setUtilisateur($this);
+        }
+        return $this;
+    }
+
+    public function removeAssuranceSouscrite(AssuranceUtilisateur $assuranceUtilisateur): self
+    {
+        if ($this->assurancesSouscrites->removeElement($assuranceUtilisateur)) {
+            if ($assuranceUtilisateur->getUtilisateur() === $this) {
+                $assuranceUtilisateur->setUtilisateur(null);
+            }
+        }
+        return $this;
+    }
+
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Competition::class)]
     private Collection $competitions;
 
     /**
@@ -321,7 +354,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Equipe::class, mappedBy: 'utilisateur')]
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Equipe::class)]
     private Collection $equipes;
 
     /**
@@ -349,7 +382,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: GestionMatch::class, mappedBy: 'utilisateur')]
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: GestionMatch::class)]
     private Collection $gestionMatchs;
 
     /**
@@ -377,7 +410,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'utilisateur')]
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Reservation::class)]
     private Collection $reservations;
 
     /**
@@ -405,7 +438,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Terrain::class, mappedBy: 'utilisateur')]
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Terrain::class)]
     private Collection $terrains;
 
     /**
