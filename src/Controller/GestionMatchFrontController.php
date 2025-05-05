@@ -1,34 +1,3 @@
-<<<<<<< HEAD
-<?php
-
-namespace App\Controller;
-
-use App\Entity\GestionMatch;
-use App\Repository\GestionMatchRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-
-#[Route('/match')]
-class GestionMatchFrontController extends AbstractController
-{
-    #[Route('/', name: 'app_match_front_index', methods: ['GET'])]
-    public function index(GestionMatchRepository $gestionMatchRepository): Response
-    {
-        return $this->render('Gestion_Match/Front/index.html.twig', [
-            'matches' => $gestionMatchRepository->findAll(),
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_match_front_show', methods: ['GET'])]
-    public function show(GestionMatch $gestionMatch): Response
-    {
-        return $this->render('Gestion_Match/Front/show.html.twig', [
-            'match' => $gestionMatch,
-        ]);
-    }
-}
-=======
 <?php
 
 namespace App\Controller;
@@ -65,8 +34,8 @@ class GestionMatchFrontController extends AbstractController
         $events = [];
         
         foreach ($matches as $match) {
-            // Combiner la date et l'heure pour obtenir un DateTime complet
-            $startDate = clone $match->getDate();
+            // Convertir DateTimeInterface en DateTime pour pouvoir utiliser setTime et modify
+            $startDate = \DateTime::createFromInterface($match->getDate());
             if ($match->getHeure()) {
                 $startDate->setTime(
                     (int)$match->getHeure()->format('H'),
@@ -102,32 +71,23 @@ class GestionMatchFrontController extends AbstractController
         
         return $response;
     }
-    
+
     #[Route('/{id}', name: 'app_match_front_show', methods: ['GET'])]
-    public function show(int $id, GestionMatchRepository $gestionMatchRepository): Response
+    public function show(GestionMatch $gestionMatch): Response
     {
-        $match = $gestionMatchRepository->find($id);
-        
-        if (!$match) {
-            throw $this->createNotFoundException('Le match demandé n\'existe pas');
-        }
-        
         return $this->render('Gestion_Match/Front/show.html.twig', [
-            'match' => $match,
+            'match' => $gestionMatch,
         ]);
     }
-    /**
-     * Retourne une couleur en fonction du type de match
-     */
+
     private function getColorForType(string $type): string
     {
         return match ($type) {
-            'football' => '#4caf50', // vert
-            'basketball' => '#ff9800', // orange
-            'volleyball' => '#2196f3', // bleu
-            'handball' => '#f44336', // rouge
-            default => '#9c27b0', // violet
+            'Football' => '#2ecc71',
+            'Basketball' => '#e74c3c',
+            'Tennis' => '#f1c40f',
+            'Volleyball' => '#3498db',
+            default => '#95a5a6',
         };
     }
 }
->>>>>>> gestionMatch
