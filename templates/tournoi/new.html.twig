@@ -2,11 +2,21 @@
 
 {% block title %}Nouveau Tournoi{% endblock %}
 
-{% block body %}
-    <div class="form-container">
-        <h1>Créer un nouveau tournoi</h1>
-        {{ include('tournoi/_form.html.twig') }}
-        <a href="{{ path('app_tournoi_indexBack') }}">← Retour a la liste</a>
-    </div>
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/tournoiBack.css') }}" rel="stylesheet"/>
 {% endblock %}
 
+{% block body %}
+    <div class="tournoi-container">
+        <h1 class="page-title">Créer un nouveau tournoi</h1>
+
+        <div class="tournoi-form-container">
+            {{ include('tournoi/_form.html.twig') }}
+
+            <div class="actions-container">
+                <a href="{{ path('app_tournoi_indexBack') }}" class="btn btn-view">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

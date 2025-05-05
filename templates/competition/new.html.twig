@@ -2,12 +2,19 @@
 
 {% block title %}New Competition{% endblock %}
 
-{% block body %}
-    <div class="new-competition-container">
-        <h1>Créer un nouveau  Competition</h1>
-
-        {{ include('competition/_form.html.twig') }}
-
-    </div>
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/competitionForm.css') }}" rel="stylesheet"/>
 {% endblock %}
 
+{% block body %}
+    <div class="new-competition-container">
+        <h1>Créer une nouvelle compétition</h1>
+
+        {{ include('competition/_form.html.twig', {'button_label': 'Créer'}) }}
+
+        <div class="form-actions">
+            <a href="{{ path('app_competition_indexBack') }}" class="btn-back">Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}

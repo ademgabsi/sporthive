@@ -1,0 +1,239 @@
+/* Variables */
+:root {
+    --primary-color: #7b113a;
+    --primary-light: #ff4081;
+    --text-dark: #333;
+    --text-light: #666;
+    --background-light: #f8f9fa;
+    --white: #fff;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Hero Section */
+.tournament-hero {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: var(--white);
+    padding: 4rem 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.tournament-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/images/pattern.png') repeat;
+    opacity: 0.1;
+}
+
+.hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.tournament-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tournament-meta {
+    display: flex;
+    gap: 2rem;
+    font-size: 1.2rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.meta-item i {
+    font-size: 1.4rem;
+}
+
+/* Content Section */
+.tournament-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.info-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.info-card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px var(--shadow);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: var(--white);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.card-header i {
+    font-size: 1.5rem;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--background-light);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.label {
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.value {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+/* Action Section */
+.action-section {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.action-button.back {
+    background: var(--background-light);
+    color: var(--text-dark);
+}
+
+.action-button.register {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: var(--white);
+    box-shadow: 0 4px 15px rgba(123, 17, 58, 0.3);
+}
+
+.action-button.share {
+    background: var(--white);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.action-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px var(--shadow);
+}
+
+.action-button:active {
+    transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .tournament-hero {
+        padding: 3rem 1rem;
+    }
+
+    .tournament-title {
+        font-size: 2.5rem;
+    }
+
+    .tournament-meta {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .info-section {
+        grid-template-columns: 1fr;
+    }
+
+    .action-section {
+        flex-direction: column;
+    }
+
+    .action-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tournament-hero,
+.info-card,
+.action-button {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.info-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.info-card:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.action-section {
+    animation-delay: 0.6s;
+}

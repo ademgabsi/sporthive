@@ -1,0 +1,180 @@
+/* === GLOBAL === */
+body {
+    background: linear-gradient(to bottom, #5a1d3d 0%, #f5f6fa 40%);
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #1C1C1C;
+}
+
+/* === MAIN CONTAINER === */
+.competition-show-container {
+    max-width: 960px;
+    margin: 60px auto 40px auto;
+    padding: 50px;
+    background-color: #fff;
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.06);
+    animation: fadeInUp 0.7s ease;
+    transition: all 0.4s ease;
+}
+
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.competition-show-container h1 {
+    text-align: center;
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    position: relative;
+    color: #1C1C1C;
+}
+
+.competition-show-container h1::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 4px;
+    margin: 10px auto 0;
+    background: linear-gradient(to right, #6c4ab6, #9d6fff);
+    border-radius: 3px;
+}
+
+/* === TABLE STYLING === */
+.competition-show-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s ease;
+}
+
+.competition-show-container table th,
+.competition-show-container table td {
+    padding: 18px 22px;
+    font-size: 1.05rem;
+    text-align: left;
+    border-bottom: 1px solid #ececec;
+}
+
+.competition-show-container table th {
+    background: linear-gradient(to right, #6c4ab6, #9d6fff);
+    color: white;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    width: 30%;
+}
+
+.competition-show-container table tr:nth-child(even) {
+    background-color: #f7f9fc;
+}
+
+.competition-show-container table tr:hover {
+    background-color: #eef3fa;
+}
+
+/* === BUTTON CONTAINER === */
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 20px;
+    margin-top: 40px;
+    justify-content: center;
+    padding-top: 25px;
+    border-top: 1px dashed #ccc;
+}
+
+/* === ICON-LABEL BUTTON === */
+.icon-label-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    background-size: 200% auto;
+    background-position: left center;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.icon-label-btn:hover {
+    transform: translateY(-2px);
+    background-position: right center;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
+}
+
+.icon-label-btn i {
+    font-size: 1.2rem;
+}
+
+/* === BUTTON THEMES === */
+.btn-voice {
+    background-image: linear-gradient(to right, #00c9ff, #92fe9d);
+}
+
+.btn-stop {
+    background-image: linear-gradient(to right, #ff416c, #ff4b2b);
+}
+
+.btn-fb {
+    background-image: linear-gradient(to right, #4568dc, #b06ab3);
+}
+
+.btn-search {
+    background-image: linear-gradient(to right, #f7971e, #ffd200);
+}
+
+.btn-back {
+    background-image: linear-gradient(to right, #667db6, #0082c8);
+}
+
+/* === GOOGLE TRANSLATE WIDGET === */
+#google_translate_element {
+    margin-bottom: 20px;
+}
+
+.goog-te-banner-frame {
+    display: none !important;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .competition-show-container {
+        padding: 30px;
+    }
+    .competition-show-container h1 {
+        font-size: 2.2rem;
+    }
+    .icon-label-btn {
+        font-size: 0.9rem;
+        padding: 12px 18px;
+    }
+    .competition-show-container table th,
+    .competition-show-container table td {
+        padding: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .competition-show-container table {
+        display: block;
+        overflow-x: auto;
+    }
+    .button-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}

@@ -2,73 +2,112 @@
 
 {% block title %}{{ tournoi.nom }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/detailTournoi.css') }}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
 {% block body %}
-<div class="tournament-detail-container">
-  <div class="tournament-detail-header">
-    <h1>{{ tournoi.nom }}</h1>
-  </div>
-
-  <div class="tournament-detail-card">
-    <div class="detail-row">
-      <div class="detail-label">Nom</div>
-      <div class="detail-value">{{ tournoi.nom }}</div>
+<div class="tournament-hero">
+    <div class="hero-content">
+        <h1 class="tournament-title">{{ tournoi.nom }}</h1>
+        <div class="tournament-meta">
+            <div class="meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>{{ tournoi.dateDebut ? tournoi.dateDebut|date('d M Y') : '' }}</span>
+                <i class="fas fa-arrow-right"></i>
+                <span>{{ tournoi.dateFin ? tournoi.dateFin|date('d M Y') : '' }}</span>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>{{ tournoi.lieu }}</span>
+            </div>
+        </div>
     </div>
-
-    <div class="detail-row">
-      <div class="detail-label">Date de début</div>
-      <div class="detail-value date-value">
-        <svg class="date-icon" viewBox="0 0 24 24">
-          <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/>
-        </svg>
-        {{ tournoi.dateDebut ? tournoi.dateDebut|date('Y-m-d') : '' }}
-      </div>
-    </div>
-
-    <div class="detail-row">
-      <div class="detail-label">Date de fin</div>
-      <div class="detail-value date-value">
-        <svg class="date-icon" viewBox="0 0 24 24">
-          <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/>
-        </svg>
-        {{ tournoi.dateFin ? tournoi.dateFin|date('Y-m-d') : '' }}
-      </div>
-    </div>
-
-    <div class="detail-row">
-      <div class="detail-label">Lieu</div>
-      <div class="detail-value">
-        <svg class="location-icon" viewBox="0 0 24 24">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-        </svg>
-        <a href="#" onclick="openMap('{{ tournoi.lieu|e('js') }}')" class="location-link">
-          {{ tournoi.lieu }}
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <a href="{{ path('app_tournoi_index') }}" class="back-link">
-    <svg class="back-icon" viewBox="0 0 24 24">
-      <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-    </svg>
-    Retour à la liste
-  </a>
 </div>
 
+<div class="tournament-content">
+    <div class="info-section">
+        <div class="info-card competition">
+            <div class="card-header">
+                <i class="fas fa-trophy"></i>
+                <h2>Compétition</h2>
+            </div>
+            <div class="card-content">
+                <p>{{ tournoi.Competition.Nom }}</p>
+            </div>
+        </div>
+
+        <div class="info-card details">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i>
+                <h2>Détails du tournoi</h2>
+            </div>
+            <div class="card-content">
+                <div class="detail-item">
+                    <span class="label">Date de début</span>
+                    <span class="value">{{ tournoi.dateDebut ? tournoi.dateDebut|date('d/m/Y à H:i') : 'Non définie' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Date de fin</span>
+                    <span class="value">{{ tournoi.dateFin ? tournoi.dateFin|date('d/m/Y à H:i') : 'Non définie' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Lieu</span>
+                    <span class="value">{{ tournoi.lieu }}</span>
+                </div>
+            </div>
+        </div>
+
+        {% if tournoi.description is defined and tournoi.description %}
+        <div class="info-card description">
+            <div class="card-header">
+                <i class="fas fa-align-left"></i>
+                <h2>Description</h2>
+            </div>
+            <div class="card-content">
+                <p>{{ tournoi.description }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="action-section">
+        <a href="{{ path('app_tournoi_index') }}" class="action-button back">
+            <i class="fas fa-arrow-left"></i>
+            <span>Retour à la liste</span>
+        </a>
+        <a href="#" class="action-button register">
+            <i class="fas fa-user-plus"></i>
+            <span>S'inscrire</span>
+        </a>
+        <a href="#" class="action-button share" onclick="shareTournament(event)">
+            <i class="fas fa-share-alt"></i>
+            <span>Partager</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
 <script>
-function openMap(destination) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-            var origin = latitude + "," + longitude;
-            var directionsUrl = "https://www.google.com/maps/dir/?api=1&origin=" + encodeURIComponent(origin) + "&destination=" + encodeURIComponent(destination) + "&travelmode=driving";
-            window.open(directionsUrl, "_blank");
-        }, function(error) {
-            alert("Impossible de récupérer votre position actuelle.");
-        });
+function shareTournament(event) {
+    event.preventDefault();
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ tournoi.nom }}',
+            text: 'Découvrez le tournoi {{ tournoi.nom }} qui aura lieu à {{ tournoi.lieu }}',
+            url: window.location.href
+        })
+        .catch(console.error);
     } else {
-        alert("La géolocalisation n'est pas prise en charge par votre navigateur.");
+        // Fallback pour les navigateurs qui ne supportent pas l'API Web Share
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Lien copié dans le presse-papier !');
+        });
     }
 }
 </script>

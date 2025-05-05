@@ -1,12 +1,23 @@
 {% extends 'Back/base.html.twig' %}
 
-{% block title %}Edit Tournoi{% endblock %}
+{% block title %}Modifier le Tournoi{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/tournoiBack.css') }}" rel="stylesheet"/>
+{% endblock %}
 
 {% block body %}
-    <h1>Modifier Tournoi</h1>
+    <div class="tournoi-container">
+        <h1 class="page-title">Modifier le tournoi</h1>
 
-    {{ include('tournoi/_form.html.twig', {'button_label': 'modifier'}) }}
+        <div class="tournoi-form-container">
+            {{ include('tournoi/_form.html.twig', {'button_label': 'Modifier'}) }}
 
-    <a href="{{ path('app_tournoi_indexBack') }}">Retour a liste</a>
-
+            <div class="actions-container">
+                <a href="{{ path('app_tournoi_indexBack') }}" class="btn btn-view">Retour à la liste</a>
+                {{ include('tournoi/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

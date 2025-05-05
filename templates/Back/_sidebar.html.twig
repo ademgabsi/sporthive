@@ -15,9 +15,13 @@
 		<div class="nav-section">
 			<div class="nav-section-title">GESTION</div>
 
-			<a href="#" class="nav-link">
+			<a href="{{ path('app_competition_indexBack') }}" class="nav-link {{ app.request.get('_route') == 'app_competition_indexBack' ? 'active' : '' }}">
 				<i class="fas fa-trophy"></i>
 				<span>Compétitions</span>
+			</a>
+			<a href="{{ path('app_tournoi_indexBack') }}" class="nav-link {{ app.request.get('_route') == 'app_tournoi_indexBack' ? 'active' : '' }}">
+				<i class="fas fa-medal"></i>
+				<span>Tournois</span>
 			</a>
 			<a href="{{ path('app_gestion_match_index') }}" class="nav-link {{ app.request.get('_route') == 'app_gestion_match_index' ? 'active' : '' }}">
 				<i class="fas fa-futbol"></i>

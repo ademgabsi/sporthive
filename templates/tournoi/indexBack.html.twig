@@ -2,89 +2,66 @@
 
 {% block title %}Tournoi index{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/tournoiBack.css') }}" rel="stylesheet"/>
+{% endblock %}
+
 {% block body %}
-    <h1>Liste des Tournois</h1>
+<div class="tournoi-container">
+    <h1 class="page-title">Liste des Tournois</h1>
 
+    <div class="tournoi-table-container">
+        <table id="tournoiTable" class="table display">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
+                    <th>Lieu</th>
+                    <th>Compétition</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tournoi in tournois %}
+                    <tr>
+                        <td>{{ tournoi.nom }}</td>
+                        <td>{{ tournoi.dateDebut ? tournoi.dateDebut|date('Y-m-d') : '' }}</td>
+                        <td>{{ tournoi.dateFin ? tournoi.dateFin|date('Y-m-d') : '' }}</td>
+                        <td>{{ tournoi.lieu }}</td>
+                        <td>{{ tournoi.Competition.Nom }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{{ path('app_tournoi_showBack', {'id': tournoi.id}) }}" class="btn btn-view">Voir</a>
+                                <a href="{{ path('app_tournoi_edit', {'id': tournoi.id}) }}" class="btn btn-edit">Modifier</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">Aucun tournoi trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-
-<table id="tournoiTable" class="table display">
-    <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Date début</th>
-            <th>Date fin</th>
-            <th>Lieu</th>
-            <th>Actions</th>
-            <th>Compétition</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for tournoi in tournois %}
-            <tr>
-                <td>{{ tournoi.nom }}</td>
-                <td>{{ tournoi.dateDebut ? tournoi.dateDebut|date('Y-m-d') : '' }}</td>
-                <td>{{ tournoi.dateFin ? tournoi.dateFin|date('Y-m-d') : '' }}</td>
-                <td>{{ tournoi.lieu }}</td>
-                <td>
-                    <a href="{{ path('app_tournoi_showBack', {'id': tournoi.id}) }}">voir</a>
-                    <a href="{{ path('app_tournoi_edit', {'id': tournoi.id}) }}">modifier</a>
-                </td>
-                <td>{{ tournoi.Competition.Nom }}</td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">No records found</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-    <a href="{{ path('app_tournoi_new') }}" class="create-btn">créer un nouveau tournoi </a>
+    <div class="actions-container">
+        <a href="{{ path('app_tournoi_new') }}" class="btn btn-view">Créer un nouveau tournoi</a>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-
-    <!-- DataTable JS -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // 🔍 Live Search
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("keyup", function () {
-                const value = this.value.toLowerCase();
-                document.querySelectorAll("#tournoiTable tbody tr").forEach(row => {
-                    row.style.display = row.textContent.toLowerCase().includes(value) ? "" : "none";
-                });
+        $(document).ready(function() {
+            $('#tournoiTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
+                }
             });
-
-            // 📊 DataTables Init (optional with sort)
-            if (window.jQuery && $.fn.dataTable) {
-                $('#tournoiTable').DataTable({
-                    order: [[1, 'desc']],
-                    paging: false,
-                    searching: false, // Disable default search
-                    info: false,
-                    language: {
-                        paginate: { next: "→", previous: "←" }
-                    }
-                });
-            }
         });
     </script>
-
-    <!-- TableExport (PDF Export) -->
-   <script src="https://cdn.jsdelivr.net/npm/tableexport@5.2.0/dist/js/tableexport.min.js"></script>
-
-<script>
-    function exportTable() {
-        const table = document.querySelector("#tournoiTable");
-        const exportInstance = new TableExport(table, {
-            formats: ['pdf'], // 👉 uniquement PDF
-            filename: "tournois_export",
-            exportButtons: false
-        });
-        exportInstance.export2file(table, 'pdf');
-    }
-</script>
-
 {% endblock %}

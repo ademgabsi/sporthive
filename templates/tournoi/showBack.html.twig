@@ -1,52 +1,49 @@
 {% extends 'Back/base.html.twig' %}
 
-{% block title %}{{ tournoi.nom }}{% endblock %}
+{% block title %}Détails du Tournoi{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/tournoiBack.css') }}" rel="stylesheet"/>
+{% endblock %}
 
 {% block body %}
-<div class="tournament-detail-container">
-    <div class="tournament-header">
-        <h1>{{ tournoi.nom }}</h1>
-    </div>
+    <div class="tournoi-container">
+        <h1 class="page-title">Détails du tournoi</h1>
 
-    <div class="detail-card">
-        <div class="detail-grid">
-            <div class="detail-item">
-                <div class="detail-label">Nom</div>
-                <div class="detail-value">{{ tournoi.nom }}</div>
-            </div>
-            <div class="detail-item">
-                <div class="detail-label">Date de début</div>
-                <div class="detail-value">
-                    <i class="far fa-calendar-alt"></i>
-                    {{ tournoi.dateDebut ? tournoi.dateDebut|date('Y-m-d') : '' }}
+        <div class="tournoi-form-container">
+            <div class="tournoi-detail">
+                <div class="detail-group">
+                    <div class="detail-label">Nom</div>
+                    <div class="detail-value">{{ tournoi.nom }}</div>
                 </div>
-            </div>
-            <div class="detail-item">
-                <div class="detail-label">Date de fin</div>
-                <div class="detail-value">
-                    <i class="far fa-calendar-alt"></i>
-                    {{ tournoi.dateFin ? tournoi.dateFin|date('Y-m-d') : '' }}
+
+                <div class="detail-group">
+                    <div class="detail-label">Date de début</div>
+                    <div class="detail-value">{{ tournoi.dateDebut ? tournoi.dateDebut|date('Y-m-d') : '' }}</div>
                 </div>
-            </div>
-            <div class="detail-item">
-                <div class="detail-label">Lieu</div>
-                <div class="detail-value">
-                    <i class="fas fa-map-marker-alt"></i>
-                    {{ tournoi.lieu }}
+
+                <div class="detail-group">
+                    <div class="detail-label">Date de fin</div>
+                    <div class="detail-value">{{ tournoi.dateFin ? tournoi.dateFin|date('Y-m-d') : '' }}</div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">Lieu</div>
+                    <div class="detail-value">{{ tournoi.lieu }}</div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">Compétition</div>
+                    <div class="detail-value">{{ tournoi.Competition.Nom }}</div>
+                </div>
+
+                <div class="actions-container">
+                    <a href="{{ path('app_tournoi_indexBack') }}" class="btn btn-view">Retour à la liste</a>
+                    <a href="{{ path('app_tournoi_edit', {'id': tournoi.id}) }}" class="btn btn-edit">Modifier</a>
+                    {{ include('tournoi/_delete_form.html.twig') }}
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="action-bar">
-        <a href="{{ path('app_tournoi_indexBack') }}" class="btn btn-back">
-            <i class="fas fa-arrow-left"></i> Retour à la liste
-        </a>
-        <a href="{{ path('app_tournoi_edit', {'id': tournoi.id}) }}" class="btn btn-edit">
-            <i class="fas fa-edit"></i> Modifier
-
-        </a>
-        {{ include('tournoi/_delete_form.html.twig') }}
-    </div>
-</div>
 {% endblock %}

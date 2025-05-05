@@ -1,0 +1,226 @@
+/* === Base Page Styling === */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom, #f0f2f5, #ffffff);
+    color: #2d2d2d;
+    margin: 0;
+    padding: 0;
+}
+
+/* === Title === */
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-top: 60px;
+    margin-bottom: 30px;
+    color: #7b113a;
+    letter-spacing: -0.5px;
+}
+
+/* === Create Button === */
+.create-btn {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 30px auto;
+    padding: 12px 30px;
+    background: linear-gradient(to right, #7b113a, #d83f74);
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 40px;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 6px 18px rgba(123, 17, 58, 0.25);
+}
+
+.create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(123, 17, 58, 0.35);
+}
+
+/* === DataTable Styling === */
+#tournoiTable {
+    width: 95%;
+    margin: 20px auto 60px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Table Header */
+#tournoiTable thead {
+    background: #7b113a;
+    color: white;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+#tournoiTable th,
+#tournoiTable td {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #eee;
+}
+
+#tournoiTable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+#tournoiTable tbody tr:hover {
+    background-color: #fff2f5;
+}
+
+/* === Action Links === */
+#tournoiTable a {
+    margin-right: 8px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    color: white;
+    background-color: #7b113a;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+#tournoiTable a:hover {
+    background-color: #5a0e2b;
+}
+
+/* === DataTables Buttons === */
+.dt-buttons {
+    margin: 20px auto 10px;
+    text-align: center;
+}
+
+.dt-button {
+    background: #7b113a !important;
+    color: white !important;
+    border-radius: 6px !important;
+    padding: 8px 14px !important;
+    margin: 0 6px !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 12px rgba(123, 17, 58, 0.2);
+    transition: background 0.3s ease;
+}
+
+.dt-button:hover {
+    background: #5a0e2b !important;
+}
+
+/* === Responsive Fixes === */
+@media screen and (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .create-btn {
+        width: 90%;
+        text-align: center;
+    }
+
+    #tournoiTable {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    .dt-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dt-button {
+        width: 90%;
+        margin-bottom: 10px !important;
+    }
+}
+/* === DATATABLE SEARCH INPUT === */
+.dataTables_filter label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.dataTables_filter input {
+    padding: 8px 14px;
+    border-radius: 30px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    margin-left: 10px;
+    transition: 0.3s ease;
+}
+
+.dataTables_filter input:focus {
+    border-color: #7b113a;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(123, 17, 58, 0.2);
+}
+
+/* === DATATABLE LENGTH SELECT === */
+.dataTables_length select {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-left: 6px;
+    background-color: #fff;
+}
+
+/* === DATATABLE PAGINATION === */
+.dataTables_paginate {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.dataTables_paginate .paginate_button {
+    padding: 8px 14px;
+    margin: 0 4px;
+    border-radius: 6px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background-color: #7b113a;
+    color: white !important;
+    border-color: #7b113a;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background-color: #7b113a;
+    color: white !important;
+    font-weight: 700;
+}
+
+/* === EXPORT BUTTONS (DataTables Buttons) === */
+.dt-buttons {
+    margin: 20px auto 30px;
+    text-align: center;
+}
+
+.dt-button {
+    background: #7b113a !important;
+    color: white !important;
+    border-radius: 8px !important;
+    padding: 10px 16px !important;
+    margin: 0 6px !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(123, 17, 58, 0.2);
+    transition: background 0.3s ease;
+}
+
+.dt-button:hover {
+    background: #5a0e2b !important;
+}

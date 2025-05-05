@@ -2,6 +2,11 @@
 
 {% block title %}Competitions{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/competitionBack.css') }}" rel="stylesheet"/>
+{% endblock %}
+
 {% block body %}
     <h1 class="competition-table-title">Liste des compétitions</h1>
 
@@ -9,7 +14,7 @@
     <input
         type="text"
         id="competitionSearch"
-        placeholder="🔍 Rechercher une compétition..."
+        placeholder=" Rechercher une compétition..."
         class="form-control mb-3"
         style="width: 300px; margin: 0 auto 30px; display: block; padding: 8px; border-radius: 8px; border: 1px solid #ccc;"
     >
@@ -34,9 +39,9 @@
                         <td>{{ competition.Date ? competition.Date|date('Y-m-d') : 'N/A' }}</td>
                         <td>{{ competition.Heure ? competition.Heure|date('H:i') : 'N/A' }}</td>
                         <td>{{ competition.Description }}</td>
-                        <td>
-                            <a href="{{ path('app_competition_showBack', {'ID': competition.ID}) }}" class="competition-table-btn">Voir</a>
-                            <a href="{{ path('app_competition_editBack', {'ID': competition.ID}) }}" class="competition-table-btn secondary">Modifier</a>
+                        <td class="actions">
+                            <a href="{{ path('app_competition_showBack', {'ID': competition.ID}) }}" class="btn-action btn-view">Voir</a>
+                            <a href="{{ path('app_competition_editBack', {'ID': competition.ID}) }}" class="btn-action btn-edit">Modifier</a>
                         </td>
                     </tr>
                 {% else %}

@@ -2,12 +2,19 @@
 
 {% block title %}Edit Competition{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/competitionForm.css') }}" rel="stylesheet"/>
+{% endblock %}
+
 {% block body %}
-    <h1>modifier Competition</h1>
+    <div class="edit-competition-container">
+        <h1>Modifier la compétition</h1>
 
-    {{ include('competition/_form.html.twig', {'button_label': 'modifier'}) }}
-        <a href="{{ path('app_competition_indexBack') }}">Retour a liste</a>
+        {{ include('competition/_form.html.twig', {'button_label': 'Modifier'}) }}
 
-
-
+        <div class="form-actions">
+            <a href="{{ path('app_competition_indexBack') }}" class="btn-back">Retour à la liste</a>
+        </div>
+    </div>
 {% endblock %}

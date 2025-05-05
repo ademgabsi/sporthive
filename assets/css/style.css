@@ -591,3 +591,200 @@ a:focus {
 
 /* end footer section*/
 /*# sourceMappingURL=style.css.map */
+
+/* General page styles */
+/* Base styles */
+/* ======= GLOBAL BACKGROUND ======= */
+:root {
+  --primary: #7b113a;
+  --primary-dark: #5a0e2b;
+  --secondary: #6c757d;
+  --secondary-dark: #495057;
+  --success: #198754;
+  --success-dark: #146c43;
+  --text-dark: #2b2b2b;
+  --text-medium: #444;
+  --text-light: #f8f9fa;
+  --bg-gradient: linear-gradient(180deg, #f0f2f5 0%, #e8ebef 100%);
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: 1px solid rgba(255, 255, 255, 0.5);
+  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+  --card-shadow-hover: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+body {
+  background: var(--bg-gradient);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--text-dark);
+  margin: 3rem 0;
+  position: relative;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.page-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--primary);
+  margin: 1rem auto 0;
+  border-radius: 2px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  padding: 3rem 5%;
+  background: linear-gradient(180deg, #eaeff3 0%, #f7f9fc 100%);
+  border-top: 1px solid rgba(220, 223, 227, 0.8);
+  border-radius: 24px 24px 0 0;
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.03);
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 1.75rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: var(--card-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 1.25rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.card-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+.card-content p {
+  margin: 0.75rem 0;
+  font-size: 0.95rem;
+  color: var(--text-medium);
+  line-height: 1.6;
+}
+
+.card-content p strong {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.card-actions {
+  margin-top: 1.75rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  text-decoration: none;
+  border: none;
+  color: white;
+  background-color: var(--primary);
+  transition: all 0.25s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn.secondary {
+  background-color: var(--secondary);
+}
+
+.btn.secondary:hover {
+  background-color: var(--secondary-dark);
+}
+
+
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .card-grid {
+    padding: 2rem 5%;
+    grid-template-columns: 1fr;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(123, 17, 58, 0.03) 0%, transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(25, 135, 84, 0.03) 0%, transparent 25%);
+  pointer-events: none;
+  z-index: -1;
+}
+

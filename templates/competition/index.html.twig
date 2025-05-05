@@ -1,31 +1,37 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Competition index{% endblock %}
-
-{% block body %}
-    <h1 class="page-title">Liste des compétitions</h1>
-
-    <div class="card-grid">
-        {% for competition in competitions %}
-            <div class="card">
-                <div class="card-content">
-                    <h2 class="card-title">{{ competition.Nom }}</h2>
-                    <p><strong>Type :</strong> {{ competition.Type }}</p>
-                    <p><strong>Date :</strong> {{ competition.Date ? competition.Date|date('Y-m-d') : 'N/A' }}</p>
-                    <p><strong>Heure :</strong> {{ competition.Heure ? competition.Heure|date('H:i') : 'N/A' }}</p>
-                    <p><strong>Description :</strong> {{ competition.Description }}</p>
-                </div>
-                <div class="card-actions">
-                    <a href="{{ path('app_competition_show', {'ID': competition.ID}) }}" class="btn">Voir</a>
-                </div>
-            </div>
-        {% else %}
-            <p>Aucune compétition trouvée.</p>
-        {% endfor %}
-    </div>
-
-    
+{% block title %}Competition index
 {% endblock %}
 
+{% block body %}
+	<h1 class="page-title">Liste des compétitions</h1>
+
+	<div class="card-grid">
+		{% for competition in competitions %}
+			<div class="card">
+				<div class="card-content">
+					<h2 class="card-title">{{ competition.Nom }}</h2>
+					<p>
+						<strong>Type :</strong>
+						{{ competition.Type }}</p>
+					<p>
+						<strong>Date :</strong>
+						{{ competition.Date ? competition.Date|date('Y-m-d') : 'N/A' }}</p>
+					<p>
+						<strong>Heure :</strong>
+						{{ competition.Heure ? competition.Heure|date('H:i') : 'N/A' }}</p>
+					<p>
+						<strong>Description :</strong>
+						{{ competition.Description }}</p>
+				</div>
+				<div class="card-actions">
+					<a href="{{ path('app_competition_show', {'ID': competition.ID}) }}" class="btn">Voir</a>
+				</div>
+			</div>
+		{% else %}
+			<p>Aucune compétition trouvée.</p>
+		{% endfor %}
+	</div>
 
 
+{% endblock %}
