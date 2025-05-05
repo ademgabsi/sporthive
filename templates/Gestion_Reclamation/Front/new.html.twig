@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html.twig' %}
 
 {% block title %}Nouvelle Réclamation{% endblock %}
@@ -11,3 +12,16 @@
         {{ include('Gestion_Reclamation/Front/_form.html.twig') }}
     </div>
 {% endblock %}
+=======
+{% extends 'base.html.twig' %}
+
+{% block title %}New Reclamation{% endblock %}
+
+{% block body %}
+    <h5></h5>
+
+    {{ include('Gestion_Reclamation/Front/_form.html.twig') }}
+
+    <a href="{{ path('app_assurance_index') }}">back to list</a>
+{% endblock %}
+>>>>>>> gestionMatch

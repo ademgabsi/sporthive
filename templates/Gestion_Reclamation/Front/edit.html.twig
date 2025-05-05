@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html.twig' %}
 
 {% block title %}Modifier la Réclamation{% endblock %}
@@ -11,3 +12,18 @@
         {{ include('Gestion_Reclamation/Front/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
     </div>
 {% endblock %}
+=======
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Reclamation{% endblock %}
+
+{% block body %}
+    <h1></h1>
+
+    {{ include('Gestion_Reclamation/Front/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_reclamation_index') }}">back to list</a>
+
+    {{ include('Gestion_Reclamation/Front/_delete_form.html.twig') }}
+{% endblock %}
+>>>>>>> gestionMatch

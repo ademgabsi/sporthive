@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+<<<<<<< HEAD
 {% block title %}Détails de la Réclamation - SPORTHIVE{% endblock %}
 
 {% block css %}
@@ -340,3 +341,62 @@
         </div>
     </section>
 {% endblock %}
+=======
+{% block title %}Détails de la Réclamation #{{ reclamation.ID_reclamation }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Détails de la Réclamation</h1>
+            <a href="{{ path('app_reclamation_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+            </a>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Réclamation #{{ reclamation.ID_reclamation }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><i class="fas fa-calendar-alt me-2"></i> <strong>Date :</strong> {{ reclamation.Date ? reclamation.Date|date('d/m/Y') : 'N/A' }}</p>
+                        <p><i class="fas fa-info-circle me-2"></i> <strong>État :</strong> 
+                            <span class="badge bg-{{ reclamation.Etat == 'En attente' ? 'warning' : (reclamation.Etat == 'Active' ? 'success' : 'danger') }}">
+                                {{ reclamation.Etat }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><i class="fas fa-money-bill-wave me-2"></i> <strong>Montant réclamé :</strong> {{ reclamation.MontantReclame }} TND</p>
+                        <p><i class="fas fa-hand-holding-usd me-2"></i> <strong>Montant remboursé :</strong> {{ reclamation.MontantRembourse }} TND</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5><i class="fas fa-align-left me-2"></i>Description</h5>
+                    <div class="p-3 bg-light rounded">
+                        {{ reclamation.Description }}
+                    </div>
+                </div>
+
+                {% if reclamation.Documents %}
+                    <div class="mb-4">
+                        <h5><i class="fas fa-file-alt me-2"></i>Documents</h5>
+                        <div class="p-3 bg-light rounded">
+                            {{ reclamation.Documents }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn btn-primary">
+                <i class="fas fa-edit me-1"></i> Modifier
+            </a>
+            {{ include('Gestion_Reclamation/Front/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
+>>>>>>> gestionMatch

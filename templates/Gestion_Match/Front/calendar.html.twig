@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier des matchs{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.css" rel="stylesheet">
+    <style>
+        /* Styles de base pour le calendrier */
+        #calendar {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Styles pour les événements */
+        .fc-event {
+            cursor: pointer;
+        }
+        
+        /* Styles pour la légende */
+        .match-legend {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Calendrier des Matchs</h1>
+        <p class="text-center mb-5">Consultez tous les matchs à venir et réservez directement en cliquant sur un événement</p>
+        
+        <!-- Conteneur du calendrier -->
+        <div id="calendar"></div>
+        
+        <!-- Légende des types de matchs -->
+        <div class="match-legend">
+            <div class="legend-title">Types de matchs</div>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #4caf50;"></div>
+                    <div class="legend-label">Football</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #ff9800;"></div>
+                    <div class="legend-label">Basketball</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #2196f3;"></div>
+                    <div class="legend-label">Volleyball</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f44336;"></div>
+                    <div class="legend-label">Handball</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #9c27b0;"></div>
+                    <div class="legend-label">Autre</div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            
+            // Données statiques pour les matchs
+            const events = [
+                {
+                    title: 'Match de Football',
+                    start: '2025-04-30T14:00:00',
+                    end: '2025-04-30T16:00:00',
+                    backgroundColor: '#4caf50',
+                    borderColor: '#4caf50',
+                    url: '{{ path('app_match_front_index') }}'
+                },
+                {
+                    title: 'Match de Basketball',
+                    start: '2025-05-02T18:00:00',
+                    end: '2025-05-02T20:00:00',
+                    backgroundColor: '#ff9800',
+                    borderColor: '#ff9800',
+                    url: '{{ path('app_match_front_index') }}'
+                },
+                {
+                    title: 'Match de Volleyball',
+                    start: '2025-05-05T10:00:00',
+                    end: '2025-05-05T12:00:00',
+                    backgroundColor: '#2196f3',
+                    borderColor: '#2196f3',
+                    url: '{{ path('app_match_front_index') }}'
+                },
+                {
+                    title: 'Match de Handball',
+                    start: '2025-05-08T16:00:00',
+                    end: '2025-05-08T18:00:00',
+                    backgroundColor: '#f44336',
+                    borderColor: '#f44336',
+                    url: '{{ path('app_match_front_index') }}'
+                }
+            ];
+            
+            // Initialisation du calendrier avec les données statiques
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: events,
+                eventClick: function(info) {
+                    if (info.event.url) {
+                        window.open(info.event.url);
+                        info.jsEvent.preventDefault();
+                    }
+                }
+            });
+            
+            calendar.render();
+            
+            // Afficher un message dans la console pour vérifier que le script s'exécute
+            console.log('Calendrier initialisé avec', events.length, 'événements');
+        });
+    </script>
+{% endblock %}
