@@ -5,11 +5,6 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-<<<<<<< HEAD
-use Symfony\Component\Validator\Constraints as Assert;
-
-=======
->>>>>>> gestionMatch
 use App\Repository\AssuranceRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -23,61 +18,26 @@ class Assurance
     private ?int $ID_contrat = null;
 
     #[ORM\Column(type: 'integer', nullable: false)]
-<<<<<<< HEAD
-    #[Assert\NotBlank(message: 'La durée ne peut pas être vide')]
-    #[Assert\Type(type: 'integer', message: 'La durée doit être un nombre entier')]
+    #[Assert\NotBlank(message: 'La durée est requise')]
+    #[Assert\Positive(message: 'La durée doit être un nombre positif')]
     #[Assert\Range(
         min: 1,
         max: 120,
-        notInRangeMessage: 'La durée doit être comprise entre {{ min }} et {{ max }} mois',
-=======
-    #[Assert\NotBlank(message: 'La durée est requise')]
-    #[Assert\Positive(message: 'La durée doit être un nombre positif')]
-    #[Assert\GreaterThan(
-        value: 0,
-        message: 'La durée doit être supérieure à 0'
->>>>>>> gestionMatch
+        notInRangeMessage: 'La durée doit être comprise entre {{ min }} et {{ max }} mois'
     )]
     private ?int $Duree = null;
 
     #[ORM\Column(name: 'type_de_couverture', type: 'string', nullable: false)]
-<<<<<<< HEAD
-    #[Assert\NotBlank(message: 'Le type de couverture ne peut pas être vide')]
-    #[Assert\Length(
-        min: 3,
-        max: 100,
-        minMessage: 'Le type de couverture doit comporter au moins {{ limit }} caractères',
-        maxMessage: 'Le type de couverture ne peut pas dépasser {{ limit }} caractères',
-=======
     #[Assert\NotBlank(message: 'Le type de couverture est requis')]
     #[Assert\Choice(
         choices: ['accident', 'maladie', 'responsabilité civile', 'invalidité'],
-        message: 'Le type de couverture doit être l\'un des suivants: {{ value }}'
->>>>>>> gestionMatch
+        message: 'Le type de couverture doit être l\'un des suivants: accident, maladie, responsabilité civile, invalidité'
     )]
     private ?string $typeDeCouverture = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
-<<<<<<< HEAD
-    #[Assert\NotBlank(message: 'La date de début ne peut pas être vide')]
-    #[Assert\Date(message: 'La date n\'est pas valide')]
-    private ?string $dateDebut = null;
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: 'Le statut ne peut pas être vide')]
-    #[Assert\Choice(
-        choices: ['Active', 'En attente', 'Expirée'],
-        message: 'Choisissez un statut valide',
-    )]
-    private ?string $Statut = 'En attente';
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: 'Les conditions ne peuvent pas être vides')]
-    #[Assert\Length(
-        min: 10,
-        minMessage: 'Les conditions doivent comporter au moins {{ limit }} caractères',
-=======
     #[Assert\NotBlank(message: 'La date de début est requise')]
+    #[Assert\Date(message: 'La date n\'est pas valide')]
     #[Assert\Regex(
         pattern: '/^\d{4}-\d{2}-\d{2}$/',
         message: 'La date doit être au format YYYY-MM-DD'
@@ -87,10 +47,10 @@ class Assurance
     #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank(message: 'Le statut est requis')]
     #[Assert\Choice(
-        choices: ['Active', 'En attente ', 'Expirée'],
-        message: 'Le statut doit être l\'un des suivants: {{ value }}'
+        choices: ['Active', 'En attente', 'Expirée'],
+        message: 'Le statut doit être l\'un des suivants: Active, En attente, Expirée'
     )]
-    private ?string $Statut = null;
+    private ?string $Statut = 'En attente';
 
     #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank(message: 'Les conditions sont requises')]
@@ -99,7 +59,6 @@ class Assurance
         max: 500,
         minMessage: 'Les conditions doivent contenir au moins {{ limit }} caractères',
         maxMessage: 'Les conditions ne peuvent pas dépasser {{ limit }} caractères'
->>>>>>> gestionMatch
     )]
     private ?string $Conditions = null;
 
@@ -124,6 +83,7 @@ class Assurance
     {
         return $this->ID_contrat;
     }
+
     public function __construct()
     {
         $this->reclamations = new ArrayCollection();

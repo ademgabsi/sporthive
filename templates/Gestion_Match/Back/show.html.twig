@@ -149,6 +149,19 @@
             box-shadow: 0 4px 6px rgba(220,53,69,.2);
         }
 
+        .btn-primary {
+            color: #fff;
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .btn-primary:hover {
+            background-color: #2e6da4;
+            border-color: #2e6da4;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(52,152,219,.2);
+        }
+
         /* Delete form styling */
         form {
             margin: 0;
@@ -237,6 +250,20 @@
                                 <tr>
                                     <th>Heure</th>
                                     <td>{{ gestion_match.heure ? gestion_match.heure|date('H:i') : '' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>QR Code</th>
+                                    <td>
+                                        {% if gestion_match.qrCode %}
+                                            <img src="{{ gestion_match.qrCode }}" alt="QR Code du match" style="max-width: 200px;">
+                                        {% else %}
+                                            <form method="post" action="{{ path('app_gestion_match_generate_qr', {'id': gestion_match.id}) }}" style="display: inline;">
+                                                <button class="btn btn-primary">
+                                                    <i class="fas fa-qrcode"></i> Générer le QR Code
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
