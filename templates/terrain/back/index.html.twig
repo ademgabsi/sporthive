@@ -1,0 +1,501 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Liste des Terrains{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Loading indicator styles */
+        .loading-indicator {
+            text-align: center;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ff4f5a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* No results styles */
+        .no-results {
+            padding: 30px;
+            text-align: center;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            font-size: 1.2rem;
+            color: #495057;
+        }
+
+        /* Search input wrapper and spinner */
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-spinner {
+            position: absolute;
+            right: 45px; /* Position to the left of the search button */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 79, 90, 0.2);
+            border-top: 2px solid #ff4f5a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Table animations */
+        #terrainTableBody {
+            transition: opacity 0.3s ease;
+        }
+
+        .search-result-row {
+            animation: rowFadeIn 0.5s ease forwards;
+        }
+
+        @keyframes rowFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Improved sort arrows */
+        .sort-arrow {
+            display: inline-block;
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .sort-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .sort-link:hover {
+            color: #ff4f5a;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Liste des Terrains</h1>
+            <p class="dashboard-subtitle">Tous les terrains disponibles</p>
+        </div>
+
+        <div class="table-top">
+            <div class="search-filter">
+                <div class="input-group">
+                    <input type="text"
+                           id="searchInput"
+                           class="form-control search-input"
+                           placeholder="Rechercher un terrain..."
+                           value="{{ searchTerm|default('') }}">
+                    <div class="input-group-append">
+                        <button type="button" id="searchButton" class="btn btn-search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ path('app_terrain_new') }}" class="add-btn">
+                <i class="fas fa-plus"></i>
+                Nouveau Terrain
+            </a>
+        </div>
+
+        <div id="tableContainer">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <a href="javascript:void(0)" class="sort-link" data-sort="idTerrain">
+                                ID Terrain
+                                {% if current_sort == 'idTerrain' %}
+                                    <span class="sort-arrow">{{ current_direction == 'ASC' ? '↑' : '↓' }}</span>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:void(0)" class="sort-link" data-sort="nom">
+                                Nom
+                                {% if current_sort == 'nom' %}
+                                    <span class="sort-arrow">{{ current_direction == 'ASC' ? '↑' : '↓' }}</span>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>Type de Surface</th>
+                        <th>Localisation</th>
+                        <th>
+                            <a href="javascript:void(0)" class="sort-link" data-sort="prix">
+                                Prix
+                                {% if current_sort == 'prix' %}
+                                    <span class="sort-arrow">{{ current_direction == 'ASC' ? '↑' : '↓' }}</span>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="terrainTableBody">
+                    {% for terrain in terrains %}
+                        <tr>
+                            <td>{{ terrain.idTerrain }}</td>
+                            <td>{{ terrain.Nom }}</td>
+                            <td>{{ terrain.TypeSurface }}</td>
+                            <td>{{ terrain.Localisation }}</td>
+                            <td>{{ terrain.Prix }} TND</td>
+                            <td>
+                                {% if terrain.imageTer %}
+                                    <img src="{{ asset('uploads/terrains/' ~ terrain.imageTer) }}"
+                                         alt="Image du terrain"
+                                         width="100"
+                                         height="auto"
+                                         class="img-thumbnail">
+                                {% else %}
+                                    <span>Aucune image</span>
+                                {% endif %}
+                            </td>
+                            <td class="action-cell">
+                                <a href="{{ path('app_terrainback_show', {'idTerrain': terrain.idTerrain}) }}"
+                                   class="action-btn view"
+                                   title="Voir">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ path('app_terrain_edit', {'idTerrain': terrain.idTerrain}) }}"
+                                   class="action-btn edit"
+                                   title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">Aucun terrain trouvé</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div id="noResults" class="no-results" style="display: none;">
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <p>Aucun terrain ne correspond à votre recherche</p>
+                </div>
+            </div>
+
+            <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                <div class="spinner"></div>
+                <p>Chargement en cours...</p>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const tableBody = document.getElementById('terrainTableBody');
+    const tableContainer = document.getElementById('tableContainer');
+    const noResults = document.getElementById('noResults');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    let timeoutId;
+    let originalContent = null;
+    let isSearchActive = false;
+
+    // Store original table content
+    originalContent = tableBody.innerHTML;
+
+    // Add search input indicator
+    const searchWrapper = document.createElement('div');
+    searchWrapper.className = 'search-input-wrapper';
+    searchInput.parentNode.insertBefore(searchWrapper, searchInput);
+    searchWrapper.appendChild(searchInput);
+
+    const inputSpinner = document.createElement('div');
+    inputSpinner.className = 'input-spinner';
+    inputSpinner.style.display = 'none';
+    searchWrapper.appendChild(inputSpinner);
+
+    // Function to perform search with animations
+    function performSearch() {
+        const searchTerm = searchInput.value.trim();
+
+        if (searchTerm.length < 2) {
+            // If search is active and term is now too short, restore original content
+            if (isSearchActive) {
+                isSearchActive = false;
+
+                // Fade out
+                tableBody.style.opacity = '0';
+
+                // After fade out, restore original and fade in
+                setTimeout(() => {
+                    tableBody.innerHTML = originalContent;
+                    initRowAnimations();
+                    tableBody.style.opacity = '1';
+                    noResults.style.display = 'none';
+                }, 300);
+            }
+            return;
+        }
+
+        // Show spinner in input
+        inputSpinner.style.display = 'block';
+
+        // Fetch search results
+        fetch(`{{ path('app_terrain_search') }}?q=${encodeURIComponent(searchTerm)}&admin=true`)
+            .then(response => {
+                if (!response.ok) throw new Error('Erreur HTTP');
+                return response.json();
+            })
+            .then(data => {
+                // Hide spinner
+                inputSpinner.style.display = 'none';
+
+                // Fade out current content
+                tableBody.style.opacity = '0';
+
+                setTimeout(() => {
+                    if (data.length > 0) {
+                        // Build table rows from search results
+                        tableBody.innerHTML = data.map(terrain => `
+                            <tr class="search-result-row">
+                                <td>${terrain.id}</td>
+                                <td>${terrain.nom}</td>
+                                <td>${terrain.typeSurface}</td>
+                                <td>${terrain.localisation}</td>
+                                <td>${terrain.prix} TND</td>
+                                <td>
+                                    ${terrain.image ?
+                                        `<img src="{{ asset('uploads/terrains/') }}/${terrain.image}"
+                                             alt="Image du terrain"
+                                             width="100"
+                                             height="auto"
+                                             class="img-thumbnail">` :
+                                        '<span>Aucune image</span>'}
+                                </td>
+                                <td class="action-cell">
+                                    <a href="{{ path('app_terrainback_show', {'idTerrain': 'TERRAIN_ID'}) }}".replace('TERRAIN_ID', terrain.id)
+                                       class="action-btn view"
+                                       title="Voir">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ path('app_terrain_edit', {'idTerrain': 'TERRAIN_ID'}) }}".replace('TERRAIN_ID', terrain.id)
+                                       class="action-btn edit"
+                                       title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        `).join('');
+
+                        noResults.style.display = 'none';
+                        isSearchActive = true;
+
+                        // Fade in new content
+                        tableBody.style.opacity = '1';
+
+                        // Apply row animations
+                        initRowAnimations();
+                    } else {
+                        // Show no results message
+                        tableBody.innerHTML = '';
+                        noResults.style.display = 'block';
+                        isSearchActive = true;
+                        tableBody.style.opacity = '1';
+                    }
+                }, 300);
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                inputSpinner.style.display = 'none';
+
+                // Fade out
+                tableBody.style.opacity = '0';
+
+                setTimeout(() => {
+                    tableBody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Erreur lors de la recherche. Veuillez réessayer.</td></tr>';
+                    tableBody.style.opacity = '1';
+                }, 300);
+            });
+    }
+
+    // Function to initialize row animations
+    function initRowAnimations() {
+        const rows = document.querySelectorAll('#terrainTableBody tr');
+        rows.forEach((row, index) => {
+            row.style.animationDelay = (index * 0.05) + 's';
+        });
+    }
+
+    // Search on input with debounce
+    searchInput.addEventListener('input', function() {
+        clearTimeout(timeoutId);
+
+        // Show spinner if search term is long enough
+        if (this.value.trim().length >= 2) {
+            inputSpinner.style.display = 'block';
+        } else {
+            inputSpinner.style.display = 'none';
+        }
+
+        timeoutId = setTimeout(performSearch, 400);
+    });
+
+    // Search on button click
+    searchButton.addEventListener('click', performSearch);
+
+    // Search on Enter key
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            performSearch();
+        }
+    });
+
+    // Clear search when clicking the X in the search input
+    searchInput.addEventListener('search', function(e) {
+        if (this.value === '' && isSearchActive) {
+            isSearchActive = false;
+            tableBody.style.opacity = '0';
+            setTimeout(() => {
+                tableBody.innerHTML = originalContent;
+                initRowAnimations();
+                tableBody.style.opacity = '1';
+                noResults.style.display = 'none';
+            }, 300);
+        }
+    });
+
+    // Handle sort links with smooth transitions
+    document.querySelectorAll('.sort-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const sortBy = this.getAttribute('data-sort');
+            const currentDirection = '{{ current_direction }}';
+            const newDirection = currentDirection === 'ASC' ? 'DESC' : 'ASC';
+
+            // Update sort indicators visually without page reload
+            document.querySelectorAll('.sort-arrow').forEach(arrow => {
+                arrow.remove();
+            });
+
+            const arrow = document.createElement('span');
+            arrow.className = 'sort-arrow';
+            arrow.textContent = newDirection === 'ASC' ? '↑' : '↓';
+            this.appendChild(arrow);
+
+            // If search is active, sort the current results
+            if (isSearchActive && searchInput.value.trim().length >= 2) {
+                // Show loading indicator
+                tableBody.style.opacity = '0.5';
+
+                // Fetch sorted search results
+                fetch(`{{ path('app_terrain_search') }}?q=${encodeURIComponent(searchInput.value.trim())}&admin=true&sort_by=${sortBy}&direction=${newDirection}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        tableBody.style.opacity = '0';
+
+                        setTimeout(() => {
+                            if (data.length > 0) {
+                                tableBody.innerHTML = data.map(terrain => `
+                                    <tr class="search-result-row">
+                                        <td>${terrain.id}</td>
+                                        <td>${terrain.nom}</td>
+                                        <td>${terrain.typeSurface}</td>
+                                        <td>${terrain.localisation}</td>
+                                        <td>${terrain.prix} TND</td>
+                                        <td>
+                                            ${terrain.image ?
+                                                `<img src="{{ asset('uploads/terrains/') }}/${terrain.image}"
+                                                     alt="Image du terrain"
+                                                     width="100"
+                                                     height="auto"
+                                                     class="img-thumbnail">` :
+                                                '<span>Aucune image</span>'}
+                                        </td>
+                                        <td class="action-cell">
+                                            <a href="{{ path('app_terrainback_show', {'idTerrain': 'TERRAIN_ID'}) }}".replace('TERRAIN_ID', terrain.id)
+                                               class="action-btn view"
+                                               title="Voir">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_terrain_edit', {'idTerrain': 'TERRAIN_ID'}) }}".replace('TERRAIN_ID', terrain.id)
+                                               class="action-btn edit"
+                                               title="Modifier">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                `).join('');
+
+                                initRowAnimations();
+                            }
+                            tableBody.style.opacity = '1';
+                        }, 300);
+                    })
+                    .catch(error => {
+                        console.error('Error sorting results:', error);
+                        tableBody.style.opacity = '1';
+                    });
+            } else {
+                // If no search active, use traditional sorting with page reload
+                window.location.href = `{{ path('app_terrain_indexback') }}?sort_by=${sortBy}&direction=${newDirection}&q=${searchInput.value}`;
+            }
+        });
+    });
+
+    // Initialize row animations on page load
+    initRowAnimations();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,389 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Create New Terrain{% endblock %}
+
+
+{% block body %}
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Create New Terrain</h1>
+            <p class="dashboard-subtitle">Enter the details for a new terrain</p>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'form-grid', 'enctype': 'multipart/form-data'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.nom, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.typeSurface, 'Type de surface', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.typeSurface, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.typeSurface, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group full-width">
+                    {{ form_label(form.localisation, 'Localisation', {'label_attr': {'class': 'form-label'}}) }}
+
+                    <div class="map-search-container">
+                        <input type="text" id="location-search" placeholder="Rechercher une adresse...">
+                        <button type="button" id="search-button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+
+                    <div id="map"></div>
+                    {{ form_widget(form.localisation, {'attr': {'class': 'd-none'}}) }}
+                    {{ form_errors(form.localisation, {'attr': {'class': 'form-error'}}) }}
+
+                    <div class="map-instructions">
+                        <p><i class="fas fa-info-circle"></i> Cliquez sur la carte pour placer un marqueur ou recherchez une adresse</p>
+                        <p><i class="fas fa-arrows-alt"></i> Vous pouvez déplacer le marqueur pour ajuster la position</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.prix, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.prix, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.imageTer, 'Image', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.imageTer, {'attr': {'class': 'form-input'}}) }}
+                    {{ form_errors(form.imageTer, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-actions full-width">
+                    <a href="{{ path('app_terrain_index') }}" class="btn btn-cancel">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-save">
+                        <i class="fas fa-save"></i>
+                        Save
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/material_blue.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <style>
+        .dashboard-container {
+            padding: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.8rem;
+        }
+
+        .dashboard-title {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .dashboard-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #555;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn i {
+            margin-right: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-cancel {
+            background: #f8f9fa;
+            color: #555;
+            border: 1px solid #ddd;
+        }
+
+        .btn-cancel:hover {
+            background: #eee;
+        }
+
+        .btn-save {
+            background: #4361ee;
+            color: white;
+            border: none;
+        }
+
+        .btn-save:hover {
+            background: #3a56d4;
+        }
+
+        .form-error {
+            color: #e63946;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Map styles */
+        #map {
+            height: 400px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            transition: border-color 0.3s ease;
+        }
+
+        #map:hover {
+            border-color: #4361ee;
+        }
+
+        .map-search-container {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        #location-search {
+            flex-grow: 1;
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 0.9rem;
+        }
+
+        #search-button {
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            padding: 0 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #search-button:hover {
+            background-color: #3a56d4;
+        }
+
+        .map-instructions {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script>
+    // Direct inline script to initialize the map
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Direct inline map script running');
+
+        setTimeout(function() {
+            try {
+                const mapElement = document.getElementById('map');
+                if (!mapElement) {
+                    console.error('Map element not found');
+                    return;
+                }
+
+                if (typeof L === 'undefined') {
+                    console.error('Leaflet not loaded');
+                    alert('La bibliothèque Leaflet n\'a pas été chargée correctement. Veuillez rafraîchir la page.');
+                    return;
+                }
+
+                initMap();
+
+                function initMap() {
+                    console.log('Initializing map...');
+                    // Create a map instance
+                    const map = L.map(mapElement, {
+                        center: [36.8065, 10.1815],
+                        zoom: 13
+                    });
+
+                    // Add the tile layer
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    // Add scale control
+                    L.control.scale().addTo(map);
+
+                    const input = document.querySelector('[name="terrain[localisation]"]');
+                    let marker = null;
+
+                    // Function to update marker position
+                    function updateMarkerPosition(latlng) {
+                        if(marker) map.removeLayer(marker);
+                        marker = L.marker(latlng, {draggable: true}).addTo(map);
+
+                        // Update input value when marker is placed
+                        if (input) {
+                            input.value = `${latlng.lat.toFixed(6)},${latlng.lng.toFixed(6)}`;
+                        }
+
+                        // Update input value when marker is dragged
+                        marker.on('dragend', function(e) {
+                            const position = marker.getLatLng();
+                            if (input) {
+                                input.value = `${position.lat.toFixed(6)},${position.lng.toFixed(6)}`;
+                            }
+                        });
+                    }
+
+                    // Handle map click to place marker
+                    map.on('click', function(e) {
+                        updateMarkerPosition(e.latlng);
+                    });
+
+                    // Initialize with existing value
+                    if(input && input.value) {
+                        const [lat, lng] = input.value.split(',');
+                        if(!isNaN(lat) && !isNaN(lng)) {
+                            const latlng = L.latLng(parseFloat(lat), parseFloat(lng));
+                            updateMarkerPosition(latlng);
+                            map.setView(latlng, 15);
+                        }
+                    }
+
+                    // Handle search functionality
+                    const searchInput = document.getElementById('location-search');
+                    const searchButton = document.getElementById('search-button');
+
+                    if(searchInput && searchButton) {
+                        searchButton.addEventListener('click', searchLocation);
+                        searchInput.addEventListener('keypress', function(e) {
+                            if(e.key === 'Enter') {
+                                e.preventDefault();
+                                searchLocation();
+                            }
+                        });
+                    }
+
+                    function searchLocation() {
+                        if (!searchInput) return;
+
+                        const query = searchInput.value.trim();
+                        if(query.length > 0) {
+                            // Use Nominatim for geocoding
+                            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if(data && data.length > 0) {
+                                        const result = data[0];
+                                        const latlng = L.latLng(parseFloat(result.lat), parseFloat(result.lon));
+                                        updateMarkerPosition(latlng);
+                                        map.setView(latlng, 15);
+                                    } else {
+                                        alert('Aucun résultat trouvé pour cette recherche.');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Erreur de recherche:', error);
+                                    alert('Erreur lors de la recherche. Veuillez réessayer.');
+                                });
+                        }
+                    }
+
+                    // Force a map resize after a short delay
+                    setTimeout(function() {
+                        map.invalidateSize();
+                    }, 100);
+                }
+            } catch (error) {
+                console.error('Error initializing map:', error);
+            }
+        }, 500); // Delay initialization to ensure DOM is fully loaded
+    });
+</script>
+{% endblock %}

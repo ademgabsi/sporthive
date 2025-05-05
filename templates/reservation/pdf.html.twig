@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Réservations - {{ "now"|date('d/m/Y') }}</title>
+    <style>
+        body { font-family: Arial; font-size: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 6px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .header { text-align: center; margin-bottom: 15px; }
+        .logo { max-width: 120px; margin-bottom: 10px; }
+        .footer { margin-top: 20px; font-size: 8px; color: #666; }
+        .status-confirmed { color: #28a745; }
+        .status-cancelled { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h3>Rapport des Réservations</h3>
+        <p>Généré le : {{ "now"|date('d/m/Y H:i') }}</p>
+        
+        {% if filters.search or filters.status %}
+        <div class="filters">
+            {% if filters.search %}<p>Recherche : {{ filters.search }}</p>{% endif %}
+            {% if filters.status %}<p>Statut : {{ filters.status|capitalize }}</p>{% endif %}
+            {% if filters.sort %}<p>Tri : {{ filters.sort|upper }}</p>{% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Utilisateur</th>
+                <th>Terrain</th>
+                <th>Date Réservation</th>
+                <th>Date Début</th>
+                <th>Date Fin</th>
+                <th>Statut</th>
+                <th>Prix (TND)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>#{{ reservation.id }}</td>
+                <td>{{ reservation.user.nom }} {{ reservation.user.prenom }}</td>
+                <td>{{ reservation.terrain.nom }}</td>
+                <td>{{ reservation.dateReservation|date('d/m/Y H:i') }}</td>
+                <td>{{ reservation.dateDebut|date('d/m/Y H:i') }}</td>
+                <td>{{ reservation.dateFin|date('d/m/Y H:i') }}</td>
+                <td class="status-{{ reservation.status|lower }}">
+                    {{ reservation.status|trans }}
+                </td>
+                <td>{{ reservation.prixTotal|format_currency('TND') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8">Aucune réservation trouvée</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        SPORTHIVE • Tél: +216 70 000 000 • Email: contact@sporthive.tn
+    </div>
+</body>
+</html>

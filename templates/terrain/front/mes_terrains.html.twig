@@ -1,0 +1,169 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Terrains - SPORTHIVE{% endblock %}
+
+{% block body %}
+    <section class="terrain_section layout_padding">
+        <div class="container">
+            <div class="heading_container">
+                <h2>Mes Terrains</h2>
+            </div>
+
+            <div class="row" id="terrainContainer">
+                {% for terrain in terrains %}
+                    <div class="col-lg-4 col-md-6 mb-4 terrain-card-wrapper">
+                        <div class="terrain-card">
+                            <div class="card-header">
+                                <h5>{{ terrain.Nom }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="terrain-details">
+                                    <li>
+                                        <span class="detail-label">Localisation:</span>
+                                        <span class="detail-value">{{ terrain.Localisation }}</span>
+                                    </li>
+                                    <li>
+                                        <span class="detail-label">Prix:</span>
+                                        <span class="detail-value">{{ terrain.Prix }} TND</span>
+                                    </li>
+                                </ul>
+                                <div class="terrain-image mt-3">
+                                    {% if terrain.imageTer %}
+                                        <img src="{{ asset('uploads/terrains/' ~ terrain.imageTer) }}" alt="Terrain" class="img-fluid rounded">
+                                    {% else %}
+                                        <p>Aucune image disponible</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ path('app_terrain_show', {'idTerrain': terrain.idTerrain}) }}" class="btn-view">Détails</a>
+                                <a href="{{ path('app_terrain_edit', {'idTerrain': terrain.idTerrain}) }}" class="btn btn-outline-primary btn-sm">Modifier</a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="no-records">
+                            <img src="{{ asset('img/empty.png') }}" alt="Aucun terrain" class="mb-3">
+                            <p>Vous n'avez pas encore de terrains</p>
+                            <a href="{{ path('app_terrain_newfront') }}" class="btn btn-primary mt-3">Ajouter un terrain</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block css %}
+    <style>
+        .terrain_section {
+            padding-top: 120px;
+            padding-bottom: 80px;
+            background-color: #f8f9fa;
+        }
+
+        .heading_container {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .terrain-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .terrain-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+        }
+
+        .card-header h5 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .terrain-details {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .terrain-details li {
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .card-footer {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-view {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn-view:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        .no-records {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .no-records img {
+            max-width: 200px;
+            opacity: 0.5;
+        }
+
+        .no-records p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 15px;
+        }
+
+        .terrain-card-wrapper {
+            animation: cardFadeIn 0.5s ease forwards;
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+{% endblock %}

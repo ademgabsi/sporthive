@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Competition{% endblock %}
+
+{% block body %}
+
+<div class="competition-show-container">
+    <h1>Compétition</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Nom</th>
+                <td>{{ competition.Nom }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ competition.Type }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ competition.Date ? competition.Date|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Heure</th>
+                <td>{{ competition.Heure ? competition.Heure|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ competition.Description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 📘 Facebook -->
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ absolute_url(path('app_competition_showBack', {'ID': competition.ID})) }}"
+       target="_blank"
+       class="icon-label-btn btn-fb">
+        <i class="fab fa-facebook-f"></i> Facebook
+    </a>
+
+    <!-- 🔍 Google -->
+    <button onclick="rechercherGooglee()" class="icon-label-btn btn-search">
+        <i class="fas fa-search"></i> Google
+    </button>
+
+    <!-- 🔙 Retour -->
+    <a href="{{ path('app_competition_index') }}" class="icon-label-btn btn-back">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
+
+<!-- 🔍 Script Recherche Google -->
+<script>
+    function rechercherGooglee() {
+        const selectedText = window.getSelection().toString().trim();
+        if (selectedText) {
+            const url = 'https://www.google.com/search?q=' + encodeURIComponent(selectedText);
+            window.open(url, '_blank');
+        } else {
+            alert('Veuillez d’abord sélectionner du texte à rechercher.');
+        }
+    }
+</script>
+
+{% endblock %}

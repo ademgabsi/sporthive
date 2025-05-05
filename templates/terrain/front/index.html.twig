@@ -1,0 +1,421 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Terrains - SPORTHIVE
+{% endblock %}
+
+{% block body %}
+	<section class="terrain_section layout_padding">
+		<div class="container">
+			<div class="heading_container">
+				<h2>Nos Terrains Disponibles</h2>
+
+			</div>
+
+			<!-- Champ de recherche -->
+			<div class="row mb-4">
+				<div class="col-md-6 mx-auto">
+					<input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom, localisation ou prix...">
+				</div>
+			</div>
+
+			<div class="row" id="terrainContainer">
+				{% for terrain in terrains %}
+					<div class="col-lg-4 col-md-6 mb-4 terrain-card-wrapper">
+						<div class="terrain-card">
+							<div class="card-header">
+								<h5>{{ terrain.Nom }}</h5>
+							</div>
+							<div class="card-body">
+								<ul class="terrain-details">
+									<li>
+										<span class="detail-label">Localisation:</span>
+										<span class="detail-value">{{ terrain.Localisation }}</span>
+									</li>
+									<li>
+										<span class="detail-label">Prix:</span>
+										<span class="detail-value">{{ terrain.Prix }}
+											TND</span>
+									</li>
+								</ul>
+								<div class="terrain-image mt-3">
+									{% if terrain.imageTer %}
+										<img src="{{ asset('uploads/terrains/' ~ terrain.imageTer) }}" alt="Terrain" class="img-fluid rounded">
+									{% else %}
+										<p>Aucune image disponible</p>
+									{% endif %}
+								</div>
+							</div>
+							<div class="card-footer">
+								<a href="{{ path('app_terrain_show', {'idTerrain': terrain.idTerrain}) }}" class="btn-view">Détails</a>
+								<a href="{{ path('app_reservation_new', {'id_Terrain': terrain.idTerrain}) }}" class="btn btn-outline-warning btn-sm">Réserver</a>
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<div class="col-12 text-center">
+						<div class="no-records">
+							<img src="{{ asset('img/empty.png') }}" alt="Aucun terrain" class="mb-3">
+							<p>Aucun terrain n'est disponible pour le moment</p>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+
+			<!-- Message aucun résultat -->
+			<div id="noResults" class="text-center mt-4" style="display: none;">
+				<img src="{{ asset('img/empty.png') }}" alt="Aucun résultat" class="mb-3">
+				<p>Aucun terrain ne correspond à votre recherche</p>
+			</div>
+
+			<!-- Boutons -->
+			<div
+				class="text-center mt-5">
+				{# In your buttons section #}
+				<div class="text-center mt-5">
+					<a href="{{ path('app_reservation_index') }}" class="btn-mes-reservations">Mes Réservations</a>
+					<a href="{{ path('app_terrain_newfront') }}" class="btn-mes-reservations">Nouveau Terrain</a>
+					<a href="{{ path('app_terrain_mesterrains') }}" class="btn-mes-reservations">Mes terrains</a>
+				</div>
+
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+{% block css %}
+	<style>
+		.terrain_section {
+			padding-top: 120px;
+			padding-bottom: 80px;
+			background-color: #f8f9fa;
+		}
+
+		.heading_container {
+			text-align: center;
+			margin-bottom: 45px;
+		}
+
+		/* Search input and wrapper styles */
+		.search-wrapper {
+			position: relative;
+			width: 100%;
+		}
+
+		#searchInput {
+			border-radius: 25px;
+			padding: 12px 40px 12px 20px; /* Space for the spinner */
+			border: 2px solid #007bff;
+			transition: all 0.3s ease;
+			width: 100%;
+		}
+
+		#searchInput:focus {
+			box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+			border-color: #0056b3;
+			outline: none;
+		}
+
+		/* Search spinner */
+		.search-spinner {
+			position: absolute;
+			right: 15px;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 20px;
+			height: 20px;
+			border: 2px solid rgba(0, 123, 255, 0.2);
+			border-top: 2px solid #007bff;
+			border-radius: 50%;
+			animation: spin 0.8s linear infinite;
+		}
+
+		/* Terrain container transitions */
+		#terrainContainer {
+			transition: opacity 0.3s ease;
+		}
+
+		.terrain-card-wrapper {
+			animation: cardFadeIn 0.5s ease forwards;
+		}
+
+		@keyframes cardFadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.terrain-card {
+			background-color: white;
+			border-radius: 15px;
+			overflow: hidden;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			transition: all 0.3s ease;
+		}
+
+		.terrain-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+		}
+
+		.col-lg-4.col-md-6.mb-4 {
+			transition: all 0.3s ease;
+		}
+
+		#noResults {
+			animation: fadeIn 0.5s ease;
+		}
+
+		#noResults p {
+			color: #6c757d;
+			font-size: 1.2rem;
+			margin-top: 15px;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(-10px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		/* Loading styles */
+		.loading {
+			position: relative;
+			min-height: 200px;
+		}
+
+		.loading:after {
+			content: "";
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 50px;
+			height: 50px;
+			margin-top: -25px;
+			margin-left: -25px;
+			border: 5px solid #f3f3f3;
+			border-top: 5px solid #ff4f5a;
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+		}
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+
+		.error-message {
+			color: #e74c3c;
+			font-size: 1.1rem;
+			padding: 15px;
+			background-color: #fdf0f0;
+			border-radius: 8px;
+			border-left: 4px solid #e74c3c;
+			margin: 20px 0;
+		}
+
+		/* Styles pour les boutons de navigation */
+		.btn-mes-reservations {
+			display: inline-block;
+			padding: 12px 24px;
+			margin: 0 10px;
+			background-color: #007bff;
+			color: white;
+			border-radius: 25px;
+			text-decoration: none;
+			font-weight: 500;
+			transition: all 0.3s ease;
+			border: 2px solid #007bff;
+			box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+		}
+
+		.btn-mes-reservations:hover {
+			background-color: white;
+			color: #007bff;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+		}
+
+		.btn-mes-reservations:active {
+			transform: translateY(0);
+			box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+		}
+
+		/* Style pour le conteneur des boutons */
+		.text-center.mt-5 {
+			margin-top: 3rem !important;
+		}
+
+		/* Responsive design pour les boutons */
+		@media (max-width: 768px) {
+			.btn-mes-reservations {
+				display: block;
+				margin: 10px auto;
+				width: 80%;
+				max-width: 300px;
+			}
+		}
+	</style>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const searchInput = document.getElementById('searchInput');
+const terrainContainer = document.getElementById('terrainContainer');
+const noResults = document.getElementById('noResults');
+let timeoutId;
+let originalContent = null;
+let isSearchActive = false;
+
+// Store the original content on page load
+originalContent = terrainContainer.innerHTML;
+
+// Add a small loading indicator inside the search input
+const searchWrapper = document.createElement('div');
+searchWrapper.className = 'search-wrapper';
+searchInput.parentNode.insertBefore(searchWrapper, searchInput);
+searchWrapper.appendChild(searchInput);
+
+const searchSpinner = document.createElement('div');
+searchSpinner.className = 'search-spinner';
+searchSpinner.style.display = 'none';
+searchWrapper.appendChild(searchSpinner);
+
+searchInput.addEventListener('input', function (e) {
+const searchTerm = e.target.value.trim();
+
+clearTimeout(timeoutId);
+
+// Show/hide the spinner in the search input
+if (searchTerm.length >= 2) {
+searchSpinner.style.display = 'block';
+} else {
+searchSpinner.style.display = 'none';
+}
+
+if (searchTerm.length < 2) { // If search is active and term is now too short, restore original content with animation
+if (isSearchActive) {
+isSearchActive = false;
+
+// Fade out current content
+terrainContainer.style.opacity = '0';
+
+// After fade out, restore original content and fade in
+setTimeout(() => {
+terrainContainer.innerHTML = originalContent;
+terrainContainer.style.opacity = '1';
+noResults.style.display = 'none';
+}, 300);
+}
+return;
+}
+
+timeoutId = setTimeout(() => {
+fetch (`{{ path('app_terrain_search') }}?q=${
+encodeURIComponent(searchTerm)
+}`).then(response => {
+if (!response.ok) 
+throw new Error('Erreur HTTP');
+
+return response.json();
+}).then(data => { // Hide spinner when results arrive
+searchSpinner.style.display = 'none';
+
+// Fade out current content
+terrainContainer.style.opacity = '0';
+
+setTimeout(() => {
+if (data.length > 0) {
+terrainContainer.innerHTML = data.map(
+terrain => `
+                                <div class="col-lg-4 col-md-6 mb-4 terrain-card-wrapper">
+                                    <div class="terrain-card">
+                                        <div class="card-header">
+                                            <h5>${
+terrain.nom
+}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="terrain-details">
+                                                <li><span class="detail-label">Localisation:</span> <span class="detail-value">${
+terrain.localisation
+}</span></li>
+                                                <li><span class="detail-label">Prix:</span> <span class="detail-value">${
+terrain.prix
+} TND</span></li>
+                                            </ul>
+                                            <div class="terrain-image mt-3">
+                                                ${
+terrain.image ? `<img src="{{ asset('uploads/terrains/') }}/${
+terrain.image
+}" alt="Terrain" class="img-fluid rounded">` : '<p>Aucune image disponible</p>'
+}
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="{{ path('app_terrain_show', {'idTerrain': 'TERRAIN_ID'}) }}".replace('TERRAIN_ID', terrain.id) class="btn-view">Détails</a>
+                                            <a href="{{ path('app_reservation_new', {'id_Terrain': 'TERRAIN_ID'}) }}".replace('TERRAIN_ID', terrain.id) class="btn btn-outline-warning btn-sm">Réserver</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `
+).join('');
+noResults.style.display = 'none';
+isSearchActive = true;
+} else {
+terrainContainer.innerHTML = '';
+noResults.style.display = 'block';
+isSearchActive = true;
+}
+
+// Fade in new content
+terrainContainer.style.opacity = '1';
+}, 300);
+}).catch(error => {
+console.error('Erreur:', error);
+searchSpinner.style.display = 'none';
+
+// Fade out current content
+terrainContainer.style.opacity = '0';
+
+setTimeout(() => {
+terrainContainer.innerHTML = '<div class="col-12 text-center"><p class="error-message">Erreur de chargement. Veuillez réessayer.</p></div>';
+terrainContainer.style.opacity = '1';
+}, 300);
+});
+}, 400);
+});
+
+// Clear search when clicking the X in the search input (for browsers that support it)
+searchInput.addEventListener('search', function (e) {
+if (this.value === '' && isSearchActive) {
+isSearchActive = false;
+terrainContainer.style.opacity = '0';
+setTimeout(() => {
+terrainContainer.innerHTML = originalContent;
+terrainContainer.style.opacity = '1';
+noResults.style.display = 'none';
+}, 300);
+}
+});
+});
+	</script>
+{% endblock %}

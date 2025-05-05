@@ -1,0 +1,67 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Competitions{% endblock %}
+
+{% block body %}
+    <h1 class="competition-table-title">Liste des compétitions</h1>
+
+    <!-- Champ de recherche -->
+    <input
+        type="text"
+        id="competitionSearch"
+        placeholder="🔍 Rechercher une compétition..."
+        class="form-control mb-3"
+        style="width: 300px; margin: 0 auto 30px; display: block; padding: 8px; border-radius: 8px; border: 1px solid #ccc;"
+    >
+
+    <div class="competition-table-wrapper">
+        <table class="competition-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Heure</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for competition in competitions %}
+                    <tr>
+                        <td>{{ competition.Nom }}</td>
+                        <td>{{ competition.Type }}</td>
+                        <td>{{ competition.Date ? competition.Date|date('Y-m-d') : 'N/A' }}</td>
+                        <td>{{ competition.Heure ? competition.Heure|date('H:i') : 'N/A' }}</td>
+                        <td>{{ competition.Description }}</td>
+                        <td>
+                            <a href="{{ path('app_competition_showBack', {'ID': competition.ID}) }}" class="competition-table-btn">Voir</a>
+                            <a href="{{ path('app_competition_editBack', {'ID': competition.ID}) }}" class="competition-table-btn secondary">Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">Aucune compétition trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="competition-table-add-wrapper">
+        <a href="{{ path('app_competition_newBack') }}" class="competition-table-btn add">Créer une nouvelle compétition</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('competitionSearch');
+            searchInput.addEventListener('keyup', function () {
+                const value = this.value.toLowerCase().trim();
+                document.querySelectorAll('.competition-table tbody tr').forEach(row => {
+                    const rowText = row.textContent.toLowerCase();
+                    row.style.display = rowText.includes(value) ? '' : 'none';
+                });
+            });
+        });
+    </script>
+{% endblock %}

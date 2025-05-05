@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,8 +15,8 @@ class Competition
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $ID = null;
+    #[ORM\Column(name: "ID",type: 'integer')]
+    private ?int $ID= null;
 
     public function getID(): ?int
     {
@@ -71,18 +72,19 @@ class Competition
     }
 
     #[ORM\Column(type: 'time', nullable: true)]
-    private ?string $Heure = null;
-
-    public function getHeure(): ?string
+    private ?\DateTimeInterface $heure = null;
+    
+    public function getHeure(): ?\DateTimeInterface
     {
-        return $this->Heure;
+        return $this->heure;
     }
-
-    public function setHeure(?string $Heure): self
+    
+    public function setHeure(?\DateTimeInterface $heure): self
     {
-        $this->Heure = $Heure;
+        $this->heure = $heure;
         return $this;
     }
+    
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $Description = null;
@@ -115,6 +117,10 @@ class Competition
 
     #[ORM\OneToMany(targetEntity: Tournoi::class, mappedBy: 'competition')]
     private Collection $tournois;
+
+    
+
+   
 
     /**
      * @return Collection<int, Tournoi>

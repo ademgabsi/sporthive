@@ -17,6 +17,7 @@ parameters:
     user_uploads_directory: '%kernel.project_dir%/public/uploads/users'
     logos_directory: '%kernel.project_dir%/public/uploads/logos'
     photos_directory: '%kernel.project_dir%/public/uploads/photos'
+    terrain_images_directory: '%kernel.project_dir%/public/uploads/terrains'
 
 services:
     # default configuration for services in *this* file

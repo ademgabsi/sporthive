@@ -10,14 +10,11 @@
 				<i class="fas fa-tachometer-alt"></i>
 				<span>Tableau de bord</span>
 			</a>
-			<a href="#" class="nav-link">
-				<i class="fas fa-calendar-alt"></i>
-				<span>Réservations</span>
-			</a>
+
 		</div>
 		<div class="nav-section">
 			<div class="nav-section-title">GESTION</div>
-			
+
 			<a href="#" class="nav-link">
 				<i class="fas fa-trophy"></i>
 				<span>Compétitions</span>
@@ -30,9 +27,13 @@
 				<i class="fas fa-shield-alt"></i>
 				<span>Sponsors</span>
 			</a>
-			<a href="#" class="nav-link">
+			<a href="{{ path('app_terrain_indexback') }}" class="nav-link">
 				<i class="fas fa-map-marker-alt"></i>
 				<span>Terrains</span>
+			</a>
+			<a href="{{ path('app_reservation_indexback') }}" class="nav-link">
+				<i class="fas fa-calendar-alt"></i>
+				<span>Réservations</span>
 			</a>
 			<a href="{{ path('app_admin_assurance_index') }}" class="nav-link {{ app.request.get('_route') == 'app_admin_assurance_index' ? 'active' : '' }}">
 				<i class="fas fa-shield-alt"></i>

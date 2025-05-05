@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Réservation - SPORTHIVE{% endblock %}
+
+{% block body %}
+<section class="reservation-create-section layout_padding">
+    <div class="container">
+        <div class="heading_container mb-5">
+            <h2>Nouvelle Réservation</h2>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="create-card">
+                    <div class="card-body">
+                        {{ include('reservation/_form.html.twig') }}
+                    </div>
+
+                    <div class="card-footer text-end">
+                        <a href="{{ path('app_reservation_index') }}" class="btn-back">Retour à la liste</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block css %}
+<style>
+    .reservation-create-section {
+        padding-top: 120px;
+        padding-bottom: 80px;
+        background-color: #f8f9fa;
+    }
+
+    .heading_container {
+        text-align: center;
+    }
+
+    .heading_container h2 {
+        font-weight: bold;
+        color: #252525;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .heading_container h2::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: #ff4f5a;
+    }
+
+    .create-card {
+        background-color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+    }
+
+    form {
+        margin-bottom: 0;
+    }
+
+    .card-footer {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        text-align: right;
+    }
+
+    .btn-back {
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 500;
+        background-color: #6c757d;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background-color: #5a6268;
+    }
+
+    input, select, textarea {
+        border-radius: 6px !important;
+        padding: 10px !important;
+        border: 1px solid #ced4da !important;
+        box-shadow: none !important;
+    }
+
+    label {
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #495057;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        background-color: #ff4f5a;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: 500;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #e13c47;
+    }
+</style>
+{% endblock %}

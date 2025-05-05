@@ -1,0 +1,43 @@
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+<div class="form-group">
+    {{ form_label(form.nom) }}
+    {{ form_widget(form.nom) }}
+    {{ form_errors(form.nom) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.typeSurface) }}
+    {{ form_widget(form.typeSurface) }}
+    {{ form_errors(form.typeSurface) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.localisation) }}
+    {{ form_widget(form.localisation) }}
+    {{ form_errors(form.localisation) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.prix) }}
+    {{ form_widget(form.prix) }}
+    {{ form_errors(form.prix) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.imageTer) }}
+    {{ form_widget(form.imageTer) }}
+    {{ form_errors(form.imageTer) }}
+</div>
+
+{# Si besoin plus tard :
+<div class="form-group">
+    {{ form_label(form.utilisateur) }}
+    {{ form_widget(form.utilisateur) }}
+    {{ form_errors(form.utilisateur) }}
+</div>
+#}
+
+<button class="btn btn-primary mt-3">{{ button_label|default('Enregistrer') }}</button>
+
+{{ form_end(form) }}

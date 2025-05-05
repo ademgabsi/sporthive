@@ -5,8 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
 use App\Repository\TerrainRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TerrainRepository::class)]
 #[ORM\Table(name: 'terrain')]
@@ -14,131 +14,76 @@ class Terrain
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id_Terrain = null;
+    #[ORM\Column(name: 'id_Terrain', type: 'integer')]
+    private ?int $idTerrain = null;
 
-    public function getId_Terrain(): ?int
-    {
-        return $this->id_Terrain;
-    }
+    #[Assert\NotBlank(message: "Le nom du terrain est obligatoire")]
+    #[Assert\Length(min: 3, minMessage: "Le nom doit contenir au moins 3 caractères")]
+    #[ORM\Column(name: 'Nom', type: 'string', nullable: false)]
+    private ?string $nom = null;
 
-    public function setId_Terrain(int $id_Terrain): self
-    {
-        $this->id_Terrain = $id_Terrain;
-        return $this;
-    }
+    #[Assert\NotBlank(message: "Le type de surface est obligatoire")]
+    #[ORM\Column(name: 'Type_surface', type: 'string', nullable: false)]
+    private ?string $typeSurface = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $Nom = null;
+    #[Assert\NotBlank(message: "La localisation est obligatoire")]
+    #[ORM\Column(name: 'Localisation', type: 'string', nullable: false)]
+    private ?string $localisation = null;
 
-    public function getNom(): ?string
-    {
-        return $this->Nom;
-    }
+    #[Assert\NotBlank(message: "Le prix est obligatoire")]
+    #[Assert\Type(type: 'numeric', message: "Le prix doit être un nombre")]
+    #[Assert\GreaterThanOrEqual(value: 0, message: "Le prix doit être supérieur ou égal à 0")]
+    #[ORM\Column(name: 'Prix', type: 'decimal', nullable: false)]
+    private ?float $prix = null;
 
-    public function setNom(string $Nom): self
-    {
-        $this->Nom = $Nom;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $Type_surface = null;
-
-    public function getType_surface(): ?string
-    {
-        return $this->Type_surface;
-    }
-
-    public function setType_surface(string $Type_surface): self
-    {
-        $this->Type_surface = $Type_surface;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $Localisation = null;
-
-    public function getLocalisation(): ?string
-    {
-        return $this->Localisation;
-    }
-
-    public function setLocalisation(string $Localisation): self
-    {
-        $this->Localisation = $Localisation;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'decimal', nullable: false)]
-    private ?float $Prix = null;
-
-    public function getPrix(): ?float
-    {
-        return $this->Prix;
-    }
-
-    public function setPrix(float $Prix): self
-    {
-        $this->Prix = $Prix;
-        return $this;
-    }
+    #[ORM\Column(name: 'image_ter', type: 'string', nullable: false)]
+    private ?string $imageTer = null;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'terrains')]
     #[ORM\JoinColumn(name: 'ID_Proprietaire', referencedColumnName: 'id')]
     private ?Utilisateur $utilisateur = null;
 
-    public function getUtilisateur(): ?Utilisateur
-    {
-        return $this->utilisateur;
-    }
-
-    public function setUtilisateur(?Utilisateur $utilisateur): self
-    {
-        $this->utilisateur = $utilisateur;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $image_ter = null;
-
-    public function getImage_ter(): ?string
-    {
-        return $this->image_ter;
-    }
-
-    public function setImage_ter(string $image_ter): self
-    {
-        $this->image_ter = $image_ter;
-        return $this;
-    }
-
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'terrain')]
     private Collection $reservations;
 
-    /**
-     * @return Collection<int, Reservation>
-     */
-    public function getReservations(): Collection
+    public function __construct()
     {
-        if (!$this->reservations instanceof Collection) {
-            $this->reservations = new ArrayCollection();
-        }
-        return $this->reservations;
+        $this->reservations = new ArrayCollection();
     }
 
+    public function getIdTerrain(): ?int { return $this->idTerrain; }
+    public function setIdTerrain(int $idTerrain): self { $this->idTerrain = $idTerrain; return $this; }
+
+    public function getNom(): ?string { return $this->nom; }
+    public function setNom(string $nom): self { $this->nom = $nom; return $this; }
+
+    public function getTypeSurface(): ?string { return $this->typeSurface; }
+    public function setTypeSurface(string $typeSurface): self { $this->typeSurface = $typeSurface; return $this; }
+
+    public function getLocalisation(): ?string { return $this->localisation; }
+    public function setLocalisation(string $localisation): self { $this->localisation = $localisation; return $this; }
+
+    public function getPrix(): ?float { return $this->prix; }
+    public function setPrix(float $prix): self { $this->prix = $prix; return $this; }
+
+    public function getImageTer(): ?string { return $this->imageTer; }
+    public function setImageTer(string $imageTer): self { $this->imageTer = $imageTer; return $this; }
+
+    public function getUtilisateur(): ?Utilisateur { return $this->utilisateur; }
+    public function setUtilisateur(?Utilisateur $utilisateur): self { $this->utilisateur = $utilisateur; return $this; }
+
+    public function getReservations(): Collection { return $this->reservations; }
     public function addReservation(Reservation $reservation): self
     {
-        if (!$this->getReservations()->contains($reservation)) {
-            $this->getReservations()->add($reservation);
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
         }
         return $this;
     }
 
     public function removeReservation(Reservation $reservation): self
     {
-        $this->getReservations()->removeElement($reservation);
+        $this->reservations->removeElement($reservation);
         return $this;
     }
-
 }
