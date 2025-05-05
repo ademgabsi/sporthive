@@ -1,0 +1,57 @@
+{% extends 'Back/base.html.twig' %}
+
+{% block title %}Modifier l'assurance - Administration{% endblock %}
+
+{% block body %}
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Modifier l'assurance</h1>
+            <p class="dashboard-subtitle">Modification du contrat #{{ assurance.ID_contrat }}</p>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'form-grid'}}) }}
+                    <div class="form-group">
+                        {{ form_label(form.typeDeCouverture, 'Type de couverture', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.typeDeCouverture, {'attr': {'class': 'form-input'}}) }}
+                        {{ form_errors(form.typeDeCouverture) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.duree, 'Durée (en mois)', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.duree, {'attr': {'class': 'form-input'}}) }}
+                        {{ form_errors(form.duree) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.dateDebut, 'Date de début', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.dateDebut, {'attr': {'class': 'form-input'}}) }}
+                        {{ form_errors(form.dateDebut) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.statut, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+                        {{ form_errors(form.statut) }}
+                    </div>
+
+                    <div class="form-group full-width">
+                        {{ form_label(form.conditions, 'Conditions', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.conditions, {'attr': {'class': 'form-textarea'}}) }}
+                        {{ form_errors(form.conditions) }}
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{{ path('app_admin_assurance_index') }}" class="btn-cancel">
+                            <i class="fas fa-times"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn-save">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

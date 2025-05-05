@@ -1,0 +1,47 @@
+{{ form_start(form, {'attr': {'class': 'competition-form'}}) }}
+
+<div class="floating-group">
+    {{ form_widget(form.Nom, { attr: {'class': 'floating-input', 'placeholder': ' '} }) }}
+    <label for="{{ form.Nom.vars.id }}">Competition Nom</label>
+    <div class="invalid-feedback">{{ form_errors(form.Nom) }}</div>
+</div>
+
+<div class="form-row">
+    <div class="floating-group">
+        {{ form_widget(form.Type, { attr: {'class': 'floating-input', 'placeholder': ' '} }) }}
+        <label for="{{ form.Type.vars.id }}">Competition Type</label>
+        <div class="invalid-feedback">{{ form_errors(form.Type) }}</div>
+    </div>
+    <div class="floating-group">
+        {{ form_widget(form.Date, { attr: {'class': 'floating-input datepicker', 'autocomplete': 'off', 'placeholder': ' '} }) }}
+        <label for="{{ form.Date.vars.id }}">Event Date</label>
+        <div class="invalid-feedback">{{ form_errors(form.Date) }}</div>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="floating-group">
+        {{ form_widget(form.Heure, { attr: {'class': 'floating-input timepicker', 'autocomplete': 'off', 'placeholder': ' '} }) }}
+        <label for="{{ form.Heure.vars.id }}">temps</label>
+        <div class="invalid-feedback">{{ form_errors(form.Heure) }}</div>
+    </div>
+    <div class="floating-group">
+        {{ form_widget(form.utilisateur, { attr: {'class': 'floating-input form-select', 'placeholder': ' '} }) }}
+        <label for="{{ form.utilisateur.vars.id }}">Organizer</label>
+        <div class="invalid-feedback">{{ form_errors(form.utilisateur) }}</div>
+    </div>
+</div>
+
+<div class="floating-group">
+    {{ form_widget(form.Description, { attr: {'class': 'floating-input', 'placeholder': ' ', 'rows': 4} }) }}
+    <label for="{{ form.Description.vars.id }}">Description</label>
+    <div class="invalid-feedback">{{ form_errors(form.Description) }}</div>
+</div>
+
+<div class="form-actions">
+    <button type="submit" class="btn btn-primary">
+        <i class="fas fa-save"></i> {{ button_label|default('sauvegarder') }}
+    
+</div>
+
+{{ form_end(form) }}
