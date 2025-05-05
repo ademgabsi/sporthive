@@ -1,27 +1,127 @@
-<<<<<<< HEAD
 {% extends 'base.html.twig' %}
 
 {% block title %}Nouvelle Réclamation{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    .form-section {
+        padding: 120px 0 80px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+    }
+
+    .form-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .form-header h2 {
+        color: #2c3e50;
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+
+    .form-header p {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        color: #2c3e50;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+    }
+
+    .btn-submit {
+        background: linear-gradient(90deg, #4a90e2, #67b8e3);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(90deg, #67b8e3, #4a90e2);
+        transform: translateY(-2px);
+    }
+
+    .btn-back {
+        display: inline-block;
+        color: #6c757d;
+        text-decoration: none;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        color: #4a90e2;
+        text-decoration: none;
+    }
+
+    .btn-back i {
+        margin-right: 8px;
+    }
+
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .form-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+</style>
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        {{ include('Gestion_Reclamation/Front/_form.html.twig') }}
-    </div>
+    <section class="form-section">
+        <div class="container">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Nouvelle Réclamation</h2>
+                    <p>Remplissez le formulaire ci-dessous pour soumettre votre réclamation</p>
+                </div>
+                {{ include('Gestion_Reclamation/Front/_form.html.twig') }}
+                <a href="{{ path('app_reclamation_index') }}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+    </section>
 {% endblock %}
-=======
-{% extends 'base.html.twig' %}
-
-{% block title %}New Reclamation{% endblock %}
-
-{% block body %}
-    <h5></h5>
-
-    {{ include('Gestion_Reclamation/Front/_form.html.twig') }}
-
-    <a href="{{ path('app_assurance_index') }}">back to list</a>
-{% endblock %}
->>>>>>> gestionMatch

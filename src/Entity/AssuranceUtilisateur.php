@@ -18,7 +18,7 @@ class AssuranceUtilisateur
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\ManyToOne(targetEntity: Assurance::class)]
-    #[ORM\JoinColumn(referencedColumnName: 'ID_contrat', nullable: false)]
+    #[ORM\JoinColumn(referencedColumnName: 'ID_contrat', nullable: false, onDelete: 'CASCADE')]
     private ?Assurance $assurance = null;
 
     #[ORM\Column(type: 'datetime')]

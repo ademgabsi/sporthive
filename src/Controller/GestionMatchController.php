@@ -13,11 +13,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Endroid\QrCodeBundle\Response\QrCodeResponse;
 use Endroid\QrCode\Builder\BuilderInterface;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Color\Color;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/gestion/match')]
 final class GestionMatchController extends AbstractController
 {
+    private const QR_CODE_SIZE = 300;
+    private const QR_CODE_MARGIN = 10;
     private $qrCodeBuilder;
     private $urlGenerator;
 
@@ -25,6 +30,25 @@ final class GestionMatchController extends AbstractController
     {
         $this->qrCodeBuilder = $qrCodeBuilder;
         $this->urlGenerator = $urlGenerator;
+    }
+
+    private function generateQrCodeForMatch(GestionMatch $gestionMatch): string
+    {
+        $url = $this->urlGenerator->generate('app_match_front_show', 
+            ['id' => $gestionMatch->getId()], 
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        $result = $this->qrCodeBuilder
+            ->data($url)
+            ->size(self::QR_CODE_SIZE)
+            ->margin(self::QR_CODE_MARGIN)
+            ->errorCorrectionLevel(ErrorCorrectionLevel::High)
+            ->foregroundColor(new Color(0, 0, 0))
+            ->backgroundColor(new Color(255, 255, 255))
+            ->build();
+
+        return $result->getDataUri();
     }
 
     #[Route(name: 'app_gestion_match_index', methods: ['GET'])]
@@ -43,23 +67,11 @@ final class GestionMatchController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // D'abord, on persiste l'entité pour obtenir son ID
             $entityManager->persist($gestionMatch);
             $entityManager->flush();
             
-            // Ensuite, on génère le QR code avec l'ID maintenant disponible
-            $url = $this->urlGenerator->generate('app_match_front_show', 
-                ['id' => $gestionMatch->getId()], 
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-            
-            $result = $this->qrCodeBuilder
-                ->data($url)
-                ->size(300)
-                ->build();
-            
-            // On met à jour le QR code et on sauvegarde à nouveau
-            $gestionMatch->setQrCode($result->getDataUri());
+            // Génération automatique du QR code
+            $gestionMatch->setQrCode($this->generateQrCodeForMatch($gestionMatch));
             $entityManager->flush();
 
             return $this->redirectToRoute('app_gestion_match_index', [], Response::HTTP_SEE_OTHER);
@@ -86,19 +98,8 @@ final class GestionMatchController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Mettre à jour le QR code si nécessaire
-            $url = $this->urlGenerator->generate('app_match_front_show', 
-                ['id' => $gestionMatch->getId()], 
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-            
-            $result = $this->qrCodeBuilder
-                ->data($url)
-                ->size(300)
-                ->build();
-            
-            $gestionMatch->setQrCode($result->getDataUri());
-            
+            // Régénération automatique du QR code
+            $gestionMatch->setQrCode($this->generateQrCodeForMatch($gestionMatch));
             $entityManager->flush();
 
             return $this->redirectToRoute('app_gestion_match_index', [], Response::HTTP_SEE_OTHER);
@@ -124,14 +125,18 @@ final class GestionMatchController extends AbstractController
     #[Route('/{id}/qr-code', name: 'app_gestion_match_qr_code', methods: ['GET'])]
     public function generateQrCode(GestionMatch $gestionMatch): Response
     {
-        $url = $this->urlGenerator->generate('app_match_front_show', 
-            ['id' => $gestionMatch->getId()], 
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-        
+        if (!$this->isGranted('ROLE_ADMIN') && $gestionMatch->getUtilisateur() !== $this->getUser()) {
+            throw new AccessDeniedException('Vous n\'avez pas accès à ce QR code.');
+        }
+
         $result = $this->qrCodeBuilder
-            ->data($url)
-            ->size(300)
+            ->data($this->urlGenerator->generate('app_match_front_show', 
+                ['id' => $gestionMatch->getId()], 
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ))
+            ->size(self::QR_CODE_SIZE)
+            ->margin(self::QR_CODE_MARGIN)
+            ->errorCorrectionLevel(ErrorCorrectionLevel::High)
             ->build();
         
         return new QrCodeResponse($result);
@@ -140,17 +145,11 @@ final class GestionMatchController extends AbstractController
     #[Route('/{id}/generate-qr', name: 'app_gestion_match_generate_qr', methods: ['POST'])]
     public function generateQrCodeOnDemand(GestionMatch $gestionMatch, EntityManagerInterface $entityManager): Response
     {
-        $url = $this->urlGenerator->generate('app_match_front_show', 
-            ['id' => $gestionMatch->getId()], 
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-        
-        $result = $this->qrCodeBuilder
-            ->data($url)
-            ->size(300)
-            ->build();
-        
-        $gestionMatch->setQrCode($result->getDataUri());
+        if (!$this->isGranted('ROLE_ADMIN') && $gestionMatch->getUtilisateur() !== $this->getUser()) {
+            throw new AccessDeniedException('Vous n\'avez pas le droit de générer ce QR code.');
+        }
+
+        $gestionMatch->setQrCode($this->generateQrCodeForMatch($gestionMatch));
         $entityManager->flush();
         
         return $this->redirectToRoute('app_gestion_match_show', ['id' => $gestionMatch->getId()]);

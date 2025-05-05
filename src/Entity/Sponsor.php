@@ -30,7 +30,7 @@ class Sponsor
     #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank(message: 'Le type de sponsor est requis')]
     #[Assert\Choice(
-        choices: ['delice', 'secondaire', 'technique', 'équipementier'],
+        choices: ['delice', 'secondaire', 'technique', 'equipementier'],
         message: 'Le type de sponsor doit être l\'un des suivants: {{ value }}'
     )]
     private ?string $type_Sp = null;

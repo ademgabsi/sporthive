@@ -4,15 +4,59 @@ namespace App\Controller;
 
 use App\Entity\GestionMatch;
 use App\Repository\GestionMatchRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Endroid\QrCode\Builder\BuilderInterface;
+use Endroid\QrCode\ErrorCorrectionLevel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 #[Route('/match')]
 class GestionMatchFrontController extends AbstractController
 {
+    private $qrCodeBuilder;
+    private $urlGenerator;
+    private $entityManager;
+
+    public function __construct(
+        BuilderInterface $qrCodeBuilder,
+        UrlGeneratorInterface $urlGenerator,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->qrCodeBuilder = $qrCodeBuilder;
+        $this->urlGenerator = $urlGenerator;
+        $this->entityManager = $entityManager;
+    }
+
+    private function ensureQrCodeExists(GestionMatch $gestionMatch): void
+    {
+        if (!$gestionMatch->getQrCode()) {
+            // Préparer les détails du match au format texte
+            $matchDetails = json_encode([
+                'nom' => $gestionMatch->getNom(),
+                'type' => $gestionMatch->getType(),
+                'date' => $gestionMatch->getDate() ? $gestionMatch->getDate()->format('d/m/Y') : 'Non définie',
+                'heure' => $gestionMatch->getHeure() ? $gestionMatch->getHeure()->format('H:i') : 'Non définie',
+                'description' => $gestionMatch->getDescription(),
+            ], JSON_UNESCAPED_UNICODE);
+            
+            // Configuration optimisée pour la lecture mobile
+            $result = $this->qrCodeBuilder
+                ->data($matchDetails)
+                ->size(300)
+                ->margin(10)
+                ->errorCorrectionLevel(ErrorCorrectionLevel::High)
+                ->validateResult(false)
+                ->build();
+            
+            $gestionMatch->setQrCode($result->getDataUri());
+            $this->entityManager->flush();
+        }
+    }
+
     #[Route('/', name: 'app_match_front_index', methods: ['GET'])]
     public function index(GestionMatchRepository $gestionMatchRepository): Response
     {
@@ -75,6 +119,26 @@ class GestionMatchFrontController extends AbstractController
     #[Route('/{id}', name: 'app_match_front_show', methods: ['GET'])]
     public function show(GestionMatch $gestionMatch): Response
     {
+        // Préparer les détails du match au format texte
+        $matchDetails = $gestionMatch->getNom() . "\n" .
+            $gestionMatch->getType() . "\n" .
+            ($gestionMatch->getDate() ? $gestionMatch->getDate()->format('d/m/Y') : 'Date non définie') . "\n" .
+            ($gestionMatch->getHeure() ? $gestionMatch->getHeure()->format('H:i') : 'Heure non définie') . "\n\n" .
+            $gestionMatch->getDescription();
+        
+        // Générer le QR code
+        $result = $this->qrCodeBuilder
+            ->data($matchDetails)
+            ->size(300)
+            ->margin(10)
+            ->errorCorrectionLevel(ErrorCorrectionLevel::High)
+            ->validateResult(false)
+            ->build();
+        
+        // Sauvegarder le QR code dans l'entité
+        $gestionMatch->setQrCode($result->getDataUri());
+        $this->entityManager->flush();
+
         return $this->render('Gestion_Match/Front/show.html.twig', [
             'match' => $gestionMatch,
         ]);

@@ -1,29 +1,55 @@
-<<<<<<< HEAD
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier la Réclamation{% endblock %}
-
-{% block css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-{% endblock %}
+{% block title %}Modifier la réclamation - SPORTHIVE{% endblock %}
 
 {% block body %}
+<div class="edit-reclamation">
     <div class="container">
+        <div class="section-header">
+            <h1>Modifier la réclamation</h1>
+            <p class="text-muted">Modifiez les informations de votre réclamation ci-dessous</p>
+        </div>
+
         {{ include('Gestion_Reclamation/Front/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
     </div>
+</div>
+
+<style>
+    .edit-reclamation {
+        padding: 120px 0 80px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .section-header h1 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .section-header p {
+        font-size: 1.1rem;
+        color: #6c757d;
+    }
+
+    @media (max-width: 768px) {
+        .edit-reclamation {
+            padding: 80px 0 40px;
+        }
+
+        .section-header h1 {
+            font-size: 2rem;
+        }
+
+        .section-header p {
+            font-size: 1rem;
+        }
+    }
+</style>
 {% endblock %}
-=======
-{% extends 'base.html.twig' %}
-
-{% block title %}Edit Reclamation{% endblock %}
-
-{% block body %}
-    <h1></h1>
-
-    {{ include('Gestion_Reclamation/Front/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_reclamation_index') }}">back to list</a>
-
-    {{ include('Gestion_Reclamation/Front/_delete_form.html.twig') }}
-{% endblock %}
->>>>>>> gestionMatch

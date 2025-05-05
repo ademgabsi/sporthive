@@ -237,13 +237,15 @@
                             <div class="match-info">
                                 <h4>Code QR du match</h4>
                                 <div class="text-center">
-                                    {# Créer un texte simple avec les informations du match #}
-                                    {% set matchDetails = "Match: " ~ match.nom ~ " | Type: " ~ match.type ~ " | Date: " ~ (match.date ? match.date|date('d/m/Y') : 'Non définie') ~ " | Heure: " ~ (match.heure ? match.heure|date('H:i') : 'Non définie') ~ " | Description: " ~ match.description %}
-                                    
-                                    {# Utiliser l'API QR Code pour générer un QR code avec du texte simple #}
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ matchDetails|url_encode }}" 
-                                         alt="QR Code du match" 
-                                         style="width: 250px; height: 250px; margin: 0 auto; border: 1px solid rgba(148, 163, 184, 0.2); padding: 10px; background-color: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                    {% if match.qrCode %}
+                                        <img src="{{ match.qrCode }}" 
+                                             alt="QR Code du match" 
+                                             style="width: 250px; height: 250px; margin: 0 auto; border: 1px solid rgba(148, 163, 184, 0.2); padding: 10px; background-color: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                    {% else %}
+                                        <div class="alert alert-info" style="max-width: 400px; margin: 0 auto;">
+                                            <i class="fas fa-info-circle"></i> Le QR code n'est pas encore généré pour ce match.
+                                        </div>
+                                    {% endif %}
                                     
                                     <p class="mt-3" style="color: #94a3b8;">Scannez ce code pour voir les détails du match sur votre téléphone</p>
                                 </div>

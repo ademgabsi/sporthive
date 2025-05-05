@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 
-<<<<<<< HEAD
 {% block title %}Détails de la Réclamation - SPORTHIVE{% endblock %}
 
 {% block css %}
@@ -30,373 +29,329 @@
         bottom: -15px;
         left: 50%;
         transform: translateX(-50%);
-        width: 80px;
-        height: 4px;
+        width: 50px;
+        height: 3px;
         background: linear-gradient(90deg, #4a90e2, #67b8e3);
-        border-radius: 2px;
+        border-radius: 3px;
     }
 
-    .details-card {
+    .card {
         background: white;
         border-radius: 15px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         overflow: hidden;
-        animation: fadeInUp 0.6s ease-out forwards;
+        margin-bottom: 30px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .details-header {
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
         background: linear-gradient(90deg, #4a90e2, #67b8e3);
-        padding: 30px;
         color: white;
-        position: relative;
+        padding: 20px 25px;
+        border: none;
     }
 
-    .details-header h3 {
-        font-size: 1.8rem;
+    .card-header h3 {
+        margin: 0;
+        font-size: 1.5rem;
         font-weight: 600;
-        margin: 0 0 10px;
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .info-group {
+        margin-bottom: 25px;
+    }
+
+    .info-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+    }
+
+    .info-value {
+        color: #495057;
+        font-size: 1rem;
+        line-height: 1.6;
+        padding: 12px 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
     }
 
     .status-badge {
         display: inline-block;
-        padding: 8px 16px;
+        padding: 8px 15px;
         border-radius: 20px;
-        font-size: 0.9rem;
         font-weight: 500;
-        margin-top: 10px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
     }
 
-    .status-badge.pending {
-        background: linear-gradient(90deg, #ffc107, #ff9800);
-        color: white;
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
     }
 
-    .status-badge.approved {
-        background: linear-gradient(90deg, #28a745, #20c997);
-        color: white;
+    .status-approved {
+        background: #d4edda;
+        color: #155724;
     }
 
-    .status-badge.rejected {
-        background: linear-gradient(90deg, #dc3545, #c82333);
-        color: white;
+    .status-rejected {
+        background: #f8d7da;
+        color: #721c24;
     }
 
-    .details-content {
-        padding: 30px;
-    }
-
-    .info-section {
-        margin-bottom: 30px;
-        padding-bottom: 30px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .info-section:last-child {
-        margin-bottom: 0;
-        padding-bottom: 0;
-        border-bottom: none;
-    }
-
-    .info-section h4 {
-        color: #2c3e50;
-        font-size: 1.2rem;
+    .amount {
+        font-size: 1.25rem;
         font-weight: 600;
-        margin-bottom: 20px;
+        color: #2c3e50;
+    }
+
+    .amount-currency {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-left: 5px;
+    }
+
+    .documents-section {
+        margin-top: 20px;
+    }
+
+    .document-item {
         display: flex;
         align-items: center;
-    }
-
-    .info-section h4 i {
-        margin-right: 10px;
-        color: #4a90e2;
-    }
-
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-    }
-
-    .info-item {
+        padding: 12px 15px;
         background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        transition: background-color 0.2s ease;
     }
 
-    .info-label {
-        color: #6c757d;
-        font-size: 0.9rem;
-        margin-bottom: 5px;
-    }
-
-    .info-value {
-        color: #2c3e50;
-        font-size: 1.1rem;
-        font-weight: 500;
-    }
-
-    .description-box {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 15px;
-    }
-
-    .description-box p {
-        color: #2c3e50;
-        line-height: 1.6;
-        margin: 0;
-    }
-
-    .documents-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin-top: 15px;
-    }
-
-    .document-card {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-
-    .document-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    .document-item:hover {
+        background: #e9ecef;
     }
 
     .document-icon {
-        font-size: 2rem;
+        font-size: 1.5rem;
+        margin-right: 15px;
         color: #4a90e2;
-        margin-bottom: 10px;
+    }
+
+    .document-info {
+        flex-grow: 1;
     }
 
     .document-name {
+        font-weight: 500;
         color: #2c3e50;
-        font-size: 0.9rem;
-        margin: 0;
+        margin-bottom: 3px;
     }
 
-    .actions-section {
+    .document-size {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .actions {
+        margin-top: 30px;
         display: flex;
         gap: 15px;
-        margin-top: 30px;
+        justify-content: flex-end;
     }
 
-    .btn-action {
-        flex: 1;
-        padding: 15px 25px;
-        border: none;
-        border-radius: 10px;
+    .btn {
+        padding: 12px 25px;
+        border-radius: 25px;
         font-weight: 500;
-        font-size: 1rem;
         display: inline-flex;
         align-items: center;
-        justify-content: center;
+        gap: 8px;
         transition: all 0.3s ease;
-        text-decoration: none;
-        cursor: pointer;
     }
 
-    .btn-action i {
-        margin-right: 10px;
+    .btn i {
+        font-size: 1.1rem;
     }
 
-    .btn-action.primary {
+    .btn-primary {
         background: linear-gradient(90deg, #4a90e2, #67b8e3);
+        border: none;
         color: white;
     }
 
-    .btn-action.primary:hover {
+    .btn-primary:hover {
         background: linear-gradient(90deg, #67b8e3, #4a90e2);
         transform: translateY(-2px);
     }
 
-    .btn-action.secondary {
-        background: linear-gradient(90deg, #6c757d, #495057);
+    .btn-secondary {
+        background: #6c757d;
+        border: none;
         color: white;
     }
 
-    .btn-action.secondary:hover {
-        background: linear-gradient(90deg, #495057, #6c757d);
+    .btn-secondary:hover {
+        background: #5a6268;
         transform: translateY(-2px);
     }
 
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
+    .btn-danger {
+        background: #dc3545;
+        border: none;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .reclamation-details {
+            padding: 80px 0 40px;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+
+        .section-header h2 {
+            font-size: 2rem;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
         }
     }
 </style>
 {% endblock %}
 
 {% block body %}
-    <section class="reclamation-details">
-        <div class="container">
-            <div class="section-header">
-                <h2>Détails de la Réclamation</h2>
-            </div>
-
-            <div class="details-card">
-                <div class="details-header">
-                    <h3>Réclamation #{{ reclamation.ID_reclamation }}</h3>
-                    <span class="status-badge {{ reclamation.Etat|lower }}">
-                        {{ reclamation.Etat }}
-                    </span>
-                </div>
-
-                <div class="details-content">
-                    <!-- Informations générales -->
-                    <div class="info-section">
-                        <h4>
-                            <i class="fas fa-info-circle"></i>
-                            Informations générales
-                        </h4>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <div class="info-label">Date de soumission</div>
-                                <div class="info-value">{{ reclamation.Date|date('d/m/Y') }}</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">État actuel</div>
-                                <div class="info-value">{{ reclamation.Etat }}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Montants -->
-                    <div class="info-section">
-                        <h4>
-                            <i class="fas fa-money-bill-wave"></i>
-                            Informations financières
-                        </h4>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <div class="info-label">Montant réclamé</div>
-                                <div class="info-value">{{ reclamation.montantReclame }} TND</div>
-                            </div>
-                            {% if reclamation.montantRembourse is not null %}
-                                <div class="info-item">
-                                    <div class="info-label">Montant remboursé</div>
-                                    <div class="info-value">{{ reclamation.montantRembourse }} TND</div>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="info-section">
-                        <h4>
-                            <i class="fas fa-align-left"></i>
-                            Description de la réclamation
-                        </h4>
-                        <div class="description-box">
-                            <p>{{ reclamation.Description }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Documents -->
-                    {% if reclamation.Documents %}
-                        <div class="info-section">
-                            <h4>
-                                <i class="fas fa-paperclip"></i>
-                                Documents joints
-                            </h4>
-                            <div class="documents-grid">
-                                {% for document in reclamation.Documents|split(',') %}
-                                    <div class="document-card">
-                                        <div class="document-icon">
-                                            <i class="fas fa-file"></i>
-                                        </div>
-                                        <p class="document-name">Document {{ loop.index }}</p>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    <!-- Actions -->
-                    <div class="actions-section">
-                        <a href="{{ path('app_reclamation_index') }}" class="btn-action secondary">
-                            <i class="fas fa-arrow-left"></i>
-                            Retour à la liste
-                        </a>
-                        {% if reclamation.Etat == 'En attente' %}
-                            <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn-action primary">
-                                <i class="fas fa-edit"></i>
-                                Modifier la réclamation
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-{% endblock %}
-=======
-{% block title %}Détails de la Réclamation #{{ reclamation.ID_reclamation }}{% endblock %}
-
-{% block body %}
+<section class="reclamation-details">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Détails de la Réclamation</h1>
-            <a href="{{ path('app_reclamation_index') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
-            </a>
+        <div class="section-header">
+            <h2>Détails de la Réclamation</h2>
         </div>
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
-                <h3 class="mb-0">Réclamation #{{ reclamation.ID_reclamation }}</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><i class="fas fa-calendar-alt me-2"></i> <strong>Date :</strong> {{ reclamation.Date ? reclamation.Date|date('d/m/Y') : 'N/A' }}</p>
-                        <p><i class="fas fa-info-circle me-2"></i> <strong>État :</strong> 
-                            <span class="badge bg-{{ reclamation.Etat == 'En attente' ? 'warning' : (reclamation.Etat == 'Active' ? 'success' : 'danger') }}">
-                                {{ reclamation.Etat }}
-                            </span>
-                        </p>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Réclamation #{{ reclamation.ID_reclamation }}</h3>
                     </div>
-                    <div class="col-md-6">
-                        <p><i class="fas fa-money-bill-wave me-2"></i> <strong>Montant réclamé :</strong> {{ reclamation.MontantReclame }} TND</p>
-                        <p><i class="fas fa-hand-holding-usd me-2"></i> <strong>Montant remboursé :</strong> {{ reclamation.MontantRembourse }} TND</p>
-                    </div>
-                </div>
+                    <div class="card-body">
+                        <div class="info-group">
+                            <div class="info-label">État</div>
+                            <div class="info-value">
+                                <span class="status-badge {{ reclamation.Etat == 'En cours' ? 'status-pending' : 
+                                    (reclamation.Etat == 'Approuvée' ? 'status-approved' : 'status-rejected') }}">
+                                    {{ reclamation.Etat }}
+                                </span>
+                            </div>
+                        </div>
 
-                <div class="mb-4">
-                    <h5><i class="fas fa-align-left me-2"></i>Description</h5>
-                    <div class="p-3 bg-light rounded">
-                        {{ reclamation.Description }}
-                    </div>
-                </div>
+                        <div class="info-group">
+                            <div class="info-label">Date de la réclamation</div>
+                            <div class="info-value">
+                                {{ reclamation.Date ? reclamation.Date|date('d/m/Y') : 'Non spécifiée' }}
+                            </div>
+                        </div>
 
-                {% if reclamation.Documents %}
-                    <div class="mb-4">
-                        <h5><i class="fas fa-file-alt me-2"></i>Documents</h5>
-                        <div class="p-3 bg-light rounded">
-                            {{ reclamation.Documents }}
+                        <div class="info-group">
+                            <div class="info-label">Description</div>
+                            <div class="info-value">
+                                {{ reclamation.Description }}
+                            </div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Montant réclamé</div>
+                            <div class="info-value">
+                                <span class="amount">{{ reclamation.Montantreclame }}</span>
+                                <span class="amount-currency">TND</span>
+                            </div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Montant remboursé</div>
+                            <div class="info-value">
+                                <span class="amount">{{ reclamation.Montantrembourse }}</span>
+                                <span class="amount-currency">TND</span>
+                            </div>
+                        </div>
+
+                        {% if reclamation.Documents %}
+                        <div class="info-group">
+                            <div class="info-label">Documents justificatifs</div>
+                            <div class="documents-section">
+                                <div class="document-item">
+                                    <div class="document-icon">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </div>
+                                    <div class="document-info">
+                                        <div class="document-name">{{ reclamation.Documents }}</div>
+                                        <div class="document-size">Document justificatif</div>
+                                    </div>
+                                    <a href="{{ asset('fichier_reclamation/' ~ reclamation.Documents) }}" 
+                                       class="btn btn-primary btn-sm" target="_blank">
+                                        <i class="fas fa-download"></i>
+                                        Télécharger
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="info-group">
+                            <div class="info-label">Contrat d'assurance</div>
+                            <div class="info-value">
+                                {% if reclamation.assurance %}
+                                    Contrat #{{ reclamation.assurance.ID_contrat }}
+                                {% else %}
+                                    Non associé
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <a href="{{ path('app_reclamation_index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i>
+                                Retour à la liste
+                            </a>
+                            <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" 
+                               class="btn btn-primary">
+                                <i class="fas fa-edit"></i>
+                                Modifier
+                            </a>
+                            {{ include('Gestion_Reclamation/Front/_delete_form.html.twig') }}
                         </div>
                     </div>
-                {% endif %}
+                </div>
             </div>
-        </div>
-
-        <div class="d-flex justify-content-end gap-2">
-            <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn btn-primary">
-                <i class="fas fa-edit me-1"></i> Modifier
-            </a>
-            {{ include('Gestion_Reclamation/Front/_delete_form.html.twig') }}
         </div>
     </div>
+</section>
 {% endblock %}
->>>>>>> gestionMatch

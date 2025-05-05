@@ -13,218 +13,127 @@
     .section-header {
         text-align: center;
         margin-bottom: 50px;
-        position: relative;
     }
 
     .section-header h2 {
-        font-size: 2.5rem;
         color: #2c3e50;
-        font-weight: 700;
+        font-size: 2.5rem;
         margin-bottom: 15px;
     }
 
     .section-header p {
-        color: #6c757d;
+        color: #7f8c8d;
         font-size: 1.1rem;
-        max-width: 700px;
-        margin: 0 auto;
-    }
-
-    .section-header::after {
-        content: '';
-        position: absolute;
-        bottom: -15px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 4px;
-        background: linear-gradient(90deg, #4a90e2, #67b8e3);
-        border-radius: 2px;
     }
 
     .reclamation-card {
         background: white;
         border-radius: 15px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-        margin-bottom: 30px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        animation: fadeInUp 0.6s ease-out forwards;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        height: 100%;
+        transition: transform 0.3s ease;
     }
 
     .reclamation-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
     }
 
     .reclamation-header {
-        background: linear-gradient(90deg, #4a90e2, #67b8e3);
-        padding: 20px;
-        color: white;
-        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e9ecef;
     }
 
     .reclamation-header h3 {
+        color: #2c3e50;
         margin: 0;
-        font-size: 1.3rem;
-        font-weight: 600;
-        padding-right: 100px;
+        font-size: 1.25rem;
     }
 
     .status-badge {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        padding: 5px 12px;
+        padding: 6px 12px;
         border-radius: 20px;
-        font-size: 0.85rem;
+        font-size: 0.875rem;
         font-weight: 500;
     }
 
-    .status-badge.pending {
-        background: linear-gradient(90deg, #ffc107, #ff9800);
-        color: white;
+    .status-badge.en.attente {
+        background-color: #fff3cd;
+        color: #856404;
     }
 
-    .status-badge.approved {
-        background: linear-gradient(90deg, #28a745, #20c997);
-        color: white;
+    .status-badge.active {
+        background-color: #d4edda;
+        color: #155724;
     }
 
-    .status-badge.rejected {
-        background: linear-gradient(90deg, #dc3545, #c82333);
-        color: white;
+    .status-badge.en.cours {
+        background-color: #cce5ff;
+        color: #004085;
     }
 
-    .reclamation-content {
-        padding: 25px;
+    .status-badge.expirée {
+        background-color: #f8d7da;
+        color: #721c24;
     }
 
     .info-group {
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .info-group:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
+        margin-bottom: 15px;
     }
 
     .info-label {
-        color: #6c757d;
-        font-weight: 600;
-        margin-bottom: 8px;
-        font-size: 0.9rem;
         display: flex;
         align-items: center;
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
     }
 
     .info-label i {
         margin-right: 8px;
-        color: #4a90e2;
+        width: 16px;
     }
 
     .info-value {
         color: #2c3e50;
-        font-size: 1rem;
-        line-height: 1.5;
+        font-weight: 500;
     }
 
-    .montants-section {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 20px;
-        margin: 20px 0;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-    }
-
-    .montant-item {
-        text-align: center;
-    }
-
-    .montant-item .info-label {
-        justify-content: center;
-        color: #495057;
-    }
-
-    .montant-item .info-value {
-        font-size: 1.5rem;
+    .montant {
+        font-size: 1.25rem;
         font-weight: 600;
-        color: #2c3e50;
-    }
-
-    .documents-section {
-        margin-top: 20px;
-    }
-
-    .document-link {
-        display: inline-flex;
-        align-items: center;
-        padding: 8px 15px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        color: #4a90e2;
-        text-decoration: none;
-        margin-right: 10px;
-        margin-bottom: 10px;
-        transition: all 0.3s ease;
-    }
-
-    .document-link:hover {
-        background: #e9ecef;
-        color: #2c3e50;
-        transform: translateY(-2px);
-    }
-
-    .document-link i {
-        margin-right: 8px;
-    }
-
-    .actions-section {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
     }
 
     .btn-action {
-        flex: 1;
-        padding: 12px 20px;
-        border: none;
-        border-radius: 8px;
+        display: inline-block;
+        padding: 8px 20px;
+        border-radius: 25px;
         font-weight: 500;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
         text-decoration: none;
-        cursor: pointer;
-    }
-
-    .btn-action i {
-        margin-right: 8px;
+        transition: all 0.3s ease;
     }
 
     .btn-action.primary {
-        background: linear-gradient(90deg, #4a90e2, #67b8e3);
+        background-color: #007bff;
         color: white;
     }
 
     .btn-action.primary:hover {
-        background: linear-gradient(90deg, #67b8e3, #4a90e2);
+        background-color: #0056b3;
         transform: translateY(-2px);
     }
 
     .btn-action.secondary {
-        background: linear-gradient(90deg, #6c757d, #495057);
+        background-color: #6c757d;
         color: white;
     }
 
     .btn-action.secondary:hover {
-        background: linear-gradient(90deg, #495057, #6c757d);
+        background-color: #545b62;
         transform: translateY(-2px);
     }
 
@@ -233,7 +142,7 @@
         padding: 50px 20px;
         background: white;
         border-radius: 15px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .empty-state h3 {
@@ -245,27 +154,10 @@
         color: #6c757d;
         margin-bottom: 25px;
     }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .row > div:nth-child(1) .reclamation-card { animation-delay: 0.1s; }
-    .row > div:nth-child(2) .reclamation-card { animation-delay: 0.2s; }
-    .row > div:nth-child(3) .reclamation-card { animation-delay: 0.3s; }
-    .row > div:nth-child(4) .reclamation-card { animation-delay: 0.4s; }
 </style>
 {% endblock %}
 
 {% block body %}
-<<<<<<< HEAD
     <section class="reclamation-section">
         <div class="container">
             <div class="section-header">
@@ -285,71 +177,56 @@
                                             {{ reclamation.Etat }}
                                         </span>
                                     </div>
-
                                     <div class="reclamation-content">
                                         <div class="info-group">
                                             <div class="info-label">
                                                 <i class="fas fa-calendar"></i>
                                                 Date de soumission
                                             </div>
-                                            <div class="info-value">{{ reclamation.Date|date('d/m/Y') }}</div>
+                                            <div class="info-value">
+                                                {{ reclamation.Date ? reclamation.Date|date('d/m/Y') : 'Non spécifiée' }}
+                                            </div>
                                         </div>
 
                                         <div class="info-group">
                                             <div class="info-label">
-                                                <i class="fas fa-comment-alt"></i>
+                                                <i class="fas fa-file-alt"></i>
                                                 Description
                                             </div>
-                                            <div class="info-value">{{ reclamation.Description }}</div>
-                                        </div>
-
-                                        <div class="montants-section">
-                                            <div class="montant-item">
-                                                <div class="info-label">
-                                                    <i class="fas fa-file-invoice"></i>
-                                                    Montant réclamé
-                                                </div>
-                                                <div class="info-value">{{ reclamation.montantReclame }} TND</div>
+                                            <div class="info-value">
+                                                {{ reclamation.Description|slice(0, 100) }}{% if reclamation.Description|length > 100 %}...{% endif %}
                                             </div>
-                                            {% if reclamation.montantRembourse is not null %}
-                                                <div class="montant-item">
-                                                    <div class="info-label">
-                                                        <i class="fas fa-money-bill-wave"></i>
-                                                        Montant remboursé
-                                                    </div>
-                                                    <div class="info-value">{{ reclamation.montantRembourse }} TND</div>
-                                                </div>
-                                            {% endif %}
                                         </div>
 
-                                        {% if reclamation.Documents %}
-                                            <div class="documents-section">
+                                        <div class="info-group">
+                                            <div class="info-label">
+                                                <i class="fas fa-money-bill-wave"></i>
+                                                Montant réclamé
+                                            </div>
+                                            <div class="info-value montant">
+                                                {{ reclamation.MontantReclame|number_format(2, ',', ' ') }} €
+                                            </div>
+                                        </div>
+
+                                        {% if reclamation.MontantRembourse is not null %}
+                                            <div class="info-group">
                                                 <div class="info-label">
-                                                    <i class="fas fa-paperclip"></i>
-                                                    Documents joints
+                                                    <i class="fas fa-check-circle"></i>
+                                                    Montant remboursé
                                                 </div>
-                                                <div class="info-value">
-                                                    {% for document in reclamation.Documents|split(',') %}
-                                                        <a href="#" class="document-link">
-                                                            <i class="fas fa-file"></i>
-                                                            Document {{ loop.index }}
-                                                        </a>
-                                                    {% endfor %}
+                                                <div class="info-value montant">
+                                                    {{ reclamation.MontantRembourse|number_format(2, ',', ' ') }} €
                                                 </div>
                                             </div>
                                         {% endif %}
 
-                                        <div class="actions-section">
-                                            <a href="{{ path('app_reclamation_show', {'ID_reclamation': reclamation.ID_reclamation}) }}" 
-                                               class="btn-action primary">
-                                                <i class="fas fa-eye"></i>
-                                                Voir les détails
+                                        <div class="mt-4">
+                                            <a href="{{ path('app_reclamation_show', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn-action primary me-2">
+                                                <i class="fas fa-eye"></i> Voir détails
                                             </a>
                                             {% if reclamation.Etat == 'En attente' %}
-                                                <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" 
-                                                   class="btn-action secondary">
-                                                    <i class="fas fa-edit"></i>
-                                                    Modifier
+                                                <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn-action secondary">
+                                                    <i class="fas fa-edit"></i> Modifier
                                                 </a>
                                             {% endif %}
                                         </div>
@@ -363,8 +240,7 @@
                         <h3>Aucune réclamation</h3>
                         <p>Vous n'avez pas encore soumis de réclamation. Si vous avez besoin d'un remboursement, n'hésitez pas à en créer une.</p>
                         <a href="{{ path('app_reclamation_new') }}" class="btn-action primary">
-                            <i class="fas fa-plus"></i>
-                            Nouvelle réclamation
+                            <i class="fas fa-plus"></i> Créer une réclamation
                         </a>
                     </div>
                 {% endif %}
@@ -373,74 +249,10 @@
                     <h3>Connexion requise</h3>
                     <p>Veuillez vous connecter pour accéder à vos réclamations.</p>
                     <a href="{{ path('app_login') }}" class="btn-action primary">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Se connecter
+                        <i class="fas fa-sign-in-alt"></i> Se connecter
                     </a>
                 </div>
             {% endif %}
         </div>
     </section>
 {% endblock %}
-=======
-    <div class="container">
-        <h1 class="my-4">Liste des Réclamations</h1>
-        
-        
-        
-        {% if reclamations|length > 0 %}
-            <div class="row">
-                {% for reclamation in reclamations %}
-                    <div class="col-md-6 mb-4">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">Réclamation #{{ reclamation.ID_reclamation }}</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <p><i class="fas fa-calendar-alt me-2"></i> <strong>Date:</strong> {{ reclamation.Date ? reclamation.Date|date('d/m/Y') : 'N/A' }}</p>
-                                        <p><i class="fas fa-info-circle me-2"></i> <strong>État:</strong> 
-                                            <span class="badge bg-{{ reclamation.Etat == 'En attente' ? 'warning' : (reclamation.Etat == 'Active' ? 'success' : 'danger') }}">
-                                                {{ reclamation.Etat }}
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><i class="fas fa-money-bill-wave me-2"></i> <strong>Montant réclamé:</strong> {{ reclamation.MontantReclame }} TND</p>
-                                        <p><i class="fas fa-hand-holding-usd me-2"></i> <strong>Montant remboursé:</strong> {{ reclamation.MontantRembourse }} TND</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <h6><i class="fas fa-align-left me-2"></i>Description :</h6>
-                                    <p class="text-muted">{{ reclamation.Description|length > 100 ? reclamation.Description|slice(0, 100) ~ '...' : reclamation.Description }}</p>
-                                </div>
-                                
-                                {% if reclamation.Documents %}
-                                    <div class="mb-3">
-                                        <h6><i class="fas fa-file-alt me-2"></i>Documents :</h6>
-                                        <p>{{ reclamation.Documents }}</p>
-                                    </div>
-                                {% endif %}
-                                
-                                <div class="d-flex justify-content-end">
-                                    <a href="{{ path('app_reclamation_show', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn btn-sm btn-outline-primary me-2">
-                                        <i class="fas fa-eye me-1"></i> Détails
-                                    </a>
-                                    <a href="{{ path('app_reclamation_edit', {'ID_reclamation': reclamation.ID_reclamation}) }}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="fas fa-edit me-1"></i> Modifier
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i> Aucune réclamation trouvée.
-            </div>
-        {% endif %}
-    </div>
-{% endblock %}
->>>>>>> gestionMatch

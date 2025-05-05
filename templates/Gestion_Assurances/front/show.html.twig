@@ -1,224 +1,216 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de l'Assurance - SPORTHIVE{% endblock %}
+{% block title %}Détails de l'Assurance - SPORTHIVE
+{% endblock %}
 
 {% block body %}
-<section class="assurance-detail-section layout_padding">
-    <div class="container">
-        <div class="heading_container mb-5">
-            <h2>Détails de l'Assurance</h2>
-        </div>
+	<section class="assurance-detail-section layout_padding">
+		<div class="container">
+			<div class="heading_container mb-5">
+				<h2>Détails de l'Assurance</h2>
+			</div>
 
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="detail-card">
-                    <div class="card-header">
-                        <h3>Contrat #{{ assurance.getID_contrat() }}</h3>
-                        <span class="badge {% if assurance.getStatut() == 'Actif' %}badge-success{% else %}badge-warning{% endif %}">
-                            {{ assurance.getStatut() }}
-                        </span>
-                    </div>
+			<div class="row justify-content-center">
+				<div class="col-lg-8">
+					<div class="detail-card">
+						<div class="card-header">
+							<h3>Contrat #{{ assurance.getID_contrat() }}</h3>
+							<span class="badge {% if assurance.getStatut() == 'Actif' %}badge-success{% else %}badge-warning{% endif %}">
+								{{ assurance.getStatut() }}
+							</span>
+						</div>
 
-                    <div class="card-body">
-                        <div class="detail-row">
-                            <div class="detail-label">Durée</div>
-                            <div class="detail-value">{{ assurance.getDuree() }} mois</div>
-                        </div>
+						<div class="card-body">
+							<div class="detail-row">
+								<div class="detail-label">Durée</div>
+								<div class="detail-value">{{ assurance.getDuree() }}
+									mois</div>
+							</div>
 
-                        <div class="detail-row">
-                            <div class="detail-label">Type de couverture</div>
-                            <div class="detail-value">{{ assurance.getTypeDeCouverture() }}</div>
-                        </div>
+							<div class="detail-row">
+								<div class="detail-label">Type de couverture</div>
+								<div class="detail-value">{{ assurance.getTypeDeCouverture() }}</div>
+							</div>
 
-                        <div class="detail-row">
-                            <div class="detail-label">Date de début</div>
-                            <div class="detail-value">{{ assurance.getDateDebut()|date('d/m/Y') }}</div>
-                        </div>
+							<div class="detail-row">
+								<div class="detail-label">Date de début</div>
+								<div class="detail-value">{{ assurance.getDateDebut()|date('d/m/Y') }}</div>
+							</div>
 
-                        <div class="detail-row">
-                            <div class="detail-label">Statut</div>
-                            <div class="detail-value">{{ assurance.getStatut() }}</div>
-                        </div>
+							<div class="detail-row">
+								<div class="detail-label">Statut</div>
+								<div class="detail-value">{{ assurance.getStatut() }}</div>
+							</div>
 
-                        <div class="detail-row">
-                            <div class="detail-label">Statut de paiement</div>
-                            <div class="detail-value">
-                                {% if assurance.getIsPaid() %}
-                                    <span class="badge badge-success">Payée</span>
-                                {% else %}
-                                    <span class="badge badge-warning">Non payée</span>
-                                {% endif %}
-                            </div>
-                        </div>
+							<div class="detail-row">
+								<div class="detail-label">Conditions</div>
+								<div class="detail-value conditions-text">{{ assurance.getConditions() }}</div>
+							</div>
+						</div>
 
-                        <div class="detail-row">
-                            <div class="detail-label">Conditions</div>
-                            <div class="detail-value conditions-text">{{ assurance.getConditions() }}</div>
-                        </div>
-                    </div>
-
-                    <div class="card-footer">
-                        <a href="{{ path('app_assurance_index', {'page': app.request.query.get('page')}) }}" class="btn-back">Retour à la liste</a>
-                        {% if app.user and assurance.getStatut() != 'Actif' %}
-                            <a href="{{ path('app_payment_form', {'id': assurance.id}) }}" class="btn-pay">Payer l'assurance</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+						<div class="card-footer">
+							<a href="{{ path('app_assurance_index', {'page': app.request.query.get('page')}) }}" class="btn-back">Retour à la liste</a>
+							{% if assurance.getStatut() != 'Actif' %}
+								<a href="{{ path('app_payment_form', {'id': assurance.id}) }}" class="btn-pay">Payer l'assurance</a>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 {% endblock %}
 
 {% block css %}
-<style>
-    .assurance-detail-section {
-        padding-top: 120px;
-        padding-bottom: 80px;
-        background-color: #f8f9fa;
-    }
+	<style>
+		.assurance-detail-section {
+			padding-top: 120px;
+			padding-bottom: 80px;
+			background-color: #f8f9fa;
+		}
 
-    .heading_container {
-        text-align: center;
-    }
+		.heading_container {
+			text-align: center;
+		}
 
-    .heading_container h2 {
-        font-weight: bold;
-        color: #252525;
-        position: relative;
-        padding-bottom: 10px;
-    }
+		.heading_container h2 {
+			font-weight: bold;
+			color: #252525;
+			position: relative;
+			padding-bottom: 10px;
+		}
 
-    .heading_container h2:after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 3px;
-        background-color: #ff4f5a;
-    }
+		.heading_container h2:after {
+			content: "";
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 60px;
+			height: 3px;
+			background-color: #ff4f5a;
+		}
 
-    .detail-card {
-        background-color: white;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    }
+		.detail-card {
+			background-color: white;
+			border-radius: 15px;
+			overflow: hidden;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+		}
 
-    .card-header {
-        background-color: #ff4f5a;
-        color: white;
-        padding: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+		.card-header {
+			background-color: #ff4f5a;
+			color: white;
+			padding: 20px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
 
-    .card-header h3 {
-        margin: 0;
-        font-size: 24px;
-    }
+		.card-header h3 {
+			margin: 0;
+			font-size: 24px;
+		}
 
-    .badge {
-        padding: 8px 15px;
-        border-radius: 50px;
-        font-size: 14px;
-    }
+		.badge {
+			padding: 8px 15px;
+			border-radius: 50px;
+			font-size: 14px;
+		}
 
-    .badge-success {
-        background-color: #28a745;
-    }
+		.badge-success {
+			background-color: #28a745;
+		}
 
-    .badge-warning {
-        background-color: #ffc107;
-        color: #212529;
-    }
+		.badge-warning {
+			background-color: #ffc107;
+			color: #212529;
+		}
 
-    .card-body {
-        padding: 30px;
-    }
+		.card-body {
+			padding: 30px;
+		}
 
-    .detail-row {
-        margin-bottom: 20px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-    }
+		.detail-row {
+			margin-bottom: 20px;
+			padding-bottom: 20px;
+			border-bottom: 1px solid #eee;
+		}
 
-    .detail-row:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
+		.detail-row:last-child {
+			border-bottom: none;
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
 
-    .detail-label {
-        font-weight: 600;
-        color: #495057;
-        margin-bottom: 5px;
-    }
+		.detail-label {
+			font-weight: 600;
+			color: #495057;
+			margin-bottom: 5px;
+		}
 
-    .detail-value {
-        color: #212529;
-        font-size: 16px;
-    }
+		.detail-value {
+			color: #212529;
+			font-size: 16px;
+		}
 
-    .conditions-text {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        white-space: pre-line;
-    }
+		.conditions-text {
+			background-color: #f8f9fa;
+			padding: 15px;
+			border-radius: 5px;
+			white-space: pre-line;
+		}
 
-    .card-footer {
-        background-color: #f8f9fa;
-        padding: 20px;
-        display: flex;
-        justify-content: flex-end;
-        gap: 15px;
-    }
+		.card-footer {
+			background-color: #f8f9fa;
+			padding: 20px;
+			display: flex;
+			justify-content: flex-end;
+			gap: 15px;
+		}
 
-    .btn-edit, .btn-back {
-        padding: 10px 20px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
+		.btn-edit,
+		.btn-back {
+			padding: 10px 20px;
+			border-radius: 5px;
+			text-decoration: none;
+			font-weight: 500;
+			transition: all 0.3s ease;
+		}
 
-    .btn-edit {
-        background-color: #17a2b8;
-        color: white;
-    }
+		.btn-edit {
+			background-color: #17a2b8;
+			color: white;
+		}
 
-    .btn-edit:hover {
-        background-color: #138496;
-        color: white;
-    }
+		.btn-edit:hover {
+			background-color: #138496;
+			color: white;
+		}
 
-    .btn-back {
-        background-color: #6c757d;
-        color: white;
-    }
+		.btn-back {
+			background-color: #6c757d;
+			color: white;
+		}
 
-    .btn-back:hover {
-        background-color: #5a6268;
-        color: white;
-    }
-    
-    .btn-pay {
-        background-color: #28a745;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-pay:hover {
-        background-color: #218838;
-        color: white;
-    }
-</style>
+		.btn-back:hover {
+			background-color: #5a6268;
+			color: white;
+		}
+
+		.btn-pay {
+			background-color: #28a745;
+			color: white;
+			padding: 10px 20px;
+			border-radius: 5px;
+			text-decoration: none;
+			font-weight: 500;
+			transition: all 0.3s ease;
+		}
+
+		.btn-pay:hover {
+			background-color: #218838;
+			color: white;
+		}
+	</style>
 {% endblock %}

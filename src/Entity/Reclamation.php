@@ -70,7 +70,7 @@ class Reclamation
     private ?string $Documents = null;
 
     #[ORM\ManyToOne(targetEntity: Assurance::class, inversedBy: 'reclamations')]
-    #[ORM\JoinColumn(name: 'ID_assurance', referencedColumnName: 'ID_assurance')]
+    #[ORM\JoinColumn(name: 'ID_contrat', referencedColumnName: 'ID_contrat')]
     private ?Assurance $assurance = null;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'reclamations')]

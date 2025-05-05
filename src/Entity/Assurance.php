@@ -66,7 +66,7 @@ class Assurance
     private bool $isPaid = false;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'assurances')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotNull(message: 'Veuillez sélectionner un utilisateur')]
     private ?Utilisateur $utilisateur = null;
 
