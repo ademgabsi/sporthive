@@ -8,7 +8,6 @@ Sporthive est une plateforme web conçue pour **connecter les gens à travers le
 
 - **Gestion des Compétitions et Tournois** : Création et gestion d'événements sportifs
 - **Système de Paiement Sécurisé** : Intégration de Stripe pour le paiement des assurances sportives
-- **Assistant Virtuel IA** : Assistant intelligent utilisant l'API Hugging Face (modèle DialoGPT-medium)
 - **Notifications SMS** : Système d'alertes SMS via Twilio pour les réclamations
 - **Modération de Contenu** : Filtrage automatique des contenus inappropriés via l'API PurgoMalum
 - **Assurances Sportives** : Système complet de gestion des assurances et réclamations
@@ -20,7 +19,6 @@ Sporthive est une plateforme web conçue pour **connecter les gens à travers le
 - **Base de données** : MySQL/MariaDB
 - **APIs** :
   - Stripe (Paiements)
-  - Hugging Face (IA)
   - Twilio (SMS)
   - PurgoMalum (Modération)
 
@@ -51,9 +49,6 @@ STRIPE_SECRET_KEY=sk_test_...
 TWILIO_SID=AC853...
 TWILIO_TOKEN=9b1cf...
 TWILIO_FROM=+1620...
-
-# Hugging Face
-HUGGING_FACE_API_KEY=votre_clé_api
 ```
 
 4. Créez la base de données et effectuez les migrations
