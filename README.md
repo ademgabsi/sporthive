@@ -1,4 +1,3 @@
-📄 Contenu proposé pour README.md de Sporthive
 
 # 🏋️ Sporthive
 
@@ -81,3 +80,4 @@ Les contributions sont les bienvenues ! Voici comment faire :
 ## 📝 License
 
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+@ESPRIT
